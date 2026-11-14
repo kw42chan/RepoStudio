@@ -1,4 +1,6 @@
 import { NextRequest, NextResponse } from "next/server";
+import { promises as dns } from "dns";
+import net from "net";
 import { generateObject } from "ai";
 import { openai } from "@ai-sdk/openai";
 import { z } from "zod";
@@ -15,19 +17,59 @@ const extractSchema = z.object({
   description: z.string(),
 });
 
+function isPrivateIp(ip: string): boolean {
+  if (net.isIPv4(ip)) {
+    const parts = ip.split(".").map(Number);
+    const [a, b] = parts;
+    if (a === 10 || a === 127 || a === 0) return true;
+    if (a === 169 && b === 254) return true;
+    if (a === 172 && b >= 16 && b <= 31) return true;
+    if (a === 192 && b === 168) return true;
+    if (a === 100 && b >= 64 && b <= 127) return true;
+    return false;
+  }
+  if (net.isIPv6(ip)) {
+    const lower = ip.toLowerCase();
+    return (
+      lower === "::1" ||
+      lower === "::" ||
+      lower.startsWith("fc") ||
+      lower.startsWith("fd") ||
+      lower.startsWith("fe80")
+    );
+  }
+  return true;
+}
+
+async function isSafePublicUrl(rawUrl: string): Promise<boolean> {
+  try {
+    const parsed = new URL(rawUrl);
+    if (!["http:", "https:"].includes(parsed.protocol)) return false;
+    if (parsed.username || parsed.password) return false;
+    const host = parsed.hostname.toLowerCase();
+    if (host === "localhost" || host.endsWith(".local")) return false;
+    if (net.isIP(host)) return !isPrivateIp(host);
+    const resolved = await dns.lookup(host, { all: true });
+    if (resolved.length === 0) return false;
+    return resolved.every((entry) => !isPrivateIp(entry.address));
+  } catch {
+    return false;
+  }
+}
+
 async function resolveUrlToImageAndHints(url: string): Promise<{
   imageUrl?: string;
   themeColor?: string;
   pageTitle?: string;
 }> {
   try {
-    const parsed = new URL(url);
-    if (!["http:", "https:"].includes(parsed.protocol)) {
+    if (!(await isSafePublicUrl(url))) {
       return {};
     }
 
     const res = await fetch(url, {
       headers: { "User-Agent": "RepoStudio-TemplateImporter/1.0" },
+      redirect: "error",
       signal: AbortSignal.timeout(8000),
     });
 

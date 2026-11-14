@@ -7,6 +7,8 @@ const schema = z.object({
   format: z.enum(["reel", "ig_carousel", "li_carousel"]),
   channelId: z.string().min(1),
   text: z.string().min(1),
+  mediaUrl: z.string().optional(),
+  mediaFileName: z.string().optional(),
   mode: z.enum(["addToQueue", "shareNow", "customScheduled"]),
   scheduledAt: z.string().optional(),
 });
@@ -22,7 +24,10 @@ export async function POST(req: NextRequest) {
       );
     }
 
-    const result = await scheduleBufferPost(parsed.data);
+    const result = await scheduleBufferPost({
+      ...parsed.data,
+      publicOrigin: req.nextUrl.origin,
+    });
     return NextResponse.json(result);
   } catch (err) {
     console.error("Buffer schedule error:", err);

@@ -1,9 +1,25 @@
 "use client";
 
 import { useState } from "react";
-import { Check, Copy, Plus, Send, Trash2, Video } from "lucide-react";
+import {
+  Check,
+  Copy,
+  Film,
+  Loader2,
+  Plus,
+  Send,
+  Trash2,
+  Upload,
+  Video,
+} from "lucide-react";
 import { Button } from "@/components/ui/button";
-import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
+import {
+  Card,
+  CardContent,
+  CardDescription,
+  CardHeader,
+  CardTitle,
+} from "@/components/ui/card";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Textarea } from "@/components/ui/textarea";
@@ -16,7 +32,11 @@ interface ReelEditorProps {
   onChange: (next: ReelContent) => void;
   onRegenerateStyle: (style: WritingStyleConfig) => void;
   regenerating?: boolean;
-  onOpenSchedule: (text: string) => void;
+  onOpenSchedule: (
+    text: string,
+    mediaUrl?: string,
+    mediaFileName?: string
+  ) => void;
 }
 
 export function ReelEditor({
@@ -27,6 +47,40 @@ export function ReelEditor({
   onOpenSchedule,
 }: ReelEditorProps) {
   const [copied, setCopied] = useState(false);
+  const [uploading, setUploading] = useState(false);
+  const [uploadError, setUploadError] = useState<string | null>(null);
+
+  async function handleVideoUpload(e: React.ChangeEvent<HTMLInputElement>) {
+    const file = e.target.files?.[0];
+    if (!file) return;
+    setUploadError(null);
+    setUploading(true);
+    try {
+      const form = new FormData();
+      form.append("file", file);
+      const res = await fetch("/api/uploads", {
+        method: "POST",
+        body: form,
+      });
+      const data = await res.json();
+      if (!res.ok) {
+        throw new Error(data.error || "Video upload failed");
+      }
+      onChange({
+        ...reel,
+        videoUrl: data.url,
+        videoFileName: data.fileName,
+        videoSizeBytes: data.sizeBytes,
+      });
+    } catch (err) {
+      setUploadError(
+        err instanceof Error ? err.message : "Failed to upload video"
+      );
+    } finally {
+      setUploading(false);
+      e.target.value = "";
+    }
+  }
 
   function updateBeat(id: string, patch: Partial<ReelBeat>) {
     onChange({
@@ -112,14 +166,121 @@ export function ReelEditor({
           <Button
             type="button"
             size="sm"
-            onClick={() => onOpenSchedule(fullCaption)}
+            onClick={() =>
+              onOpenSchedule(fullCaption, reel.videoUrl, reel.videoFileName)
+            }
             className="gap-1.5"
           >
             <Send className="h-3.5 w-3.5" />
-            Schedule to Buffer
+            {reel.videoUrl ? "Schedule Reel Video to Buffer" : "Schedule to Buffer"}
           </Button>
         </div>
       </div>
+
+      {/* Upload Finished Reel Video */}
+      <Card>
+        <CardHeader className="pb-2">
+          <div className="flex items-center justify-between gap-2">
+            <div>
+              <CardTitle className="text-sm flex items-center gap-2">
+                <Film className="h-4 w-4 text-primary" />
+                Upload Edited Reel Video
+              </CardTitle>
+              <CardDescription className="text-xs">
+                Record & edit your Reel externally using the script below, then
+                upload the finished MP4/MOV/WebM here to schedule it with
+                Buffer.
+              </CardDescription>
+            </div>
+            {reel.videoFileName && (
+              <Badge variant="secondary" className="shrink-0">
+                Ready for Buffer
+              </Badge>
+            )}
+          </div>
+        </CardHeader>
+        <CardContent className="space-y-3">
+          {reel.videoUrl ? (
+            <div className="grid gap-4 sm:grid-cols-[220px_1fr] items-center">
+              <video
+                src={reel.videoUrl}
+                controls
+                className="w-full max-h-64 rounded-lg border bg-black object-contain"
+              />
+              <div className="space-y-2">
+                <p className="text-sm font-medium break-all">
+                  {reel.videoFileName}
+                </p>
+                {reel.videoSizeBytes && (
+                  <p className="text-xs text-muted-foreground">
+                    {(reel.videoSizeBytes / (1024 * 1024)).toFixed(2)} MB
+                  </p>
+                )}
+                <div className="flex flex-wrap gap-2 pt-1">
+                  <label className="inline-flex cursor-pointer items-center gap-1.5 rounded-md border px-3 py-1.5 text-xs font-medium hover:bg-muted">
+                    <Upload className="h-3.5 w-3.5" />
+                    Replace Video
+                    <input
+                      type="file"
+                      accept="video/mp4,video/quicktime,video/webm"
+                      className="hidden"
+                      onChange={handleVideoUpload}
+                      disabled={uploading}
+                    />
+                  </label>
+                  <Button
+                    type="button"
+                    variant="ghost"
+                    size="sm"
+                    onClick={() =>
+                      onChange({
+                        ...reel,
+                        videoUrl: undefined,
+                        videoFileName: undefined,
+                        videoSizeBytes: undefined,
+                      })
+                    }
+                    className="text-xs text-muted-foreground hover:text-destructive"
+                  >
+                    Remove
+                  </Button>
+                </div>
+              </div>
+            </div>
+          ) : (
+            <label className="flex flex-col items-center justify-center gap-2 rounded-lg border border-dashed p-6 text-center cursor-pointer hover:bg-muted/30 transition-colors">
+              {uploading ? (
+                <Loader2 className="h-6 w-6 animate-spin text-primary" />
+              ) : (
+                <Upload className="h-6 w-6 text-muted-foreground" />
+              )}
+              <div className="space-y-0.5">
+                <p className="text-sm font-medium">
+                  {uploading
+                    ? "Uploading Reel video..."
+                    : "Click to upload your edited Reel video"}
+                </p>
+                <p className="text-xs text-muted-foreground">
+                  MP4, MOV, or WebM (up to 100 MB)
+                </p>
+              </div>
+              <input
+                type="file"
+                accept="video/mp4,video/quicktime,video/webm"
+                className="hidden"
+                onChange={handleVideoUpload}
+                disabled={uploading}
+              />
+            </label>
+          )}
+
+          {uploadError && (
+            <p className="text-xs text-destructive bg-destructive/10 rounded-md px-3 py-2">
+              {uploadError}
+            </p>
+          )}
+        </CardContent>
+      </Card>
 
       <Card>
         <CardHeader className="pb-2">

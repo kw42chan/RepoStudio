@@ -161,6 +161,9 @@ export async function scheduleBufferPost(params: {
   format: ContentFormat;
   channelId: string;
   text: string;
+  mediaUrl?: string;
+  mediaFileName?: string;
+  publicOrigin?: string;
   mode: BufferScheduleMode;
   scheduledAt?: string;
 }): Promise<{ post: ScheduledPost; isMock: boolean }> {
@@ -170,12 +173,24 @@ export async function scheduleBufferPost(params: {
   const channel =
     channels.find((c) => c.id === params.channelId) || MOCK_CHANNELS[0];
 
+  const absoluteMediaUrl =
+    params.mediaUrl && params.mediaUrl.startsWith("/") && params.publicOrigin
+      ? `${params.publicOrigin}${params.mediaUrl}`
+      : params.mediaUrl;
+
   if (token && store.bufferConnection.mode !== "demo" && !channel.isMock) {
     try {
       const form = new URLSearchParams();
       form.append("access_token", token);
       form.append("profile_ids[]", params.channelId);
       form.append("text", params.text);
+      if (absoluteMediaUrl && /^https?:\/\//i.test(absoluteMediaUrl)) {
+        if (params.format === "reel") {
+          form.append("media[video]", absoluteMediaUrl);
+        } else {
+          form.append("media[photo]", absoluteMediaUrl);
+        }
+      }
       if (params.mode === "shareNow") {
         form.append("now", "true");
       } else if (params.mode === "customScheduled" && params.scheduledAt) {
@@ -204,6 +219,8 @@ export async function scheduleBufferPost(params: {
           channelName: channel.formattedUsername,
           service: channel.service,
           text: params.text,
+          mediaUrl: params.mediaUrl,
+          mediaFileName: params.mediaFileName,
           mode: params.mode,
           scheduledAt: params.scheduledAt,
           status:
@@ -247,6 +264,8 @@ export async function scheduleBufferPost(params: {
     channelName: channel.formattedUsername,
     service: channel.service,
     text: params.text,
+    mediaUrl: params.mediaUrl,
+    mediaFileName: params.mediaFileName,
     mode: params.mode,
     scheduledAt: params.scheduledAt,
     status:

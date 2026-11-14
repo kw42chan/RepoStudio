@@ -95,6 +95,9 @@ export interface ReelContent {
   caption: string;
   hashtags: string[];
   writingStyle: WritingStyleConfig;
+  videoUrl?: string;
+  videoFileName?: string;
+  videoSizeBytes?: number;
 }
 
 export interface CarouselSlide {
@@ -170,6 +173,8 @@ export interface ScheduledPost {
   channelName: string;
   service: "instagram" | "linkedin";
   text: string;
+  mediaUrl?: string;
+  mediaFileName?: string;
   mode: BufferScheduleMode;
   scheduledAt?: string;
   status: "queued" | "sent" | "scheduled";

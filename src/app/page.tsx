@@ -114,6 +114,12 @@ export default function RepurposeWorkspacePage() {
   const [scheduleOpen, setScheduleOpen] = useState(false);
   const [scheduleFormat, setScheduleFormat] = useState<ContentFormat>("reel");
   const [scheduleText, setScheduleText] = useState("");
+  const [scheduleMediaUrl, setScheduleMediaUrl] = useState<string | undefined>(
+    undefined
+  );
+  const [scheduleMediaFileName, setScheduleMediaFileName] = useState<
+    string | undefined
+  >(undefined);
 
   useEffect(() => {
     async function loadInitial() {
@@ -186,7 +192,10 @@ export default function RepurposeWorkspacePage() {
     }
   }
 
-  async function handleGenerateAll(ideaOverride?: RepurposeIdea) {
+  async function handleGenerateFormats(
+    formats: ContentFormat[],
+    ideaOverride?: RepurposeIdea
+  ) {
     const idea = ideaOverride || selectedIdea;
     if (!sourcePost || !idea) return;
 
@@ -199,7 +208,7 @@ export default function RepurposeWorkspacePage() {
         body: JSON.stringify({
           sourcePost,
           idea,
-          formats: ["reel", "ig_carousel", "li_carousel"],
+          formats,
           writingStyle,
           visualTemplateId: defaultTemplateId,
           aspectRatio: defaultAspectRatio,
@@ -210,10 +219,13 @@ export default function RepurposeWorkspacePage() {
       if (!res.ok) {
         throw new Error(data.error || "Generation failed");
       }
-      setDraftId(`draft-${Date.now()}`);
-      setReel(data.reel);
-      setIgCarousel(data.igCarousel);
-      setLiCarousel(data.liCarousel);
+      setDraftId((prev) => prev || `draft-${Date.now()}`);
+      if (data.reel) setReel(data.reel);
+      if (data.igCarousel) setIgCarousel(data.igCarousel);
+      if (data.liCarousel) setLiCarousel(data.liCarousel);
+      if (formats.length === 1) {
+        setActiveTab(formats[0]);
+      }
     } finally {
       setGenerating(false);
     }
@@ -308,9 +320,16 @@ export default function RepurposeWorkspacePage() {
     }
   }
 
-  function openSchedule(format: ContentFormat, text: string) {
+  function openSchedule(
+    format: ContentFormat,
+    text: string,
+    mediaUrl?: string,
+    mediaFileName?: string
+  ) {
     setScheduleFormat(format);
     setScheduleText(text);
+    setScheduleMediaUrl(mediaUrl);
+    setScheduleMediaFileName(mediaFileName);
     setScheduleOpen(true);
   }
 
@@ -572,21 +591,41 @@ export default function RepurposeWorkspacePage() {
                   </div>
                 </div>
 
-                <Button
-                  type="button"
-                  onClick={() => handleGenerateAll()}
-                  disabled={generating || !selectedIdea}
-                  className="w-full gap-2"
-                >
-                  {generating ? (
-                    <Loader2 className="h-4 w-4 animate-spin" />
-                  ) : (
-                    <Wand2 className="h-4 w-4" />
-                  )}
-                  {generating
-                    ? "Generating Reel & Carousels..."
-                    : "Generate Reel + IG Carousel + LI Carousel"}
-                </Button>
+                <div className="grid gap-2 sm:grid-cols-2">
+                  <Button
+                    type="button"
+                    variant="outline"
+                    onClick={() => handleGenerateFormats(["reel"])}
+                    disabled={generating || !selectedIdea}
+                    className="w-full gap-2"
+                  >
+                    {generating ? (
+                      <Loader2 className="h-4 w-4 animate-spin" />
+                    ) : (
+                      <Video className="h-4 w-4" />
+                    )}
+                    Generate Reel Script
+                  </Button>
+                  <Button
+                    type="button"
+                    onClick={() =>
+                      handleGenerateFormats([
+                        "reel",
+                        "ig_carousel",
+                        "li_carousel",
+                      ])
+                    }
+                    disabled={generating || !selectedIdea}
+                    className="w-full gap-2"
+                  >
+                    {generating ? (
+                      <Loader2 className="h-4 w-4 animate-spin" />
+                    ) : (
+                      <Wand2 className="h-4 w-4" />
+                    )}
+                    {generating ? "Generating..." : "Generate All 3 Formats"}
+                  </Button>
+                </div>
               </div>
             </div>
           </CardContent>
@@ -659,7 +698,9 @@ export default function RepurposeWorkspacePage() {
                       handleRegenerateSingleFormat("reel", style)
                     }
                     regenerating={regeneratingFormat === "reel"}
-                    onOpenSchedule={(text) => openSchedule("reel", text)}
+                    onOpenSchedule={(text, mediaUrl, mediaFileName) =>
+                      openSchedule("reel", text, mediaUrl, mediaFileName)
+                    }
                   />
                 )}
               </TabsContent>
@@ -724,6 +765,8 @@ export default function RepurposeWorkspacePage() {
         onOpenChange={setScheduleOpen}
         format={scheduleFormat}
         defaultText={scheduleText}
+        mediaUrl={scheduleMediaUrl}
+        mediaFileName={scheduleMediaFileName}
         draftId={draftId}
       />
     </div>

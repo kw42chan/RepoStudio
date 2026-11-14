@@ -33,6 +33,8 @@ interface BufferScheduleDialogProps {
   onOpenChange: (open: boolean) => void;
   format: ContentFormat;
   defaultText: string;
+  mediaUrl?: string;
+  mediaFileName?: string;
   draftId?: string;
   onScheduled?: (post: ScheduledPost) => void;
 }
@@ -42,6 +44,8 @@ export function BufferScheduleDialog({
   onOpenChange,
   format,
   defaultText,
+  mediaUrl,
+  mediaFileName,
   draftId,
   onScheduled,
 }: BufferScheduleDialogProps) {
@@ -127,6 +131,8 @@ export function BufferScheduleDialog({
           format,
           channelId,
           text,
+          mediaUrl,
+          mediaFileName,
           mode,
           scheduledAt: mode === "customScheduled" ? scheduledAt : undefined,
         }),
@@ -265,6 +271,23 @@ export function BufferScheduleDialog({
                 onChange={(e) => setText(e.target.value)}
               />
             </div>
+
+            {mediaUrl && (
+              <div className="flex items-center gap-3 rounded-lg border p-2.5 bg-muted/20">
+                <video
+                  src={mediaUrl}
+                  className="h-14 w-12 rounded object-cover bg-black shrink-0"
+                />
+                <div className="min-w-0 flex-1">
+                  <p className="text-xs font-medium truncate">
+                    {mediaFileName || "Uploaded Reel Video"}
+                  </p>
+                  <p className="text-[11px] text-muted-foreground">
+                    Attached video will be scheduled with this Buffer post
+                  </p>
+                </div>
+              </div>
+            )}
 
             {format !== "reel" && (
               <p className="text-xs text-muted-foreground">

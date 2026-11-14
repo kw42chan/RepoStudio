@@ -1,0 +1,500 @@
+"use client";
+
+import { useRef, useState } from "react";
+import {
+  Download,
+  FileText,
+  ImagePlus,
+  Loader2,
+  Plus,
+  Save,
+  Send,
+  Trash2,
+} from "lucide-react";
+import { Button } from "@/components/ui/button";
+import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
+import { Input } from "@/components/ui/input";
+import { Label } from "@/components/ui/label";
+import { Textarea } from "@/components/ui/textarea";
+import {
+  Select,
+  SelectContent,
+  SelectItem,
+  SelectTrigger,
+  SelectValue,
+} from "@/components/ui/select";
+import { Badge } from "@/components/ui/badge";
+import {
+  AspectRatio,
+  CarouselContent,
+  CarouselSlide,
+  VisualTemplate,
+  WritingStyleConfig,
+} from "@/lib/types";
+import { exportSlidesAsPdf, exportSlidesAsPng } from "@/lib/export-carousel";
+import { CarouselPreview } from "./carousel-preview";
+import { WritingStyleControls } from "./writing-style-controls";
+
+interface CarouselEditorProps {
+  carousel: CarouselContent;
+  templates: VisualTemplate[];
+  onChange: (next: CarouselContent) => void;
+  onRegenerateStyle: (style: WritingStyleConfig) => void;
+  regenerating?: boolean;
+  onOpenTemplateImporter: () => void;
+  onSaveAsNewTemplate: (template: VisualTemplate) => Promise<void>;
+  onOpenSchedule: (text: string) => void;
+}
+
+export function CarouselEditor({
+  carousel,
+  templates,
+  onChange,
+  onRegenerateStyle,
+  regenerating,
+  onOpenTemplateImporter,
+  onSaveAsNewTemplate,
+  onOpenSchedule,
+}: CarouselEditorProps) {
+  const [activeSlideIdx, setActiveSlideIdx] = useState(0);
+  const [exporting, setExporting] = useState<"png" | "pdf" | null>(null);
+  const [savingTemplate, setSavingTemplate] = useState(false);
+  const [newTemplateName, setNewTemplateName] = useState("");
+  const [customVisualStyle, setCustomVisualStyle] = useState("");
+  const [customVisualTone, setCustomVisualTone] = useState("");
+  const exportRefs = useRef<(HTMLDivElement | null)[]>([]);
+
+  const activeTemplate =
+    templates.find((t) => t.id === carousel.visualTemplateId) || templates[0];
+  const effectiveAccent =
+    carousel.accentColorOverride || activeTemplate?.accentColor || "#2563EB";
+
+  const activeSlide =
+    carousel.slides[activeSlideIdx] || carousel.slides[0];
+
+  function updateSlide(id: string, patch: Partial<CarouselSlide>) {
+    onChange({
+      ...carousel,
+      slides: carousel.slides.map((s) =>
+        s.id === id ? { ...s, ...patch } : s
+      ),
+    });
+  }
+
+  function addSlide() {
+    const nextNum = carousel.slides.length + 1;
+    const newSlide: CarouselSlide = {
+      id: `slide-${Date.now()}`,
+      slideNumber: nextNum,
+      role: "body",
+      eyebrow: `0${Math.max(1, nextNum - 1)} / POINT`,
+      headline: "New takeaway",
+      body: "Add concise supporting copy here.",
+      visualDirection: "Clean single-column layout",
+    };
+    const nextSlides = [...carousel.slides, newSlide].map((s, idx) => ({
+      ...s,
+      slideNumber: idx + 1,
+    }));
+    onChange({ ...carousel, slides: nextSlides });
+    setActiveSlideIdx(nextSlides.length - 1);
+  }
+
+  function removeSlide(id: string) {
+    if (carousel.slides.length <= 2) return;
+    const filtered = carousel.slides
+      .filter((s) => s.id !== id)
+      .map((s, idx) => ({ ...s, slideNumber: idx + 1 }));
+    onChange({ ...carousel, slides: filtered });
+    setActiveSlideIdx(Math.min(activeSlideIdx, filtered.length - 1));
+  }
+
+  async function handleExport(type: "png" | "pdf") {
+    const els = exportRefs.current
+      .slice(0, carousel.slides.length)
+      .filter((el): el is HTMLDivElement => Boolean(el));
+    if (els.length === 0) return;
+
+    setExporting(type);
+    try {
+      const slug = `${carousel.platform}-carousel`;
+      if (type === "png") {
+        await exportSlidesAsPng(els, slug, carousel.aspectRatio);
+      } else {
+        await exportSlidesAsPdf(els, slug, carousel.aspectRatio);
+      }
+    } finally {
+      setExporting(null);
+    }
+  }
+
+  async function handleSaveCurrentAsTemplate() {
+    if (!activeTemplate) return;
+    setSavingTemplate(true);
+    try {
+      const tpl: VisualTemplate = {
+        ...activeTemplate,
+        id: `tpl-${Date.now()}`,
+        name:
+          newTemplateName.trim() ||
+          `${activeTemplate.name} (Custom)`,
+        isBuiltIn: false,
+        accentColor: effectiveAccent,
+        customStyleNotes: customVisualStyle.trim() || activeTemplate.customStyleNotes,
+        customToneNotes: customVisualTone.trim() || activeTemplate.customToneNotes,
+        createdAt: new Date().toISOString(),
+      };
+      await onSaveAsNewTemplate(tpl);
+      onChange({ ...carousel, visualTemplateId: tpl.id });
+      setNewTemplateName("");
+    } finally {
+      setSavingTemplate(false);
+    }
+  }
+
+  const fullCaption =
+    `${carousel.caption}\n\n${carousel.hashtags.join(" ")}`.trim();
+
+  return (
+    <div className="space-y-4">
+      <WritingStyleControls
+        value={carousel.writingStyle}
+        onChange={(writingStyle) => onChange({ ...carousel, writingStyle })}
+        onRegenerate={() => onRegenerateStyle(carousel.writingStyle)}
+        regenerating={regenerating}
+      />
+
+      {/* Visual Style, Template Import & Export Bar */}
+      <Card>
+        <CardContent className="pt-4 space-y-3">
+          <div className="flex flex-wrap items-end gap-3">
+            <div className="min-w-[210px] flex-1 space-y-1">
+              <Label className="text-xs">Visual Template</Label>
+              <Select
+                value={carousel.visualTemplateId}
+                onValueChange={(v) =>
+                  v &&
+                  onChange({
+                    ...carousel,
+                    visualTemplateId: v,
+                    accentColorOverride: undefined,
+                  })
+                }
+              >
+                <SelectTrigger>
+                  <SelectValue />
+                </SelectTrigger>
+                <SelectContent>
+                  {templates.map((t) => (
+                    <SelectItem key={t.id} value={t.id}>
+                      {t.name}
+                      {!t.isBuiltIn ? " (Saved)" : ""}
+                    </SelectItem>
+                  ))}
+                </SelectContent>
+              </Select>
+            </div>
+
+            <div className="w-[155px] space-y-1">
+              <Label className="text-xs">Aspect Ratio</Label>
+              <Select
+                value={carousel.aspectRatio}
+                onValueChange={(v) =>
+                  onChange({ ...carousel, aspectRatio: v as AspectRatio })
+                }
+              >
+                <SelectTrigger>
+                  <SelectValue />
+                </SelectTrigger>
+                <SelectContent>
+                  <SelectItem value="4:5">1080 × 1350 (4:5)</SelectItem>
+                  <SelectItem value="1:1">1080 × 1080 (1:1)</SelectItem>
+                </SelectContent>
+              </Select>
+            </div>
+
+            <div className="w-[74px] space-y-1">
+              <Label className="text-xs">Accent</Label>
+              <Input
+                type="color"
+                value={effectiveAccent}
+                onChange={(e) =>
+                  onChange({
+                    ...carousel,
+                    accentColorOverride: e.target.value,
+                  })
+                }
+                className="h-9 p-1 cursor-pointer"
+              />
+            </div>
+
+            <div className="min-w-[140px] flex-1 space-y-1">
+              <Label className="text-xs">Brand Handle</Label>
+              <Input
+                value={carousel.brandHandle}
+                onChange={(e) =>
+                  onChange({ ...carousel, brandHandle: e.target.value })
+                }
+              />
+            </div>
+
+            <Button
+              type="button"
+              variant="outline"
+              size="sm"
+              onClick={onOpenTemplateImporter}
+              className="gap-1.5"
+            >
+              <ImagePlus className="h-4 w-4" />
+              Import / Upload Template
+            </Button>
+          </div>
+
+          {/* Optional Custom Visual Style & Tone + Save as New Template */}
+          <div className="grid gap-2 sm:grid-cols-3 pt-1">
+            <Input
+              placeholder="Optional custom visual style note..."
+              value={customVisualStyle}
+              onChange={(e) => setCustomVisualStyle(e.target.value)}
+            />
+            <Input
+              placeholder="Optional custom visual tone note..."
+              value={customVisualTone}
+              onChange={(e) => setCustomVisualTone(e.target.value)}
+            />
+            <div className="flex gap-2">
+              <Input
+                placeholder="New template name..."
+                value={newTemplateName}
+                onChange={(e) => setNewTemplateName(e.target.value)}
+              />
+              <Button
+                type="button"
+                variant="secondary"
+                size="sm"
+                onClick={handleSaveCurrentAsTemplate}
+                disabled={savingTemplate}
+                className="shrink-0 gap-1"
+              >
+                <Save className="h-3.5 w-3.5" />
+                Save
+              </Button>
+            </div>
+          </div>
+        </CardContent>
+      </Card>
+
+      {/* Main Split: Slide Editor + Live 1080x1350 Preview */}
+      <div className="grid gap-6 lg:grid-cols-[1fr_400px]">
+        <div className="space-y-4">
+          <div className="flex flex-wrap items-center justify-between gap-2">
+            <div className="flex items-center gap-2">
+              <Badge variant="secondary">
+                {carousel.platform === "linkedin"
+                  ? "LinkedIn Carousel"
+                  : "Instagram Carousel"}
+              </Badge>
+              <span className="text-xs text-muted-foreground">
+                {carousel.slides.length} slides
+              </span>
+            </div>
+
+            <div className="flex flex-wrap items-center gap-2">
+              <Button
+                type="button"
+                variant="outline"
+                size="sm"
+                onClick={addSlide}
+                className="gap-1"
+              >
+                <Plus className="h-3.5 w-3.5" />
+                Add Slide
+              </Button>
+              <Button
+                type="button"
+                variant="outline"
+                size="sm"
+                disabled={Boolean(exporting)}
+                onClick={() => handleExport("png")}
+                className="gap-1.5"
+              >
+                {exporting === "png" ? (
+                  <Loader2 className="h-3.5 w-3.5 animate-spin" />
+                ) : (
+                  <Download className="h-3.5 w-3.5" />
+                )}
+                Export PNGs
+              </Button>
+              <Button
+                type="button"
+                variant="outline"
+                size="sm"
+                disabled={Boolean(exporting)}
+                onClick={() => handleExport("pdf")}
+                className="gap-1.5"
+              >
+                {exporting === "pdf" ? (
+                  <Loader2 className="h-3.5 w-3.5 animate-spin" />
+                ) : (
+                  <FileText className="h-3.5 w-3.5" />
+                )}
+                Export PDF
+              </Button>
+              <Button
+                type="button"
+                size="sm"
+                onClick={() => onOpenSchedule(fullCaption)}
+                className="gap-1.5"
+              >
+                <Send className="h-3.5 w-3.5" />
+                Schedule to Buffer
+              </Button>
+            </div>
+          </div>
+
+          {/* Slide selector pills */}
+          <div className="flex flex-wrap gap-1.5">
+            {carousel.slides.map((s, idx) => (
+              <Button
+                key={s.id}
+                type="button"
+                size="sm"
+                variant={idx === activeSlideIdx ? "default" : "outline"}
+                onClick={() => setActiveSlideIdx(idx)}
+                className="h-7 px-2.5 text-xs"
+              >
+                {idx + 1}. {s.role.toUpperCase()}
+              </Button>
+            ))}
+          </div>
+
+          {activeSlide && (
+            <Card>
+              <CardHeader className="pb-2 flex flex-row items-center justify-between">
+                <CardTitle className="text-sm">
+                  Slide {activeSlide.slideNumber} ({activeSlide.role})
+                </CardTitle>
+                <Button
+                  type="button"
+                  variant="ghost"
+                  size="icon"
+                  className="h-7 w-7 text-muted-foreground hover:text-destructive"
+                  onClick={() => removeSlide(activeSlide.id)}
+                  disabled={carousel.slides.length <= 2}
+                >
+                  <Trash2 className="h-3.5 w-3.5" />
+                </Button>
+              </CardHeader>
+              <CardContent className="space-y-3">
+                <div className="grid gap-3 sm:grid-cols-2">
+                  <div className="space-y-1">
+                    <Label className="text-xs">Eyebrow Label</Label>
+                    <Input
+                      value={activeSlide.eyebrow || ""}
+                      onChange={(e) =>
+                        updateSlide(activeSlide.id, {
+                          eyebrow: e.target.value,
+                        })
+                      }
+                    />
+                  </div>
+                  <div className="space-y-1">
+                    <Label className="text-xs">Role</Label>
+                    <Select
+                      value={activeSlide.role}
+                      onValueChange={(v) =>
+                        updateSlide(activeSlide.id, {
+                          role: v as CarouselSlide["role"],
+                        })
+                      }
+                    >
+                      <SelectTrigger>
+                        <SelectValue />
+                      </SelectTrigger>
+                      <SelectContent>
+                        <SelectItem value="cover">Cover</SelectItem>
+                        <SelectItem value="body">Body</SelectItem>
+                        <SelectItem value="cta">CTA</SelectItem>
+                      </SelectContent>
+                    </Select>
+                  </div>
+                </div>
+
+                <div className="space-y-1">
+                  <Label className="text-xs">Headline</Label>
+                  <Input
+                    value={activeSlide.headline}
+                    onChange={(e) =>
+                      updateSlide(activeSlide.id, {
+                        headline: e.target.value,
+                      })
+                    }
+                  />
+                </div>
+
+                <div className="space-y-1">
+                  <Label className="text-xs">Body Copy</Label>
+                  <Textarea
+                    rows={3}
+                    value={activeSlide.body}
+                    onChange={(e) =>
+                      updateSlide(activeSlide.id, { body: e.target.value })
+                    }
+                  />
+                </div>
+              </CardContent>
+            </Card>
+          )}
+
+          <Card>
+            <CardHeader className="pb-2">
+              <CardTitle className="text-sm">
+                {carousel.platform === "linkedin"
+                  ? "LinkedIn Post Copy"
+                  : "Instagram Caption & Hashtags"}
+              </CardTitle>
+            </CardHeader>
+            <CardContent className="space-y-3">
+              <Textarea
+                rows={4}
+                value={carousel.caption}
+                onChange={(e) =>
+                  onChange({ ...carousel, caption: e.target.value })
+                }
+              />
+              <Input
+                placeholder="Hashtags..."
+                value={carousel.hashtags.join(" ")}
+                onChange={(e) =>
+                  onChange({
+                    ...carousel,
+                    hashtags: e.target.value
+                      .split(/\s+/)
+                      .map((t) => t.trim())
+                      .filter(Boolean),
+                  })
+                }
+              />
+            </CardContent>
+          </Card>
+        </div>
+
+        <div className="flex flex-col items-center">
+          {activeTemplate && (
+            <CarouselPreview
+              slides={carousel.slides}
+              activeIndex={activeSlideIdx}
+              onSelectIndex={setActiveSlideIdx}
+              template={activeTemplate}
+              accentColor={effectiveAccent}
+              brandHandle={carousel.brandHandle}
+              platform={carousel.platform}
+              aspectRatio={carousel.aspectRatio}
+              exportRefs={exportRefs}
+            />
+          )}
+        </div>
+      </div>
+    </div>
+  );
+}

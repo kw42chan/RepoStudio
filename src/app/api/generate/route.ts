@@ -1,0 +1,70 @@
+import { NextRequest, NextResponse } from "next/server";
+import { z } from "zod";
+import { generateContentForFormats } from "@/lib/ai";
+
+const requestSchema = z.object({
+  sourcePost: z.object({
+    id: z.string(),
+    rawText: z.string(),
+    sourcePlatform: z.string().optional(),
+    sourceUrl: z.string().optional(),
+    brandVoice: z.string(),
+    targetAudience: z.string(),
+    ctaPreference: z.string(),
+    createdAt: z.string(),
+  }),
+  idea: z.object({
+    id: z.string(),
+    angleType: z.string(),
+    title: z.string(),
+    hook: z.string(),
+    summary: z.string(),
+    rationale: z.string(),
+    formatFit: z.object({
+      reel: z.number(),
+      igCarousel: z.number(),
+      liCarousel: z.number(),
+    }),
+  }),
+  formats: z
+    .array(z.enum(["reel", "ig_carousel", "li_carousel"]))
+    .min(1),
+  writingStyle: z.object({
+    styleId: z.enum([
+      "educational",
+      "contrarian",
+      "storytelling",
+      "tactical",
+      "myth-buster",
+      "minimalist",
+      "custom",
+    ]),
+    customStyle: z.string().optional(),
+    customTone: z.string().optional(),
+  }),
+  visualTemplateId: z.string().default("minimal-light"),
+  aspectRatio: z.enum(["4:5", "1:1"]).default("4:5"),
+  brandHandle: z.string().default("@yourbrand"),
+});
+
+export async function POST(req: NextRequest) {
+  try {
+    const body = await req.json();
+    const parsed = requestSchema.safeParse(body);
+    if (!parsed.success) {
+      return NextResponse.json(
+        { error: parsed.error.issues[0]?.message || "Invalid generate payload" },
+        { status: 400 }
+      );
+    }
+
+    const generated = await generateContentForFormats(parsed.data);
+    return NextResponse.json(generated);
+  } catch (err) {
+    console.error("Generation error:", err);
+    return NextResponse.json(
+      { error: "Failed to generate content." },
+      { status: 500 }
+    );
+  }
+}

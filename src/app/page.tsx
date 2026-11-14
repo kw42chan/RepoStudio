@@ -478,7 +478,7 @@ export default function RepurposeWorkspacePage() {
               </CardTitle>
               {ideation.usedMock && (
                 <Badge variant="outline" className="text-xs">
-                  Smart Local Mode (Add OPENAI_API_KEY for LLM)
+                  Smart Local Mode (Add OPENROUTER_API_KEY or OPENAI_API_KEY for LLM)
                 </Badge>
               )}
             </div>

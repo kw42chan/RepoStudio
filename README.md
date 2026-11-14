@@ -18,7 +18,7 @@ RepoStudio turns copied social media posts into fresh repurposing angles and pro
 
 ```bash
 npm install
-cp .env.example .env.local # optional: add OPENAI_API_KEY or Buffer OAuth credentials
+cp .env.example .env.local # optional: add OPENROUTER_API_KEY (or OPENAI_API_KEY) and Buffer OAuth credentials
 npm run dev -- --port 3100
 ```
 

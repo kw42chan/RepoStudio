@@ -2,8 +2,8 @@ import { NextRequest, NextResponse } from "next/server";
 import { promises as dns } from "dns";
 import net from "net";
 import { generateObject } from "ai";
-import { openai } from "@ai-sdk/openai";
 import { z } from "zod";
+import { getLlmModels } from "@/lib/llm";
 import { VisualTemplate } from "@/lib/types";
 
 const extractSchema = z.object({
@@ -189,10 +189,11 @@ export async function POST(req: NextRequest) {
       `${customStyleNotes || ""} ${customToneNotes || ""}`
     );
 
-    if (process.env.OPENAI_API_KEY && resolvedImage) {
+    const llm = getLlmModels();
+    if (llm && resolvedImage) {
       try {
         const { object } = await generateObject({
-          model: openai("gpt-4o-mini"),
+          model: llm.visionModel,
           schema: extractSchema,
           messages: [
             {

@@ -1,6 +1,6 @@
 import { generateObject } from "ai";
-import { openai } from "@ai-sdk/openai";
 import { z } from "zod";
+import { getLlmModels } from "./llm";
 import {
   AspectRatio,
   CarouselContent,
@@ -180,13 +180,14 @@ function buildMockIdeation(source: SourcePost): IdeationResult {
 export async function ideateFromSourcePost(
   source: SourcePost
 ): Promise<IdeationResult> {
-  if (!process.env.OPENAI_API_KEY) {
+  const llm = getLlmModels();
+  if (!llm) {
     return buildMockIdeation(source);
   }
 
   try {
     const { object } = await generateObject({
-      model: openai("gpt-4o-mini"),
+      model: llm.textModel,
       schema: ideationSchema,
       prompt: `You are an expert social media strategist specializing in repurposing viral posts into high-performing Instagram Reels, Instagram Carousels, and LinkedIn Carousels.
 
@@ -423,8 +424,9 @@ export async function generateContentForFormats(params: {
   } = params;
 
   const styleDescription = describeWritingStyle(writingStyle);
+  const llm = getLlmModels();
 
-  if (!process.env.OPENAI_API_KEY) {
+  if (!llm) {
     return {
       reel: formats.includes("reel")
         ? buildMockReel(sourcePost, idea, writingStyle)
@@ -466,7 +468,7 @@ export async function generateContentForFormats(params: {
       formats.map(async (format) => {
         if (format === "reel") {
           const { object } = await generateObject({
-            model: openai("gpt-4o-mini"),
+            model: llm.textModel,
             schema: reelSchema,
             prompt: `Create an Instagram Reel script from this repurpose angle.
 Source post: ${sourcePost.rawText}
@@ -483,7 +485,7 @@ Make the 0-3s hook impossible to scroll past, keep spoken lines natural and punc
 
         if (format === "ig_carousel") {
           const { object } = await generateObject({
-            model: openai("gpt-4o-mini"),
+            model: llm.textModel,
             schema: carouselSchema,
             prompt: `Create a 6-8 slide Instagram Carousel (1080x1350 portrait) from this repurpose angle.
 Source post: ${sourcePost.rawText}
@@ -507,7 +509,7 @@ Slide 1 must be role "cover", middle slides role "body" (concise, scannable copy
 
         if (format === "li_carousel") {
           const { object } = await generateObject({
-            model: openai("gpt-4o-mini"),
+            model: llm.textModel,
             schema: carouselSchema,
             prompt: `Create a 6-8 slide LinkedIn Document Carousel (1080x1350) from this repurpose angle.
 Source post: ${sourcePost.rawText}

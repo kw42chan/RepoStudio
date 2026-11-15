@@ -71,7 +71,8 @@ export async function resolvePublicAddress(
 
 export function fetchPublic(
   target: { url: URL; address: string; family: number },
-  maxBytes: number
+  maxBytes: number,
+  userAgent?: string
 ): Promise<{ status: number; headers: http.IncomingHttpHeaders; body: Buffer }> {
   const { url, address, family } = target;
   const lib = url.protocol === "https:" ? https : http;
@@ -88,6 +89,7 @@ export function fetchPublic(
         headers: {
           Host: url.host,
           "User-Agent":
+            userAgent ||
             "Mozilla/5.0 (compatible; RepoStudio/1.0; +https://repostudio.apps.grok.bot)",
           Accept: "text/html,application/xhtml+xml,image/*",
         },

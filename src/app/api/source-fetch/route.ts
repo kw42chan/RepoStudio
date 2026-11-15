@@ -1,55 +1,98 @@
 import { NextRequest, NextResponse } from "next/server";
 import { z } from "zod";
+import {
+  extractPostText,
+  linkedInEmbedUrls,
+} from "@/lib/extract-post-text";
 import { rejectNonJson } from "@/lib/json-body";
-import { requireViewer } from "@/lib/viewer";
 import { fetchPublic, resolvePublicAddress } from "@/lib/public-fetch";
+import { requireViewer } from "@/lib/viewer";
 
 const requestSchema = z.object({
   url: z.string().url("Enter a valid http or https link."),
 });
 
-const MAX_BYTES = 512 * 1024;
+const MAX_BYTES = 1024 * 1024;
 const MAX_REDIRECTS = 3;
+const BROWSER_UA =
+  "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/122.0.0.0 Safari/537.36";
 
-function decodeEntities(value: string): string {
-  return value
-    .replace(/&amp;/g, "&")
-    .replace(/&lt;/g, "<")
-    .replace(/&gt;/g, ">")
-    .replace(/&quot;/g, '"')
-    .replace(/&#39;|&apos;/g, "'")
-    .replace(/&nbsp;/g, " ")
-    .replace(/&#(\d+);/g, (_, code) => {
-      const n = Number(code);
-      return Number.isFinite(n) ? String.fromCodePoint(n) : "";
-    });
-}
-
-function readMeta(html: string, key: string): string | undefined {
-  const patterns = [
-    new RegExp(
-      `<meta[^>]+(?:property|name)=["']${key}["'][^>]+content=["']([^"']+)["']`,
-      "i"
-    ),
-    new RegExp(
-      `<meta[^>]+content=["']([^"']+)["'][^>]+(?:property|name)=["']${key}["']`,
-      "i"
-    ),
-  ];
-  for (const pattern of patterns) {
-    const match = html.match(pattern);
-    if (match?.[1]) return decodeEntities(match[1]).trim();
+function isLinkedIn(url: string): boolean {
+  try {
+    const host = new URL(url).hostname.toLowerCase();
+    return host.includes("linkedin.") || host === "lnkd.in";
+  } catch {
+    return false;
   }
-  return undefined;
 }
 
-function visibleText(html: string): string {
-  const stripped = html
-    .replace(/<script[\s\S]*?<\/script>/gi, " ")
-    .replace(/<style[\s\S]*?<\/style>/gi, " ")
-    .replace(/<noscript[\s\S]*?<\/noscript>/gi, " ")
-    .replace(/<[^>]+>/g, " ");
-  return decodeEntities(stripped).replace(/\s+/g, " ").trim();
+async function loadPage(
+  startUrl: string,
+  browser: boolean
+): Promise<
+  | { html: string; finalUrl: string }
+  | { error: NextResponse }
+> {
+  let current = startUrl;
+  let status = 0;
+  let headers: Record<string, string | string[] | undefined> = {};
+  let html = "";
+  for (let hop = 0; hop <= MAX_REDIRECTS; hop++) {
+    const target = await resolvePublicAddress(current);
+    if (!target) {
+      return {
+        error: NextResponse.json(
+          { error: "That link cannot be fetched. Paste the post text instead." },
+          { status: 400 }
+        ),
+      };
+    }
+    const page = await fetchPublic(
+      target,
+      MAX_BYTES,
+      browser ? BROWSER_UA : undefined
+    );
+    status = page.status;
+    headers = page.headers;
+    html = page.body.toString("utf-8");
+    if (status >= 300 && status < 400) {
+      const location = headers.location;
+      const next = Array.isArray(location) ? location[0] : location;
+      if (!next) break;
+      current = new URL(next, current).toString();
+      continue;
+    }
+    break;
+  }
+
+  if (status < 200 || status >= 300) {
+    return {
+      error: NextResponse.json(
+        {
+          error:
+            "The link did not return a readable page. Many social apps block fetching, so paste the caption into the box.",
+        },
+        { status: 422 }
+      ),
+    };
+  }
+
+  const contentType = String(headers["content-type"] || "");
+  if (
+    contentType &&
+    !contentType.includes("text") &&
+    !contentType.includes("json") &&
+    !contentType.includes("xml")
+  ) {
+    return {
+      error: NextResponse.json(
+        { error: "That link is not a text post. Paste the caption instead." },
+        { status: 422 }
+      ),
+    };
+  }
+
+  return { html, finalUrl: current };
 }
 
 function guessPlatform(url: string): string | undefined {
@@ -77,72 +120,25 @@ export async function POST(req: NextRequest) {
       );
     }
 
-    let current = parsed.data.url;
-    let status = 0;
-    let headers: Record<string, string | string[] | undefined> = {};
-    let html = "";
-    for (let hop = 0; hop <= MAX_REDIRECTS; hop++) {
-      const target = await resolvePublicAddress(current);
-      if (!target) {
-        return NextResponse.json(
-          { error: "That link cannot be fetched. Paste the post text instead." },
-          { status: 400 }
-        );
+    const loaded = await loadPage(parsed.data.url, isLinkedIn(parsed.data.url));
+    if ("error" in loaded) return loaded.error;
+
+    const pages = [loaded];
+    if (isLinkedIn(loaded.finalUrl)) {
+      for (const embedUrl of linkedInEmbedUrls(loaded.finalUrl)) {
+        const embed = await loadPage(embedUrl, true);
+        if (!("error" in embed)) pages.push(embed);
       }
-      const page = await fetchPublic(target, MAX_BYTES);
-      status = page.status;
-      headers = page.headers;
-      html = page.body.toString("utf-8");
-      if (status >= 300 && status < 400) {
-        const location = headers.location;
-        const next = Array.isArray(location) ? location[0] : location;
-        if (!next) break;
-        current = new URL(next, current).toString();
-        continue;
-      }
-      break;
     }
 
-    if (status < 200 || status >= 300) {
-      return NextResponse.json(
-        {
-          error:
-            "The link did not return a readable page. Many social apps block fetching, so paste the caption into the box.",
-        },
-        { status: 422 }
-      );
+    let text = "";
+    let title: string | undefined;
+    for (const page of pages) {
+      const extracted = extractPostText(page.html);
+      if (!title && extracted.title) title = extracted.title;
+      if (extracted.text.length > text.length) text = extracted.text;
     }
-
-    const contentType = String(headers["content-type"] || "");
-    if (
-      contentType &&
-      !contentType.includes("text") &&
-      !contentType.includes("json") &&
-      !contentType.includes("xml")
-    ) {
-      return NextResponse.json(
-        { error: "That link is not a text post. Paste the caption instead." },
-        { status: 422 }
-      );
-    }
-
-    const title =
-      readMeta(html, "og:title") ||
-      readMeta(html, "twitter:title") ||
-      decodeEntities(html.match(/<title>([^<]+)<\/title>/i)?.[1] || "").trim();
-    const description =
-      readMeta(html, "og:description") ||
-      readMeta(html, "twitter:description") ||
-      readMeta(html, "description");
-    const body = visibleText(html).slice(0, 4000);
-
-    const parts = [title, description].filter(Boolean) as string[];
-    let text = parts.join("\n\n").trim();
-    if (text.length < 40 && body.length > text.length) {
-      text = body.slice(0, 2500);
-    } else if (body && !body.includes(text.slice(0, 40))) {
-      text = `${text}\n\n${body.slice(0, 1200)}`.trim();
-    }
+    text = text.slice(0, 20000);
 
     if (text.length < 10) {
       return NextResponse.json(
@@ -157,8 +153,8 @@ export async function POST(req: NextRequest) {
     return NextResponse.json({
       text,
       title: title || undefined,
-      platform: guessPlatform(current),
-      finalUrl: current,
+      platform: guessPlatform(loaded.finalUrl),
+      finalUrl: loaded.finalUrl,
     });
   } catch (err) {
     console.error("Source fetch error:", err);

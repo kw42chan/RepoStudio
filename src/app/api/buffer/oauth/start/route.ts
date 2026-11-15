@@ -1,10 +1,13 @@
 import { randomBytes } from "crypto";
 import { NextRequest, NextResponse } from "next/server";
 import { isBufferOAuthConfigured } from "@/lib/buffer";
+import { requireViewer } from "@/lib/viewer";
 
 const STATE_COOKIE = "buffer_oauth_state";
 
 export async function GET(req: NextRequest) {
+  const viewer = await requireViewer(req);
+  if (viewer) return viewer;
   const origin = req.nextUrl.origin;
   const redirectUri = `${origin}/api/buffer/oauth/callback`;
 

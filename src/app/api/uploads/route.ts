@@ -2,6 +2,7 @@ import { NextRequest, NextResponse } from "next/server";
 import { promises as fs } from "fs";
 import path from "path";
 import crypto from "crypto";
+import { requireViewer } from "@/lib/viewer";
 
 const UPLOADS_DIR = path.join(process.cwd(), ".data", "uploads");
 const MAX_VIDEO_BYTES = 100 * 1024 * 1024; // 100 MB
@@ -13,6 +14,8 @@ const ALLOWED_EXTENSIONS: Record<string, string> = {
 };
 
 export async function POST(req: NextRequest) {
+  const viewer = await requireViewer(req);
+  if (viewer) return viewer;
   try {
     const formData = await req.formData();
     const file = formData.get("file");

@@ -1,14 +1,19 @@
 import { NextRequest, NextResponse } from "next/server";
 import { rejectNonJson } from "@/lib/json-body";
 import { deleteDraft, readStore, upsertDraft } from "@/lib/store";
+import { requireViewer } from "@/lib/viewer";
 import { ContentDraft } from "@/lib/types";
 
-export async function GET() {
+export async function GET(req: NextRequest) {
+  const viewer = await requireViewer(req);
+  if (viewer) return viewer;
   const store = await readStore();
   return NextResponse.json({ drafts: store.drafts });
 }
 
 export async function POST(req: NextRequest) {
+  const viewer = await requireViewer(req);
+  if (viewer) return viewer;
   const rejected = rejectNonJson(req);
   if (rejected) return rejected;
   try {
@@ -34,6 +39,8 @@ export async function POST(req: NextRequest) {
 }
 
 export async function DELETE(req: NextRequest) {
+  const viewer = await requireViewer(req);
+  if (viewer) return viewer;
   const id = req.nextUrl.searchParams.get("id");
   if (!id) {
     return NextResponse.json({ error: "Missing draft id" }, { status: 400 });

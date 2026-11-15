@@ -1,8 +1,17 @@
 import { NextRequest, NextResponse } from "next/server";
 import { rejectNonJson } from "@/lib/json-body";
 import { updateBufferConnection } from "@/lib/store";
+import { BufferConnection } from "@/lib/types";
+import { requireViewer } from "@/lib/viewer";
+
+function publicConnection(connection: BufferConnection) {
+  const { accessToken, ...safe } = connection;
+  return { ...safe, hasToken: Boolean(accessToken) };
+}
 
 export async function POST(req: NextRequest) {
+  const viewer = await requireViewer(req);
+  if (viewer) return viewer;
   const rejected = rejectNonJson(req);
   if (rejected) return rejected;
   try {
@@ -17,14 +26,14 @@ export async function POST(req: NextRequest) {
         organizationName: "Demo Buffer Workspace",
         connectedAt: new Date().toISOString(),
       });
-      return NextResponse.json({ connection });
+      return NextResponse.json({ connection: publicConnection(connection) });
     }
 
     if (body.action === "disconnect") {
       const connection = await updateBufferConnection({
         mode: "disconnected",
       });
-      return NextResponse.json({ connection });
+      return NextResponse.json({ connection: publicConnection(connection) });
     }
 
     if (body.action === "token") {
@@ -40,7 +49,7 @@ export async function POST(req: NextRequest) {
         organizationName: "Buffer Personal Token",
         connectedAt: new Date().toISOString(),
       });
-      return NextResponse.json({ connection });
+      return NextResponse.json({ connection: publicConnection(connection) });
     }
 
     return NextResponse.json({ error: "Invalid action" }, { status: 400 });

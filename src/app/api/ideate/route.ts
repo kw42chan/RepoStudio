@@ -2,6 +2,7 @@ import { NextRequest, NextResponse } from "next/server";
 import { z } from "zod";
 import { ideateFromSourcePost } from "@/lib/ai";
 import { rejectNonJson } from "@/lib/json-body";
+import { requireViewer } from "@/lib/viewer";
 import { SourcePost } from "@/lib/types";
 
 const requestSchema = z.object({
@@ -14,6 +15,8 @@ const requestSchema = z.object({
 });
 
 export async function POST(req: NextRequest) {
+  const viewer = await requireViewer(req);
+  if (viewer) return viewer;
   const rejected = rejectNonJson(req);
   if (rejected) return rejected;
   try {

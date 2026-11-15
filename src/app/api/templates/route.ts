@@ -5,14 +5,19 @@ import {
   saveVisualTemplate,
 } from "@/lib/store";
 import { rejectNonJson } from "@/lib/json-body";
+import { requireViewer } from "@/lib/viewer";
 import { VisualTemplate } from "@/lib/types";
 
-export async function GET() {
+export async function GET(req: NextRequest) {
+  const viewer = await requireViewer(req);
+  if (viewer) return viewer;
   const templates = await getAllVisualTemplates();
   return NextResponse.json({ templates });
 }
 
 export async function POST(req: NextRequest) {
+  const viewer = await requireViewer(req);
+  if (viewer) return viewer;
   const rejected = rejectNonJson(req);
   if (rejected) return rejected;
   try {
@@ -43,6 +48,8 @@ export async function POST(req: NextRequest) {
 }
 
 export async function DELETE(req: NextRequest) {
+  const viewer = await requireViewer(req);
+  if (viewer) return viewer;
   const id = req.nextUrl.searchParams.get("id");
   if (!id) {
     return NextResponse.json({ error: "Missing template id" }, { status: 400 });

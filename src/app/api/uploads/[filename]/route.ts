@@ -1,6 +1,7 @@
 import { NextRequest, NextResponse } from "next/server";
 import { promises as fs } from "fs";
 import path from "path";
+import { requireViewer } from "@/lib/viewer";
 
 const UPLOADS_DIR = path.resolve(process.cwd(), ".data", "uploads");
 const SAFE_FILENAME_RE = /^[a-zA-Z0-9._-]+$/;
@@ -12,9 +13,11 @@ const MIME_BY_EXT: Record<string, string> = {
 };
 
 export async function GET(
-  _req: NextRequest,
+  req: NextRequest,
   context: { params: Promise<{ filename: string }> }
 ) {
+  const viewer = await requireViewer(req);
+  if (viewer) return viewer;
   const { filename } = await context.params;
   const base = path.basename(filename);
 

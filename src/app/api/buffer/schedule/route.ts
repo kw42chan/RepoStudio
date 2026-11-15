@@ -2,6 +2,7 @@ import { NextRequest, NextResponse } from "next/server";
 import { z } from "zod";
 import { scheduleBufferPost } from "@/lib/buffer";
 import { rejectNonJson } from "@/lib/json-body";
+import { requireViewer } from "@/lib/viewer";
 
 const schema = z.object({
   draftId: z.string().optional(),
@@ -15,6 +16,8 @@ const schema = z.object({
 });
 
 export async function POST(req: NextRequest) {
+  const viewer = await requireViewer(req);
+  if (viewer) return viewer;
   const rejected = rejectNonJson(req);
   if (rejected) return rejected;
   try {

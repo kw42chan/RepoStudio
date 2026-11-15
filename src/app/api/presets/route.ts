@@ -1,14 +1,19 @@
 import { NextRequest, NextResponse } from "next/server";
 import { rejectNonJson } from "@/lib/json-body";
 import { readStore, upsertBrandPreset } from "@/lib/store";
+import { requireViewer } from "@/lib/viewer";
 import { BrandVoicePreset } from "@/lib/types";
 
-export async function GET() {
+export async function GET(req: NextRequest) {
+  const viewer = await requireViewer(req);
+  if (viewer) return viewer;
   const store = await readStore();
   return NextResponse.json({ presets: store.brandPresets });
 }
 
 export async function POST(req: NextRequest) {
+  const viewer = await requireViewer(req);
+  if (viewer) return viewer;
   const rejected = rejectNonJson(req);
   if (rejected) return rejected;
   try {

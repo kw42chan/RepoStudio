@@ -1,9 +1,12 @@
 import { NextRequest, NextResponse } from "next/server";
 import { updateBufferConnection } from "@/lib/store";
+import { requireViewer } from "@/lib/viewer";
 
 const STATE_COOKIE = "buffer_oauth_state";
 
 export async function GET(req: NextRequest) {
+  const viewer = await requireViewer(req);
+  if (viewer) return viewer;
   const origin = req.nextUrl.origin;
   const code = req.nextUrl.searchParams.get("code");
   const error = req.nextUrl.searchParams.get("error");

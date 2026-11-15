@@ -1,6 +1,7 @@
 import { NextRequest, NextResponse } from "next/server";
 import { z } from "zod";
 import { rejectNonJson } from "@/lib/json-body";
+import { requireViewer } from "@/lib/viewer";
 import { fetchPublic, resolvePublicAddress } from "@/lib/public-fetch";
 
 const requestSchema = z.object({
@@ -63,6 +64,8 @@ function guessPlatform(url: string): string | undefined {
 }
 
 export async function POST(req: NextRequest) {
+  const viewer = await requireViewer(req);
+  if (viewer) return viewer;
   const rejected = rejectNonJson(req);
   if (rejected) return rejected;
   try {

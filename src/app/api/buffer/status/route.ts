@@ -1,8 +1,11 @@
-import { NextResponse } from "next/server";
+import { NextRequest, NextResponse } from "next/server";
 import { isBufferOAuthConfigured } from "@/lib/buffer";
 import { readStore } from "@/lib/store";
+import { requireViewer } from "@/lib/viewer";
 
-export async function GET() {
+export async function GET(req: NextRequest) {
+  const viewer = await requireViewer(req);
+  if (viewer) return viewer;
   const store = await readStore();
   return NextResponse.json({
     connection: {

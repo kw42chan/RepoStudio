@@ -3,6 +3,7 @@ import { generateObject } from "ai";
 import { z } from "zod";
 import { getLlmModels } from "@/lib/llm";
 import { rejectNonJson } from "@/lib/json-body";
+import { requireViewer } from "@/lib/viewer";
 import { fetchPublic, resolvePublicAddress } from "@/lib/public-fetch";
 import { VisualTemplate } from "@/lib/types";
 
@@ -101,6 +102,8 @@ function deterministicPaletteFromSeed(
 }
 
 export async function POST(req: NextRequest) {
+  const viewer = await requireViewer(req);
+  if (viewer) return viewer;
   const rejected = rejectNonJson(req);
   if (rejected) return rejected;
   try {

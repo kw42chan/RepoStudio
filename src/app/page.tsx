@@ -55,6 +55,10 @@ import { ReelEditor } from "@/components/studio/reel-editor";
 import { CarouselEditor } from "@/components/studio/carousel-editor";
 import { TemplateImporterDialog } from "@/components/studio/template-importer-dialog";
 import { BufferScheduleDialog } from "@/components/studio/buffer-schedule-dialog";
+import {
+  languageNameFromCode,
+  originalLanguageName,
+} from "@/lib/language";
 import { TEXT_MODEL } from "@/lib/models";
 
 export default function RepurposeWorkspacePage() {
@@ -66,6 +70,7 @@ export default function RepurposeWorkspacePage() {
 
   // Step 1: Source input
   const [rawText, setRawText] = useState("");
+  const [sourceLanguage, setSourceLanguage] = useState<string | null>(null);
   const [sourceUrl, setSourceUrl] = useState("");
   const [sourcePlatform, setSourcePlatform] = useState("LinkedIn");
   const [loadingUrl, setLoadingUrl] = useState(false);
@@ -177,6 +182,9 @@ export default function RepurposeWorkspacePage() {
         throw new Error(data.error || "Could not load that link");
       }
       setRawText(data.text);
+      setSourceLanguage(
+        languageNameFromCode(data.language) || originalLanguageName(data.text)
+      );
       if (data.platform) setSourcePlatform(data.platform);
       return data.text as string;
     } finally {
@@ -504,8 +512,17 @@ export default function RepurposeWorkspacePage() {
                 rows={7}
                 placeholder="Paste the post you want to repurpose here..."
                 value={rawText}
-                onChange={(e) => setRawText(e.target.value)}
+                onChange={(e) => {
+                  setRawText(e.target.value);
+                  setSourceLanguage(originalLanguageName(e.target.value));
+                }}
               />
+              {sourceLanguage && (
+                <p className="text-xs text-muted-foreground">
+                  Original language: {sourceLanguage}. Repurposed posts stay in
+                  this language.
+                </p>
+              )}
             </div>
 
             <div className="space-y-3 rounded-lg border p-3.5 bg-muted/20">

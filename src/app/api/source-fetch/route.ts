@@ -7,6 +7,7 @@ import {
 import { rejectNonJson } from "@/lib/json-body";
 import { fetchPublic, resolvePublicAddress } from "@/lib/public-fetch";
 import {
+  preferFullOriginal,
   readSyndicationTweet,
   syndicationToken,
   twitterStatusId,
@@ -127,13 +128,16 @@ export async function POST(req: NextRequest) {
 
     const statusId = twitterStatusId(parsed.data.url);
     let tweetText = "";
+    let tweetLang: string | undefined;
     if (statusId) {
       const syndicated = await loadPage(
         `https://cdn.syndication.twimg.com/tweet-result?id=${statusId}&token=${syndicationToken(statusId)}`,
         true
       );
       if (!("error" in syndicated)) {
-        tweetText = readSyndicationTweet(syndicated.html) || "";
+        const tweet = readSyndicationTweet(syndicated.html);
+        tweetText = tweet?.text || "";
+        tweetLang = tweet?.lang;
       }
     }
 
@@ -155,7 +159,7 @@ export async function POST(req: NextRequest) {
       if (!title && extracted.title) title = extracted.title;
       if (extracted.text.length > text.length) text = extracted.text;
     }
-    if (tweetText) text = tweetText;
+    if (tweetText) text = preferFullOriginal(tweetText, text);
     text = text.slice(0, 20000);
 
     if (text.length < 10) {
@@ -170,6 +174,7 @@ export async function POST(req: NextRequest) {
 
     return NextResponse.json({
       text,
+      language: tweetLang,
       title: title || undefined,
       platform: guessPlatform(
         "error" in loaded ? parsed.data.url : loaded.finalUrl

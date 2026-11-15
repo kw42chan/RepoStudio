@@ -21,3 +21,7 @@ The five default roles, each label equal to its name: `needs-triage`, `needs-inf
 ### Domain docs
 
 Single-context: one `GLOSSARY.md` and `docs/adr/` at the repo root. See `docs/agents/domain.md`.
+
+### Standard manual test
+
+Before finishing a change to loading a post, generating ideas, or writing the reel and carousels, run `docs/standard-manual-test.md` and replace its last-run table with the new results. X, LinkedIn, Instagram, Threads, and the video transcript are all part of that run. A known gap stays a fail until the pass condition is met.

@@ -1,5 +1,6 @@
 import { generateObject } from "ai";
 import { z } from "zod";
+import { sameLanguageRule } from "./language";
 import { completeOpenRouterJson, getLlmModels } from "./llm";
 import {
   AspectRatio,
@@ -186,7 +187,9 @@ export async function ideateFromSourcePost(
   }
 
   try {
-    const prompt = `You are an expert social media strategist specializing in repurposing viral posts into high-performing Instagram Reels, Instagram Carousels, and LinkedIn Carousels.
+    const prompt = `${sameLanguageRule(source.rawText)}
+
+You are an expert social media strategist specializing in repurposing viral posts into high-performing Instagram Reels, Instagram Carousels, and LinkedIn Carousels.
 
 Analyze this copied post and generate 5 distinct repurposing angles:
 ---
@@ -499,7 +502,9 @@ export async function generateContentForFormats(params: {
         if (format === "reel") {
           const object = await generateTextObject(
             reelSchema,
-            `Create an Instagram Reel script from this repurpose angle.
+            `${sameLanguageRule(sourcePost.rawText)}
+
+Create an Instagram Reel script from this repurpose angle.
 Source post: ${sourcePost.rawText}
 Angle: ${idea.title} — ${idea.hook} (${idea.summary})
 Brand Voice: ${sourcePost.brandVoice}
@@ -516,7 +521,9 @@ Return JSON with hook, estimatedDuration, beats (each with id, timeframe, spoken
         if (format === "ig_carousel") {
           const object = await generateTextObject(
             carouselSchema,
-            `Create a 6-8 slide Instagram Carousel (1080x1350 portrait) from this repurpose angle.
+            `${sameLanguageRule(sourcePost.rawText)}
+
+Create a 6-8 slide Instagram Carousel (1080x1350 portrait) from this repurpose angle.
 Source post: ${sourcePost.rawText}
 Angle: ${idea.title} — ${idea.hook} (${idea.summary})
 Brand Voice: ${sourcePost.brandVoice}
@@ -540,7 +547,9 @@ Return JSON with title, slides (id, slideNumber, role, eyebrow, headline, body, 
         if (format === "li_carousel") {
           const object = await generateTextObject(
             carouselSchema,
-            `Create a 6-8 slide LinkedIn Document Carousel (1080x1350) from this repurpose angle.
+            `${sameLanguageRule(sourcePost.rawText)}
+
+Create a 6-8 slide LinkedIn Document Carousel (1080x1350) from this repurpose angle.
 Source post: ${sourcePost.rawText}
 Angle: ${idea.title} — ${idea.hook} (${idea.summary})
 Brand Voice: ${sourcePost.brandVoice}

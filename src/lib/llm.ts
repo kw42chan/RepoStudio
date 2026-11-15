@@ -166,7 +166,7 @@ export async function completeOpenRouterJson<T>(
       {
         role: "system",
         content:
-          "You are a social media strategist. Reply with one JSON object only. Do not wrap it in markdown.",
+          "You are a social media strategist. Reply with one JSON object only. Do not wrap it in markdown. Write natural language in the same language as the source post. Do not translate the source into Japanese or any other language.",
       },
       { role: "user", content: prompt },
     ];

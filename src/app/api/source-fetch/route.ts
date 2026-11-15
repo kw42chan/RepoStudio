@@ -6,6 +6,11 @@ import {
 } from "@/lib/extract-post-text";
 import { rejectNonJson } from "@/lib/json-body";
 import { fetchPublic, resolvePublicAddress } from "@/lib/public-fetch";
+import {
+  readSyndicationTweet,
+  syndicationToken,
+  twitterStatusId,
+} from "@/lib/tweet";
 import { requireViewer } from "@/lib/viewer";
 
 const requestSchema = z.object({
@@ -120,11 +125,23 @@ export async function POST(req: NextRequest) {
       );
     }
 
-    const loaded = await loadPage(parsed.data.url, isLinkedIn(parsed.data.url));
-    if ("error" in loaded) return loaded.error;
+    const statusId = twitterStatusId(parsed.data.url);
+    let tweetText = "";
+    if (statusId) {
+      const syndicated = await loadPage(
+        `https://cdn.syndication.twimg.com/tweet-result?id=${statusId}&token=${syndicationToken(statusId)}`,
+        true
+      );
+      if (!("error" in syndicated)) {
+        tweetText = readSyndicationTweet(syndicated.html) || "";
+      }
+    }
 
-    const pages = [loaded];
-    if (isLinkedIn(loaded.finalUrl)) {
+    const loaded = await loadPage(parsed.data.url, isLinkedIn(parsed.data.url));
+    if ("error" in loaded && !tweetText) return loaded.error;
+
+    const pages = "error" in loaded ? [] : [loaded];
+    if (!("error" in loaded) && isLinkedIn(loaded.finalUrl)) {
       for (const embedUrl of linkedInEmbedUrls(loaded.finalUrl)) {
         const embed = await loadPage(embedUrl, true);
         if (!("error" in embed)) pages.push(embed);
@@ -138,6 +155,7 @@ export async function POST(req: NextRequest) {
       if (!title && extracted.title) title = extracted.title;
       if (extracted.text.length > text.length) text = extracted.text;
     }
+    if (tweetText) text = tweetText;
     text = text.slice(0, 20000);
 
     if (text.length < 10) {
@@ -153,8 +171,10 @@ export async function POST(req: NextRequest) {
     return NextResponse.json({
       text,
       title: title || undefined,
-      platform: guessPlatform(loaded.finalUrl),
-      finalUrl: loaded.finalUrl,
+      platform: guessPlatform(
+        "error" in loaded ? parsed.data.url : loaded.finalUrl
+      ),
+      finalUrl: "error" in loaded ? parsed.data.url : loaded.finalUrl,
     });
   } catch (err) {
     console.error("Source fetch error:", err);

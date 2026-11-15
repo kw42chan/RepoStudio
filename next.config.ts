@@ -1,9 +1,6 @@
 import type { NextConfig } from "next";
 
 const nextConfig: NextConfig = {
-  extensionAlias: {
-    ".js": [".ts", ".tsx", ".js"],
-  },
   cacheComponents: true,
   partialPrefetching: true,
   turbopack: {

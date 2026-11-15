@@ -1,7 +1,7 @@
 import { createOpenAI, openai } from "@ai-sdk/openai";
 import { z } from "zod";
 
-const DEFAULT_TEXT_MODEL = "openai/gpt-4o-mini";
+const DEFAULT_TEXT_MODEL = "deepseek/deepseek-v4.1-flash-1017";
 const DEFAULT_VISION_MODEL = "google/gemini-2.5-flash";
 
 export function getLlmModels() {

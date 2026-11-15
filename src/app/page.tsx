@@ -6,6 +6,7 @@ import {
   Check,
   Columns3,
   Lightbulb,
+  Link2,
   Loader2,
   Sparkles,
   Video,
@@ -64,7 +65,9 @@ export default function RepurposeWorkspacePage() {
 
   // Step 1: Source input
   const [rawText, setRawText] = useState("");
+  const [sourceUrl, setSourceUrl] = useState("");
   const [sourcePlatform, setSourcePlatform] = useState("LinkedIn");
+  const [loadingUrl, setLoadingUrl] = useState(false);
   const [brandVoice, setBrandVoice] = useState(DEFAULT_BRAND_PRESETS[0].voice);
   const [targetAudience, setTargetAudience] = useState(
     DEFAULT_BRAND_PRESETS[0].audience
@@ -157,16 +160,44 @@ export default function RepurposeWorkspacePage() {
     }));
   }
 
+  async function loadPostFromUrl(): Promise<string | null> {
+    const url = sourceUrl.trim();
+    if (!url) return rawText;
+    setLoadingUrl(true);
+    try {
+      const res = await fetch("/api/source-fetch", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ url }),
+      });
+      const data = await res.json();
+      if (!res.ok) {
+        throw new Error(data.error || "Could not load that link");
+      }
+      setRawText(data.text);
+      if (data.platform) setSourcePlatform(data.platform);
+      return data.text as string;
+    } finally {
+      setLoadingUrl(false);
+    }
+  }
+
   async function handleIdeate() {
     setIdeationError(null);
     setIdeating(true);
     try {
+      let text = rawText.trim();
+      if (text.length < 10 && sourceUrl.trim()) {
+        const loaded = await loadPostFromUrl();
+        text = (loaded || "").trim();
+      }
       const res = await fetch("/api/ideate", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({
-          rawText,
+          rawText: text,
           sourcePlatform,
+          sourceUrl: sourceUrl.trim() || undefined,
           brandVoice,
           targetAudience,
           ctaPreference,
@@ -371,16 +402,52 @@ export default function RepurposeWorkspacePage() {
             <span className="flex h-6 w-6 items-center justify-center rounded-full bg-primary text-xs font-bold text-primary-foreground">
               1
             </span>
-            Paste Copied Social Media Post
+            Paste a Post or a Link
           </CardTitle>
           <CardDescription>
-            Copy a post from LinkedIn, Instagram, X, or Threads to extract its
-            hook structure and generate fresh repurposing angles.
+            Paste a public post URL, or paste the caption itself, to extract
+            its hook and generate fresh repurposing angles.
           </CardDescription>
         </CardHeader>
         <CardContent className="space-y-4">
           <div className="grid gap-4 lg:grid-cols-[1.4fr_1fr]">
             <div className="space-y-2">
+              <div className="space-y-1.5">
+                <Label>Post URL</Label>
+                <div className="flex gap-2">
+                  <Input
+                    type="url"
+                    placeholder="https://www.linkedin.com/posts/..."
+                    value={sourceUrl}
+                    onChange={(e) => setSourceUrl(e.target.value)}
+                  />
+                  <Button
+                    type="button"
+                    variant="secondary"
+                    className="shrink-0 gap-1.5"
+                    disabled={loadingUrl || !sourceUrl.trim()}
+                    onClick={async () => {
+                      setIdeationError(null);
+                      try {
+                        await loadPostFromUrl();
+                      } catch (err) {
+                        setIdeationError(
+                          err instanceof Error
+                            ? err.message
+                            : "Could not load that link"
+                        );
+                      }
+                    }}
+                  >
+                    {loadingUrl ? (
+                      <Loader2 className="h-4 w-4 animate-spin" />
+                    ) : (
+                      <Link2 className="h-4 w-4" />
+                    )}
+                    {loadingUrl ? "Loading..." : "Load link"}
+                  </Button>
+                </div>
+              </div>
               <div className="flex items-center justify-between">
                 <Label>Copied Post Content</Label>
                 <Select
@@ -470,7 +537,11 @@ export default function RepurposeWorkspacePage() {
           <div className="flex justify-end">
             <Button
               onClick={handleIdeate}
-              disabled={ideating || rawText.trim().length < 10}
+              disabled={
+                ideating ||
+                loadingUrl ||
+                (rawText.trim().length < 10 && !sourceUrl.trim())
+              }
               className="gap-2"
             >
               {ideating ? (

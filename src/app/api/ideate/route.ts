@@ -38,9 +38,8 @@ export async function POST(req: NextRequest) {
     return NextResponse.json({ sourcePost, ...result });
   } catch (err) {
     console.error("Ideation error:", err);
-    return NextResponse.json(
-      { error: "Failed to analyze source post." },
-      { status: 500 }
-    );
+    const message =
+      err instanceof Error ? err.message : "Failed to analyze source post.";
+    return NextResponse.json({ error: message }, { status: 500 });
   }
 }

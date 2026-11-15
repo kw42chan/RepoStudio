@@ -257,6 +257,10 @@ export default function RepurposeWorkspacePage() {
       if (formats.length === 1) {
         setActiveTab(formats[0]);
       }
+    } catch (err) {
+      setIdeationError(
+        err instanceof Error ? err.message : "Generation failed"
+      );
     } finally {
       setGenerating(false);
     }
@@ -566,9 +570,13 @@ export default function RepurposeWorkspacePage() {
                 </span>
                 Choose an Angle & Repurpose Style
               </CardTitle>
-              {ideation.usedMock && (
+              {ideation.usedMock ? (
                 <Badge variant="outline" className="text-xs">
                   Smart Local Mode (Add OPENROUTER_API_KEY or OPENAI_API_KEY for LLM)
+                </Badge>
+              ) : (
+                <Badge variant="secondary" className="text-xs">
+                  Written by your language model
                 </Badge>
               )}
             </div>

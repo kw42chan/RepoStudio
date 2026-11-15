@@ -1,6 +1,6 @@
 import { generateObject } from "ai";
 import { z } from "zod";
-import { getLlmModels } from "./llm";
+import { completeOpenRouterJson, getLlmModels } from "./llm";
 import {
   AspectRatio,
   CarouselContent,
@@ -186,10 +186,7 @@ export async function ideateFromSourcePost(
   }
 
   try {
-    const { object } = await generateObject({
-      model: llm.textModel,
-      schema: ideationSchema,
-      prompt: `You are an expert social media strategist specializing in repurposing viral posts into high-performing Instagram Reels, Instagram Carousels, and LinkedIn Carousels.
+    const prompt = `You are an expert social media strategist specializing in repurposing viral posts into high-performing Instagram Reels, Instagram Carousels, and LinkedIn Carousels.
 
 Analyze this copied post and generate 5 distinct repurposing angles:
 ---
@@ -201,15 +198,28 @@ CTA Preference: ${source.ctaPreference}
 
 Return:
 1. sourceAnalysis: coreHookPattern, keyInsight, structureBreakdown
-2. ideas: 5 distinct repurposing angles with unique ids, angleType, title, scroll-stopping hook, summary, rationale, and formatFit scores (1-100) for reel, igCarousel, and liCarousel.`,
-    });
+2. ideas: exactly 5 objects. Each needs id, angleType, title, hook, summary, rationale, and formatFit with reel, igCarousel, and liCarousel as numbers from 1 to 100.
+The angles must be specific to this post's actual claim, not generic marketing advice.`;
+
+    const object = process.env.OPENROUTER_API_KEY
+      ? await completeOpenRouterJson(ideationSchema, prompt)
+      : (
+          await generateObject({
+            model: llm.textModel,
+            schema: ideationSchema,
+            prompt,
+          })
+        ).object;
 
     return {
       ...object,
       usedMock: false,
     };
-  } catch {
-    return buildMockIdeation(source);
+  } catch (err) {
+    console.error("Ideation model failed:", err);
+    throw err instanceof Error
+      ? err
+      : new Error("The language model could not generate ideas.");
   }
 }
 
@@ -399,6 +409,25 @@ function buildMockCarousel(
   };
 }
 
+async function generateTextObject<T>(
+  schema: z.ZodType<T>,
+  prompt: string
+): Promise<T> {
+  if (process.env.OPENROUTER_API_KEY) {
+    return completeOpenRouterJson(schema, prompt);
+  }
+  const llm = getLlmModels();
+  if (!llm) {
+    throw new Error("No language model configured.");
+  }
+  const { object } = await generateObject({
+    model: llm.textModel,
+    schema,
+    prompt,
+  });
+  return object;
+}
+
 export async function generateContentForFormats(params: {
   sourcePost: SourcePost;
   idea: RepurposeIdea;
@@ -467,10 +496,9 @@ export async function generateContentForFormats(params: {
     await Promise.all(
       formats.map(async (format) => {
         if (format === "reel") {
-          const { object } = await generateObject({
-            model: llm.textModel,
-            schema: reelSchema,
-            prompt: `Create an Instagram Reel script from this repurpose angle.
+          const object = await generateTextObject(
+            reelSchema,
+            `Create an Instagram Reel script from this repurpose angle.
 Source post: ${sourcePost.rawText}
 Angle: ${idea.title} — ${idea.hook} (${idea.summary})
 Brand Voice: ${sourcePost.brandVoice}
@@ -478,16 +506,16 @@ Target Audience: ${sourcePost.targetAudience}
 CTA: ${sourcePost.ctaPreference}
 Writing Style & Tone: ${styleDescription}
 
-Make the 0-3s hook impossible to scroll past, keep spoken lines natural and punchy, and include on-screen text and visual cues for each beat.`,
-          });
+Make the 0-3s hook impossible to scroll past, keep spoken lines natural and punchy, and include on-screen text and visual cues for each beat.
+Return JSON with hook, estimatedDuration, beats (each with id, timeframe, spokenLine, onScreenText, visualCue), caption, and hashtags.`
+          );
           results.reel = { ...object, writingStyle };
         }
 
         if (format === "ig_carousel") {
-          const { object } = await generateObject({
-            model: llm.textModel,
-            schema: carouselSchema,
-            prompt: `Create a 6-8 slide Instagram Carousel (1080x1350 portrait) from this repurpose angle.
+          const object = await generateTextObject(
+            carouselSchema,
+            `Create a 6-8 slide Instagram Carousel (1080x1350 portrait) from this repurpose angle.
 Source post: ${sourcePost.rawText}
 Angle: ${idea.title} — ${idea.hook} (${idea.summary})
 Brand Voice: ${sourcePost.brandVoice}
@@ -495,8 +523,9 @@ Target Audience: ${sourcePost.targetAudience}
 CTA: ${sourcePost.ctaPreference}
 Writing Style & Tone: ${styleDescription}
 
-Slide 1 must be role "cover", middle slides role "body" (concise, scannable copy that fits a 1080x1350 slide cleanly), and final slide role "cta".`,
-          });
+Slide 1 must be role "cover", middle slides role "body" (concise, scannable copy that fits a 1080x1350 slide cleanly), and final slide role "cta".
+Return JSON with title, slides (id, slideNumber, role, eyebrow, headline, body, visualDirection), caption, and hashtags.`
+          );
           results.igCarousel = {
             platform: "instagram",
             ...object,
@@ -508,10 +537,9 @@ Slide 1 must be role "cover", middle slides role "body" (concise, scannable copy
         }
 
         if (format === "li_carousel") {
-          const { object } = await generateObject({
-            model: llm.textModel,
-            schema: carouselSchema,
-            prompt: `Create a 6-8 slide LinkedIn Document Carousel (1080x1350) from this repurpose angle.
+          const object = await generateTextObject(
+            carouselSchema,
+            `Create a 6-8 slide LinkedIn Document Carousel (1080x1350) from this repurpose angle.
 Source post: ${sourcePost.rawText}
 Angle: ${idea.title} — ${idea.hook} (${idea.summary})
 Brand Voice: ${sourcePost.brandVoice}
@@ -519,8 +547,9 @@ Target Audience: ${sourcePost.targetAudience}
 CTA: ${sourcePost.ctaPreference}
 Writing Style & Tone: ${styleDescription}
 
-Slide 1 must be role "cover", middle slides role "body" with crisp executive takeaways, and final slide role "cta". Include a strong long-form LinkedIn caption.`,
-          });
+Slide 1 must be role "cover", middle slides role "body" with crisp executive takeaways, and final slide role "cta". Include a strong long-form LinkedIn caption.
+Return JSON with title, slides (id, slideNumber, role, eyebrow, headline, body, visualDirection), caption, and hashtags.`
+          );
           results.liCarousel = {
             platform: "linkedin",
             ...object,
@@ -534,34 +563,10 @@ Slide 1 must be role "cover", middle slides role "body" with crisp executive tak
     );
 
     return { ...results, usedMock: false };
-  } catch {
-    return {
-      reel: formats.includes("reel")
-        ? buildMockReel(sourcePost, idea, writingStyle)
-        : undefined,
-      igCarousel: formats.includes("ig_carousel")
-        ? buildMockCarousel(
-            "instagram",
-            sourcePost,
-            idea,
-            writingStyle,
-            visualTemplateId,
-            aspectRatio,
-            brandHandle
-          )
-        : undefined,
-      liCarousel: formats.includes("li_carousel")
-        ? buildMockCarousel(
-            "linkedin",
-            sourcePost,
-            idea,
-            writingStyle,
-            visualTemplateId,
-            aspectRatio,
-            brandHandle
-          )
-        : undefined,
-      usedMock: true,
-    };
+  } catch (err) {
+    console.error("Content generation model failed:", err);
+    throw err instanceof Error
+      ? err
+      : new Error("The language model could not write this content.");
   }
 }

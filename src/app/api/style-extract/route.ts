@@ -195,6 +195,9 @@ export async function POST(req: NextRequest) {
         const { object } = await generateObject({
           model: llm.visionModel,
           schema: extractSchema,
+          providerOptions: {
+            openai: { strictJsonSchema: false },
+          },
           messages: [
             {
               role: "user",

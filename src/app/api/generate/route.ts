@@ -62,9 +62,8 @@ export async function POST(req: NextRequest) {
     return NextResponse.json(generated);
   } catch (err) {
     console.error("Generation error:", err);
-    return NextResponse.json(
-      { error: "Failed to generate content." },
-      { status: 500 }
-    );
+    const message =
+      err instanceof Error ? err.message : "Failed to generate content.";
+    return NextResponse.json({ error: message }, { status: 500 });
   }
 }

@@ -41,6 +41,100 @@ export function getLlmModels() {
   return null;
 }
 
+function asRecord(value: unknown): Record<string, unknown> {
+  return value && typeof value === "object"
+    ? (value as Record<string, unknown>)
+    : {};
+}
+
+function coerceModelJson(value: unknown): unknown {
+  if (!value || typeof value !== "object") return value;
+  const obj = { ...asRecord(value) };
+
+  if (typeof obj.hashtags === "string") {
+    obj.hashtags = obj.hashtags.split(/[\s,]+/).filter(Boolean);
+  }
+
+  if (Array.isArray(obj.beats)) {
+    const beats = obj.beats.slice(0, 8).map((beat, index) => {
+      const item = asRecord(beat);
+      return {
+        id: String(item.id || `beat-${index + 1}`),
+        timeframe: String(item.timeframe || item.time || `0:${index * 5}`),
+        spokenLine: String(
+          item.spokenLine || item.spoken || item.line || item.script || ""
+        ),
+        onScreenText: String(
+          item.onScreenText || item.on_screen_text || item.overlay || item.text || ""
+        ),
+        visualCue: String(item.visualCue || item.visual || item.broll || ""),
+      };
+    });
+    while (beats.length < 4) {
+      const index = beats.length;
+      beats.push({
+        id: `beat-${index + 1}`,
+        timeframe: `0:${index * 5}`,
+        spokenLine: "",
+        onScreenText: "",
+        visualCue: "",
+      });
+    }
+    obj.beats = beats;
+  }
+
+  if (Array.isArray(obj.slides)) {
+    const slides = obj.slides.slice(0, 10).map((slide, index) => {
+      const item = asRecord(slide);
+      const roleRaw = String(item.role || (index === 0 ? "cover" : "body")).toLowerCase();
+      const role = roleRaw === "cover" || roleRaw === "cta" ? roleRaw : "body";
+      return {
+        id: String(item.id || `slide-${index + 1}`),
+        slideNumber: Number(item.slideNumber || index + 1),
+        role,
+        eyebrow: item.eyebrow ? String(item.eyebrow) : undefined,
+        headline: String(item.headline || item.title || ""),
+        body: String(item.body || item.copy || item.text || ""),
+        visualDirection: String(item.visualDirection || item.visual || ""),
+      };
+    });
+    while (slides.length < 5) {
+      const index = slides.length;
+      slides.push({
+        id: `slide-${index + 1}`,
+        slideNumber: index + 1,
+        role: index === 0 ? "cover" : "body",
+        eyebrow: undefined,
+        headline: "",
+        body: "",
+        visualDirection: "",
+      });
+    }
+    obj.slides = slides;
+  }
+
+  if (obj.formatFit && typeof obj.formatFit === "object") {
+    const fit = asRecord(obj.formatFit);
+    obj.formatFit = {
+      reel: Number(fit.reel ?? 80),
+      igCarousel: Number(fit.igCarousel ?? fit.ig_carousel ?? 80),
+      liCarousel: Number(fit.liCarousel ?? fit.li_carousel ?? 80),
+    };
+  }
+
+  if (Array.isArray(obj.ideas)) {
+    obj.ideas = obj.ideas.slice(0, 6).map((idea, index) => {
+      const item = asRecord(coerceModelJson(idea));
+      return {
+        ...item,
+        id: String(item.id || `idea-${index + 1}`),
+      };
+    });
+  }
+
+  return obj;
+}
+
 function parseJsonContent(content: string): unknown {
   const trimmed = content
     .trim()
@@ -50,7 +144,7 @@ function parseJsonContent(content: string): unknown {
   const end = trimmed.lastIndexOf("}");
   const json =
     start >= 0 && end > start ? trimmed.slice(start, end + 1) : trimmed;
-  return JSON.parse(json);
+  return coerceModelJson(JSON.parse(json));
 }
 
 export async function completeOpenRouterJson<T>(

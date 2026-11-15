@@ -1,4 +1,5 @@
 import { NextRequest, NextResponse } from "next/server";
+import { rejectNonJson } from "@/lib/json-body";
 import { readStore, upsertBrandPreset } from "@/lib/store";
 import { BrandVoicePreset } from "@/lib/types";
 
@@ -8,6 +9,8 @@ export async function GET() {
 }
 
 export async function POST(req: NextRequest) {
+  const rejected = rejectNonJson(req);
+  if (rejected) return rejected;
   try {
     const body = (await req.json()) as { preset?: BrandVoicePreset };
     if (!body.preset || !body.preset.name) {

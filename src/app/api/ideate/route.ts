@@ -1,6 +1,7 @@
 import { NextRequest, NextResponse } from "next/server";
 import { z } from "zod";
 import { ideateFromSourcePost } from "@/lib/ai";
+import { rejectNonJson } from "@/lib/json-body";
 import { SourcePost } from "@/lib/types";
 
 const requestSchema = z.object({
@@ -13,6 +14,8 @@ const requestSchema = z.object({
 });
 
 export async function POST(req: NextRequest) {
+  const rejected = rejectNonJson(req);
+  if (rejected) return rejected;
   try {
     const body = await req.json();
     const parsed = requestSchema.safeParse(body);

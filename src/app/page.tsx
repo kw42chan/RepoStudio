@@ -82,6 +82,7 @@ export default function RepurposeWorkspacePage() {
   // Step 2: Ideation
   const [ideating, setIdeating] = useState(false);
   const [ideationError, setIdeationError] = useState<string | null>(null);
+  const [generateError, setGenerateError] = useState<string | null>(null);
   const [sourcePost, setSourcePost] = useState<SourcePost | null>(null);
   const [ideation, setIdeation] = useState<IdeationResult | null>(null);
   const [selectedIdea, setSelectedIdea] = useState<RepurposeIdea | null>(null);
@@ -225,40 +226,54 @@ export default function RepurposeWorkspacePage() {
 
   async function handleGenerateFormats(
     formats: ContentFormat[],
-    ideaOverride?: RepurposeIdea
+    ideaOverride?: RepurposeIdea,
+    styleOverride?: WritingStyleConfig
   ) {
     const idea = ideaOverride || selectedIdea;
-    if (!sourcePost || !idea) return;
+    const style = styleOverride || writingStyle;
+    if (!sourcePost || !idea || generating) return;
 
     setSelectedIdea(idea);
     setGenerating(true);
+    setGenerateError(null);
+    setDraftId((prev) => prev || `draft-${Date.now()}`);
+    const failures: string[] = [];
     try {
-      const res = await fetch("/api/generate", {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({
-          sourcePost,
-          idea,
-          formats,
-          writingStyle,
-          visualTemplateId: defaultTemplateId,
-          aspectRatio: defaultAspectRatio,
-          brandHandle,
-        }),
-      });
-      const data = await res.json();
-      if (!res.ok) {
-        throw new Error(data.error || "Generation failed");
+      for (const format of formats) {
+        const res = await fetch("/api/generate", {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify({
+            sourcePost,
+            idea,
+            formats: [format],
+            writingStyle: style,
+            visualTemplateId: defaultTemplateId,
+            aspectRatio: defaultAspectRatio,
+            brandHandle,
+          }),
+        });
+        const data = await res.json().catch(() => null);
+        if (!res.ok || !data) {
+          failures.push(data?.error || `Could not write the ${format} draft.`);
+          continue;
+        }
+        if (data.reel) setReel(data.reel);
+        if (data.igCarousel) setIgCarousel(data.igCarousel);
+        if (data.liCarousel) setLiCarousel(data.liCarousel);
+        setActiveTab(format);
       }
-      setDraftId((prev) => prev || `draft-${Date.now()}`);
-      if (data.reel) setReel(data.reel);
-      if (data.igCarousel) setIgCarousel(data.igCarousel);
-      if (data.liCarousel) setLiCarousel(data.liCarousel);
-      if (formats.length === 1) {
-        setActiveTab(formats[0]);
+      if (failures.length === formats.length) {
+        setGenerateError(failures[0] || "Could not write the content.");
+      } else {
+        window.setTimeout(() => {
+          document
+            .getElementById("content-studio")
+            ?.scrollIntoView({ behavior: "smooth", block: "start" });
+        }, 50);
       }
     } catch (err) {
-      setIdeationError(
+      setGenerateError(
         err instanceof Error ? err.message : "Generation failed"
       );
     } finally {
@@ -588,6 +603,10 @@ export default function RepurposeWorkspacePage() {
             </CardDescription>
           </CardHeader>
           <CardContent className="space-y-5">
+            <p className="text-sm text-muted-foreground">
+              Tap an angle to write the reel script and both carousels in the
+              style below. Changing the writing style rewrites them.
+            </p>
             <div className="grid gap-3 md:grid-cols-2 lg:grid-cols-3">
               {ideation.ideas.map((idea) => {
                 const isSelected = selectedIdea?.id === idea.id;
@@ -595,7 +614,12 @@ export default function RepurposeWorkspacePage() {
                   <button
                     key={idea.id}
                     type="button"
-                    onClick={() => setSelectedIdea(idea)}
+                    onClick={() =>
+                      handleGenerateFormats(
+                        ["reel", "ig_carousel", "li_carousel"],
+                        idea
+                      )
+                    }
                     className={`text-left rounded-xl border p-4 transition-all space-y-2 ${
                       isSelected
                         ? "border-primary bg-primary/5 ring-1 ring-primary"
@@ -627,7 +651,17 @@ export default function RepurposeWorkspacePage() {
             <div className="grid gap-4 lg:grid-cols-[1.5fr_1fr] items-end">
               <WritingStyleControls
                 value={writingStyle}
-                onChange={setWritingStyle}
+                onChange={(next) => {
+                  const styleChanged = next.styleId !== writingStyle.styleId;
+                  setWritingStyle(next);
+                  if (styleChanged && selectedIdea) {
+                    void handleGenerateFormats(
+                      ["reel", "ig_carousel", "li_carousel"],
+                      selectedIdea,
+                      next
+                    );
+                  }
+                }}
               />
 
               <div className="rounded-lg border bg-muted/20 p-3 space-y-3">
@@ -702,9 +736,19 @@ export default function RepurposeWorkspacePage() {
                     ) : (
                       <Wand2 className="h-4 w-4" />
                     )}
-                    {generating ? "Generating..." : "Generate All 3 Formats"}
+                    {generating ? "Writing content..." : "Generate All 3 Formats"}
                   </Button>
                 </div>
+                {generateError && (
+                  <p className="text-sm text-destructive bg-destructive/10 rounded-md px-3 py-2">
+                    {generateError}
+                  </p>
+                )}
+                {generating && (
+                  <p className="text-xs text-muted-foreground">
+                    Writing the script and carousel copy for the selected angle.
+                  </p>
+                )}
               </div>
             </div>
           </CardContent>
@@ -713,7 +757,7 @@ export default function RepurposeWorkspacePage() {
 
       {/* Step 3: Multi-Format Content Studio */}
       {(reel || igCarousel || liCarousel) && (
-        <Card>
+        <Card id="content-studio">
           <CardHeader className="flex flex-row flex-wrap items-center justify-between gap-3">
             <div>
               <CardTitle className="flex items-center gap-2 text-base">

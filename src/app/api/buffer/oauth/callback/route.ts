@@ -1,13 +1,21 @@
 import { NextRequest, NextResponse } from "next/server";
 import { updateBufferConnection } from "@/lib/store";
 
+const STATE_COOKIE = "buffer_oauth_state";
+
 export async function GET(req: NextRequest) {
   const origin = req.nextUrl.origin;
   const code = req.nextUrl.searchParams.get("code");
   const error = req.nextUrl.searchParams.get("error");
+  const state = req.nextUrl.searchParams.get("state");
+  const expected = req.cookies.get(STATE_COOKIE)?.value;
 
-  if (error || !code) {
-    return NextResponse.redirect(new URL("/?buffer=oauth_cancelled", origin));
+  if (error || !code || !state || !expected || state !== expected) {
+    const response = NextResponse.redirect(
+      new URL("/?buffer=oauth_cancelled", origin)
+    );
+    response.cookies.set(STATE_COOKIE, "", { path: "/", maxAge: 0 });
+    return response;
   }
 
   const clientId = process.env.BUFFER_CLIENT_ID;
@@ -49,7 +57,9 @@ export async function GET(req: NextRequest) {
       connectedAt: new Date().toISOString(),
     });
 
-    return NextResponse.redirect(new URL("/?buffer=connected", origin));
+    const response = NextResponse.redirect(new URL("/?buffer=connected", origin));
+    response.cookies.set(STATE_COOKIE, "", { path: "/", maxAge: 0 });
+    return response;
   } catch {
     return NextResponse.redirect(new URL("/?buffer=oauth_failed", origin));
   }

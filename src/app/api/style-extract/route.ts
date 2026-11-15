@@ -1,9 +1,9 @@
 import { NextRequest, NextResponse } from "next/server";
-import { promises as dns } from "dns";
-import net from "net";
 import { generateObject } from "ai";
 import { z } from "zod";
 import { getLlmModels } from "@/lib/llm";
+import { rejectNonJson } from "@/lib/json-body";
+import { fetchPublic, resolvePublicAddress } from "@/lib/public-fetch";
 import { VisualTemplate } from "@/lib/types";
 
 const extractSchema = z.object({
@@ -17,71 +17,25 @@ const extractSchema = z.object({
   description: z.string(),
 });
 
-function isPrivateIp(ip: string): boolean {
-  if (net.isIPv4(ip)) {
-    const parts = ip.split(".").map(Number);
-    const [a, b] = parts;
-    if (a === 10 || a === 127 || a === 0) return true;
-    if (a === 169 && b === 254) return true;
-    if (a === 172 && b >= 16 && b <= 31) return true;
-    if (a === 192 && b === 168) return true;
-    if (a === 100 && b >= 64 && b <= 127) return true;
-    return false;
-  }
-  if (net.isIPv6(ip)) {
-    const lower = ip.toLowerCase();
-    return (
-      lower === "::1" ||
-      lower === "::" ||
-      lower.startsWith("fc") ||
-      lower.startsWith("fd") ||
-      lower.startsWith("fe80")
-    );
-  }
-  return true;
-}
-
-async function isSafePublicUrl(rawUrl: string): Promise<boolean> {
-  try {
-    const parsed = new URL(rawUrl);
-    if (!["http:", "https:"].includes(parsed.protocol)) return false;
-    if (parsed.username || parsed.password) return false;
-    const host = parsed.hostname.toLowerCase();
-    if (host === "localhost" || host.endsWith(".local")) return false;
-    if (net.isIP(host)) return !isPrivateIp(host);
-    const resolved = await dns.lookup(host, { all: true });
-    if (resolved.length === 0) return false;
-    return resolved.every((entry) => !isPrivateIp(entry.address));
-  } catch {
-    return false;
-  }
-}
-
 async function resolveUrlToImageAndHints(url: string): Promise<{
   imageUrl?: string;
   themeColor?: string;
   pageTitle?: string;
 }> {
   try {
-    if (!(await isSafePublicUrl(url))) {
-      return {};
-    }
+    const target = await resolvePublicAddress(url);
+    if (!target) return {};
 
-    const res = await fetch(url, {
-      headers: { "User-Agent": "RepoStudio-TemplateImporter/1.0" },
-      redirect: "error",
-      signal: AbortSignal.timeout(8000),
-    });
-
-    if (!res.ok) return {};
-    const contentType = res.headers.get("content-type") || "";
+    const page = await fetchPublic(target, 512 * 1024);
+    if (page.status < 200 || page.status >= 300) return {};
+    const contentType = String(page.headers["content-type"] || "");
     if (contentType.startsWith("image/")) {
-      const buf = Buffer.from(await res.arrayBuffer());
-      const base64 = buf.toString("base64");
-      return { imageUrl: `data:${contentType};base64,${base64}` };
+      return {
+        imageUrl: `data:${contentType.split(";")[0]};base64,${page.body.toString("base64")}`,
+      };
     }
 
-    const html = await res.text();
+    const html = page.body.toString("utf-8");
     const ogMatch =
       html.match(/<meta[^>]+property=["']og:image["'][^>]+content=["']([^"']+)["']/i) ||
       html.match(/<meta[^>]+content=["']([^"']+)["'][^>]+property=["']og:image["']/i);
@@ -147,6 +101,8 @@ function deterministicPaletteFromSeed(
 }
 
 export async function POST(req: NextRequest) {
+  const rejected = rejectNonJson(req);
+  if (rejected) return rejected;
   try {
     const body = await req.json();
     const {

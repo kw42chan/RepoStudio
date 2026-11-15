@@ -1,6 +1,7 @@
 import { NextRequest, NextResponse } from "next/server";
 import { z } from "zod";
 import { scheduleBufferPost } from "@/lib/buffer";
+import { rejectNonJson } from "@/lib/json-body";
 
 const schema = z.object({
   draftId: z.string().optional(),
@@ -14,6 +15,8 @@ const schema = z.object({
 });
 
 export async function POST(req: NextRequest) {
+  const rejected = rejectNonJson(req);
+  if (rejected) return rejected;
   try {
     const body = await req.json();
     const parsed = schema.safeParse(body);

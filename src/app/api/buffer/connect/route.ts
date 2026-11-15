@@ -1,7 +1,10 @@
 import { NextRequest, NextResponse } from "next/server";
+import { rejectNonJson } from "@/lib/json-body";
 import { updateBufferConnection } from "@/lib/store";
 
 export async function POST(req: NextRequest) {
+  const rejected = rejectNonJson(req);
+  if (rejected) return rejected;
   try {
     const body = (await req.json()) as {
       action: "demo" | "disconnect" | "token";

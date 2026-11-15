@@ -493,8 +493,9 @@ export async function generateContentForFormats(params: {
       liCarousel?: CarouselContent;
     } = {};
 
-    await Promise.all(
-      formats.map(async (format) => {
+    let usedMock = false;
+    for (const format of formats) {
+      try {
         if (format === "reel") {
           const object = await generateTextObject(
             reelSchema,
@@ -559,10 +560,38 @@ Return JSON with title, slides (id, slideNumber, role, eyebrow, headline, body, 
             brandHandle,
           };
         }
-      })
-    );
+      } catch (err) {
+        console.error(`Content generation failed for ${format}:`, err);
+        usedMock = true;
+        if (format === "reel") {
+          results.reel = buildMockReel(sourcePost, idea, writingStyle);
+        }
+        if (format === "ig_carousel") {
+          results.igCarousel = buildMockCarousel(
+            "instagram",
+            sourcePost,
+            idea,
+            writingStyle,
+            visualTemplateId,
+            aspectRatio,
+            brandHandle
+          );
+        }
+        if (format === "li_carousel") {
+          results.liCarousel = buildMockCarousel(
+            "linkedin",
+            sourcePost,
+            idea,
+            writingStyle,
+            visualTemplateId,
+            aspectRatio,
+            brandHandle
+          );
+        }
+      }
+    }
 
-    return { ...results, usedMock: false };
+    return { ...results, usedMock };
   } catch (err) {
     console.error("Content generation model failed:", err);
     throw err instanceof Error

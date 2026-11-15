@@ -1,4 +1,5 @@
 import { NextRequest, NextResponse } from "next/server";
+import { rejectNonJson } from "@/lib/json-body";
 import { deleteDraft, readStore, upsertDraft } from "@/lib/store";
 import { ContentDraft } from "@/lib/types";
 
@@ -8,6 +9,8 @@ export async function GET() {
 }
 
 export async function POST(req: NextRequest) {
+  const rejected = rejectNonJson(req);
+  if (rejected) return rejected;
   try {
     const body = (await req.json()) as { draft?: ContentDraft };
     if (!body.draft) {

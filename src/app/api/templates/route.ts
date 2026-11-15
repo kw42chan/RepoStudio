@@ -4,6 +4,7 @@ import {
   getAllVisualTemplates,
   saveVisualTemplate,
 } from "@/lib/store";
+import { rejectNonJson } from "@/lib/json-body";
 import { VisualTemplate } from "@/lib/types";
 
 export async function GET() {
@@ -12,6 +13,8 @@ export async function GET() {
 }
 
 export async function POST(req: NextRequest) {
+  const rejected = rejectNonJson(req);
+  if (rejected) return rejected;
   try {
     const body = (await req.json()) as { template?: VisualTemplate };
     if (!body.template || !body.template.name) {

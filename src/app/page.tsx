@@ -55,6 +55,7 @@ import { ReelEditor } from "@/components/studio/reel-editor";
 import { CarouselEditor } from "@/components/studio/carousel-editor";
 import { TemplateImporterDialog } from "@/components/studio/template-importer-dialog";
 import { BufferScheduleDialog } from "@/components/studio/buffer-schedule-dialog";
+import { TEXT_MODEL } from "@/lib/models";
 
 export default function RepurposeWorkspacePage() {
   const [presets, setPresets] =
@@ -553,7 +554,10 @@ export default function RepurposeWorkspacePage() {
             </p>
           )}
 
-          <div className="flex justify-end">
+          <div className="flex flex-wrap items-center justify-end gap-3">
+            <p className="text-xs text-muted-foreground">
+              Model {TEXT_MODEL}
+            </p>
             <Button
               onClick={handleIdeate}
               disabled={

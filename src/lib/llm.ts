@@ -1,7 +1,9 @@
 import { createOpenAI, openai } from "@ai-sdk/openai";
 import { z } from "zod";
 
-const DEFAULT_TEXT_MODEL = "deepseek/deepseek-v4.1-flash-1017";
+import { TEXT_MODEL } from "./models";
+
+const DEFAULT_TEXT_MODEL = TEXT_MODEL;
 const DEFAULT_VISION_MODEL = "google/gemini-2.5-flash";
 
 export function getLlmModels() {
@@ -187,6 +189,10 @@ export async function completeOpenRouterJson<T>(
         model,
         temperature: 0.7,
         response_format: { type: "json_object" },
+        provider: {
+          order: ["DeepSeek"],
+          allow_fallbacks: false,
+        },
         messages,
       }),
       signal: AbortSignal.timeout(45_000),
@@ -204,7 +210,7 @@ export async function completeOpenRouterJson<T>(
         lastError = message;
         continue;
       }
-      throw new Error(message);
+      throw new Error(`${model}: ${message}`);
     }
 
     const content = payload?.choices?.[0]?.message?.content;

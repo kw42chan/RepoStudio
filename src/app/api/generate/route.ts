@@ -4,6 +4,9 @@ import { generateContentForFormats } from "@/lib/ai";
 import { rejectNonJson } from "@/lib/json-body";
 import { requireViewer } from "@/lib/viewer";
 
+export const dynamic = "force-dynamic";
+export const maxDuration = 60;
+
 const requestSchema = z.object({
   sourcePost: z.object({
     id: z.string(),
@@ -50,11 +53,11 @@ const requestSchema = z.object({
 });
 
 export async function POST(req: NextRequest) {
-  const viewer = await requireViewer(req);
-  if (viewer) return viewer;
-  const rejected = rejectNonJson(req);
-  if (rejected) return rejected;
   try {
+    const viewer = await requireViewer(req);
+    if (viewer) return viewer;
+    const rejected = rejectNonJson(req);
+    if (rejected) return rejected;
     const body = await req.json();
     const parsed = requestSchema.safeParse(body);
     if (!parsed.success) {

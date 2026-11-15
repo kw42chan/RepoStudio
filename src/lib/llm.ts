@@ -195,7 +195,7 @@ export async function completeOpenRouterJson<T>(
         },
         messages,
       }),
-      signal: AbortSignal.timeout(45_000),
+      signal: AbortSignal.timeout(25_000),
     });
 
     const payload = (await res.json().catch(() => null)) as {

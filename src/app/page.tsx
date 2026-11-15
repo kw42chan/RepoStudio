@@ -205,15 +205,29 @@ export default function RepurposeWorkspacePage() {
           ctaPreference,
         }),
       });
-      const data = await res.json();
-      if (!res.ok) {
+      const raw = await res.text();
+      let data: {
+        error?: string;
+        sourcePost?: SourcePost;
+        sourceAnalysis?: IdeationResult["sourceAnalysis"];
+        ideas?: RepurposeIdea[];
+        usedMock?: boolean;
+      };
+      try {
+        data = JSON.parse(raw);
+      } catch {
+        throw new Error(
+          "Idea generation did not finish. The text in the box was sent, but the model reply never came back. Try again."
+        );
+      }
+      if (!res.ok || !data.sourcePost || !data.sourceAnalysis || !data.ideas) {
         throw new Error(data.error || "Failed to generate ideas");
       }
       setSourcePost(data.sourcePost);
       setIdeation({
         sourceAnalysis: data.sourceAnalysis,
         ideas: data.ideas,
-        usedMock: data.usedMock,
+        usedMock: Boolean(data.usedMock),
       });
       setSelectedIdea(data.ideas[0] || null);
     } catch (err) {

@@ -13,6 +13,7 @@ import {
   WritingStyleConfig,
 } from "./types";
 import { WRITING_STYLES } from "./presets";
+import { spokenTextFromTranscript } from "./transcript";
 
 const ideationSchema = z.object({
   sourceAnalysis: z.object({
@@ -181,6 +182,13 @@ function buildMockIdeation(source: SourcePost): IdeationResult {
 export async function ideateFromSourcePost(
   source: SourcePost
 ): Promise<IdeationResult> {
+  if (source.sourcePlatform === "Transcript") {
+    source = {
+      ...source,
+      rawText: spokenTextFromTranscript(source.rawText),
+    };
+  }
+
   const llm = getLlmModels();
   if (!llm) {
     return buildMockIdeation(source);

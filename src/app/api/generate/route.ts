@@ -4,7 +4,6 @@ import { generateContentForFormats } from "@/lib/ai";
 import { rejectNonJson } from "@/lib/json-body";
 import { requireViewer } from "@/lib/viewer";
 
-export const dynamic = "force-dynamic";
 export const maxDuration = 60;
 
 const requestSchema = z.object({

@@ -5,7 +5,6 @@ import { rejectNonJson } from "@/lib/json-body";
 import { requireViewer } from "@/lib/viewer";
 import { SourcePost } from "@/lib/types";
 
-export const dynamic = "force-dynamic";
 export const maxDuration = 60;
 
 const requestSchema = z.object({

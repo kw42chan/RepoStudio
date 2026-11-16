@@ -37,6 +37,9 @@ export default function SettingsPage() {
   const [newPresetHandle, setNewPresetHandle] = useState("@yourbrand");
   const [newPrimary, setNewPrimary] = useState("#1D4ED8");
   const [newSecondary, setNewSecondary] = useState("#F59E0B");
+  const [savingBrand, setSavingBrand] = useState(false);
+  const [brandMessage, setBrandMessage] = useState<string | null>(null);
+  const [brandError, setBrandError] = useState<string | null>(null);
 
   async function load() {
     const [sRes, pRes] = await Promise.all([
@@ -99,29 +102,42 @@ export default function SettingsPage() {
   }
 
   async function addPreset() {
-    if (!newPresetName.trim()) return;
-    const preset: BrandVoicePreset = {
-      id: `preset-${Date.now()}`,
-      name: newPresetName.trim(),
-      voice: newPresetVoice.trim() || "Direct and practical",
-      audience: newPresetAudience.trim() || "Founders and creators",
-      cta: newPresetCta.trim() || "Save & follow for more",
-      handle: newPresetHandle.trim() || "@yourbrand",
-      primaryColor: newPrimary,
-      secondaryColor: newSecondary,
-      defaultWritingStyle: "educational",
-    };
-    const res = await fetch("/api/presets", {
-      method: "POST",
-      headers: { "Content-Type": "application/json" },
-      body: JSON.stringify({ preset }),
-    });
-    if (res.ok) {
+    const handle = newPresetHandle.trim() || "@yourbrand";
+    const name =
+      newPresetName.trim() || handle.replace(/^@/, "") || "New brand";
+    setSavingBrand(true);
+    setBrandError(null);
+    setBrandMessage(null);
+    try {
+      const preset: BrandVoicePreset = {
+        id: `preset-${Date.now()}`,
+        name,
+        voice: newPresetVoice.trim() || "Direct and practical",
+        audience: newPresetAudience.trim() || "Founders and creators",
+        cta: newPresetCta.trim() || "Save and follow for more",
+        handle,
+        primaryColor: newPrimary,
+        secondaryColor: newSecondary,
+        defaultWritingStyle: "educational",
+      };
+      const res = await fetch("/api/presets", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ preset }),
+      });
+      const data = await res.json().catch(() => null);
+      if (!res.ok) {
+        setBrandError(data?.error || "Could not save the brand.");
+        return;
+      }
       setNewPresetName("");
       setNewPresetVoice("");
       setNewPresetAudience("");
       setNewPresetCta("");
+      setBrandMessage(`Saved ${name}.`);
       await load();
+    } finally {
+      setSavingBrand(false);
     }
   }
 
@@ -132,12 +148,25 @@ export default function SettingsPage() {
   }
 
   async function savePreset(preset: BrandVoicePreset) {
-    await fetch("/api/presets", {
-      method: "POST",
-      headers: { "Content-Type": "application/json" },
-      body: JSON.stringify({ preset: withBrandColors(preset) }),
-    });
-    await load();
+    setSavingBrand(true);
+    setBrandError(null);
+    setBrandMessage(null);
+    try {
+      const res = await fetch("/api/presets", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ preset: withBrandColors(preset) }),
+      });
+      const data = await res.json().catch(() => null);
+      if (!res.ok) {
+        setBrandError(data?.error || "Could not save the brand.");
+        return;
+      }
+      setBrandMessage(`Saved ${preset.name}.`);
+      await load();
+    } finally {
+      setSavingBrand(false);
+    }
   }
 
   const mode = status?.connection.mode || "disconnected";
@@ -202,9 +231,10 @@ export default function SettingsPage() {
                     type="button"
                     size="sm"
                     variant="outline"
+                    disabled={savingBrand}
                     onClick={() => savePreset(p)}
                   >
-                    Save brand
+                    {savingBrand ? "Saving..." : "Save brand"}
                   </Button>
                 </div>
               </div>
@@ -259,11 +289,22 @@ export default function SettingsPage() {
                   className="h-9 w-16 p-1"
                 />
               </label>
-              <Button onClick={addPreset} className="gap-1.5 shrink-0">
+              <Button
+                type="button"
+                onClick={addPreset}
+                disabled={savingBrand}
+                className="gap-1.5 shrink-0"
+              >
                 <Save className="h-4 w-4" />
-                Save brand
+                {savingBrand ? "Saving..." : "Save brand"}
               </Button>
             </div>
+            {brandError && (
+              <p className="text-sm text-destructive">{brandError}</p>
+            )}
+            {brandMessage && (
+              <p className="text-sm">{brandMessage}</p>
+            )}
           </div>
         </CardContent>
       </Card>

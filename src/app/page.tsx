@@ -577,8 +577,14 @@ export default function RepurposeWorkspacePage() {
             <div className="space-y-3 rounded-lg border p-3.5 bg-muted/20">
               <div className="flex items-center justify-between gap-2">
                 <Label className="text-sm font-medium">Brand guidelines</Label>
-                <Select onValueChange={(v) => typeof v === "string" && applyPreset(v)}>
-                  <SelectTrigger className="w-44 h-8 text-xs">
+                <Select
+                  items={presets.map((preset) => ({
+                    value: preset.id,
+                    label: preset.name,
+                  }))}
+                  onValueChange={(v) => typeof v === "string" && applyPreset(v)}
+                >
+                  <SelectTrigger className="h-8 w-52 text-xs">
                     <SelectValue placeholder="Choose preset..." />
                   </SelectTrigger>
                   <SelectContent>

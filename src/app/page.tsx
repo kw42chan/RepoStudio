@@ -411,12 +411,12 @@ export default function RepurposeWorkspacePage() {
       {/* Hero / Header */}
       <div className="flex flex-col gap-2 sm:flex-row sm:items-end sm:justify-between">
         <div>
-          <h1 className="text-2xl font-bold tracking-tight">
-            Social Content Repurpose Studio
+          <h1 className="max-w-3xl text-4xl font-normal tracking-tight text-balance">
+            Turn one post into a Reel and two carousels.
           </h1>
-          <p className="text-sm text-muted-foreground">
-            Paste any viral post, extract repurpose angles, customize writing &
-            1080×1350 visual styles, and schedule to Buffer.
+          <p className="mt-3 max-w-xl text-base">
+            Paste a link or a transcript. RepoStudio writes the angles in that
+            post&apos;s language, then a script you can schedule to Buffer.
           </p>
         </div>
         <div className="flex flex-wrap gap-2">
@@ -527,7 +527,7 @@ export default function RepurposeWorkspacePage() {
 
             <div className="space-y-3 rounded-lg border p-3.5 bg-muted/20">
               <div className="flex items-center justify-between gap-2">
-                <Label className="text-xs font-semibold uppercase tracking-wide text-muted-foreground">
+                <Label className="text-sm font-medium">
                   Brand Voice Preset
                 </Label>
                 <Select onValueChange={(v) => typeof v === "string" && applyPreset(v)}>

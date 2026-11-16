@@ -37,6 +37,9 @@ yarn-error.log*
 # local app store
 /.data/
 
+# taste-skill gate state (local page checks)
+/.taste-skill/
+
 # vercel
 .vercel
 

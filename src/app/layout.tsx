@@ -1,22 +1,28 @@
 import type { Metadata } from "next";
-import { Geist, Geist_Mono } from "next/font/google";
+import { Epilogue, JetBrains_Mono } from "next/font/google";
 import "./globals.css";
 import { AppNav } from "@/components/app-nav";
 
-const geistSans = Geist({
-  variable: "--font-geist-sans",
+const epilogue = Epilogue({
+  variable: "--font-epilogue",
   subsets: ["latin"],
+  weight: ["400", "500", "600", "700"],
 });
 
-const geistMono = Geist_Mono({
-  variable: "--font-geist-mono",
+const jetbrains = JetBrains_Mono({
+  variable: "--font-jetbrains",
   subsets: ["latin"],
+  weight: ["400", "500"],
 });
 
 export const metadata: Metadata = {
-  title: "RepoStudio — Social Content Repurposing & Buffer Automation",
+  title: "RepoStudio — Turn one post into a Reel and two carousels",
   description:
-    "Turn copied social media posts into Instagram Reels, Instagram Carousels, and LinkedIn Carousels, and schedule directly to Buffer.",
+    "Paste a link or a transcript. RepoStudio writes the angles in that post's language, then a script you can schedule to Buffer.",
+  other: {
+    "page-type": "software",
+    "site-kind": "software",
+  },
 };
 
 export default function RootLayout({
@@ -27,7 +33,9 @@ export default function RootLayout({
   return (
     <html
       lang="en"
-      className={`${geistSans.variable} ${geistMono.variable} h-full antialiased`}
+      data-type="software"
+      data-radius="soft"
+      className={`${epilogue.variable} ${jetbrains.variable} h-full antialiased`}
     >
       <body className="min-h-full flex flex-col bg-background text-foreground">
         <AppNav />

@@ -1,6 +1,22 @@
 {
   "version": 2,
   "skills": {
+    "agent-desktop": {
+      "source": "vercel-labs/agent-desktop",
+      "commit": "8ffecc1d3d088727f8d84baf4dde0224aab2e8ad",
+      "sourceType": "github",
+      "skillPath": "skills/agent-desktop/SKILL.md",
+      "computedHash": "241993fe8465bd04f7ed582387b5f0d7ef1795355907c588ad553a8e98a88386",
+      "installMode": "copy"
+    },
+    "agent-desktop-linux": {
+      "source": "vercel-labs/agent-desktop",
+      "commit": "8ffecc1d3d088727f8d84baf4dde0224aab2e8ad",
+      "sourceType": "github",
+      "skillPath": "skills/agent-desktop-linux/SKILL.md",
+      "computedHash": "c0eba7e91c042942600e71edf69a19dfe9118ee5fb7f85baac6a19bf297295d6",
+      "installMode": "copy"
+    },
     "ask-matt": {
       "source": "mattpocock/skills",
       "sourceType": "github",
@@ -98,7 +114,7 @@
       "computedHash": "f0820b18426a7d9a6c823a890988ba0ac70bf0fd596d30d7ef07c88558728c23"
     },
     "instagram-carousel-generator": {
-      "source": "upload",
+      "source": "./upload",
       "sourceType": "local",
       "skillPath": ".agents/skills/instagram-carousel-generator/SKILL.md",
       "computedHash": "a1b457b269cd31164d69129cf04ccfd197c7df8f3cb8c59626c3cfe7ee4e8a49"

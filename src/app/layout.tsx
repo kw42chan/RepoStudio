@@ -1,4 +1,5 @@
 import type { Metadata } from "next";
+import { Suspense } from "react";
 import { Epilogue, JetBrains_Mono } from "next/font/google";
 import "./globals.css";
 import { AppNav } from "@/components/app-nav";
@@ -38,7 +39,13 @@ export default function RootLayout({
       className={`${epilogue.variable} ${jetbrains.variable} h-full antialiased`}
     >
       <body className="min-h-full flex flex-col bg-background text-foreground">
-        <AppNav />
+        <Suspense
+          fallback={
+            <header className="sticky top-0 z-40 h-16 border-b bg-background" />
+          }
+        >
+          <AppNav />
+        </Suspense>
         <main className="flex-1">{children}</main>
       </body>
     </html>

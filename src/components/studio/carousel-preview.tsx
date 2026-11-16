@@ -15,7 +15,8 @@ interface SlideCanvasProps {
   slide: CarouselSlide;
   totalSlides: number;
   template: VisualTemplate;
-  accentColor: string;
+  primaryColor: string;
+  secondaryColor: string;
   brandHandle: string;
   platform: "instagram" | "linkedin";
   aspectRatio: AspectRatio;
@@ -26,7 +27,8 @@ export function SlideCanvas({
   slide,
   totalSlides,
   template,
-  accentColor,
+  primaryColor,
+  secondaryColor,
   brandHandle,
   platform,
   aspectRatio,
@@ -35,7 +37,10 @@ export function SlideCanvas({
   const dims = getExportDimensions(aspectRatio);
   const unit = dims.width / 420;
   const px = (value: number) => Math.round(value * unit);
-  const palette = carouselPalette(accentColor || template.accentColor);
+  const palette = carouselPalette(
+    primaryColor || template.accentColor,
+    secondaryColor || template.surfaceColor
+  );
   const ground = slideGround(slide.slideNumber - 1, totalSlides, slide.role);
   const isLight = ground === "light";
   const isLast = slide.slideNumber === totalSlides || slide.role === "cta";
@@ -57,7 +62,7 @@ export function SlideCanvas({
     ? palette.brandPrimary
     : ground === "gradient"
       ? "rgba(255,255,255,0.6)"
-      : palette.brandLight;
+      : palette.brandSecondary;
   const background =
     ground === "gradient"
       ? `linear-gradient(165deg, ${palette.brandDark} 0%, ${palette.brandPrimary} 50%, ${palette.brandLight} 100%)`
@@ -255,7 +260,11 @@ export function SlideCanvas({
                 height: "100%",
                 width: `${(slide.slideNumber / Math.max(totalSlides, 1)) * 100}%`,
                 borderRadius: px(2),
-                background: isLight ? palette.brandPrimary : "#ffffff",
+                background: isLight
+                  ? palette.brandPrimary
+                  : ground === "dark"
+                    ? palette.brandSecondary
+                    : "#ffffff",
               }}
             />
           </div>
@@ -309,7 +318,8 @@ interface CarouselPreviewProps {
   activeIndex: number;
   onSelectIndex: (index: number) => void;
   template: VisualTemplate;
-  accentColor: string;
+  primaryColor: string;
+  secondaryColor: string;
   brandHandle: string;
   platform: "instagram" | "linkedin";
   aspectRatio: AspectRatio;
@@ -321,7 +331,8 @@ export function CarouselPreview({
   activeIndex,
   onSelectIndex,
   template,
-  accentColor,
+  primaryColor,
+  secondaryColor,
   brandHandle,
   platform,
   aspectRatio,
@@ -347,7 +358,8 @@ export function CarouselPreview({
         slide={currentSlide}
         totalSlides={slides.length}
         template={template}
-        accentColor={accentColor}
+        primaryColor={primaryColor}
+        secondaryColor={secondaryColor}
         brandHandle={brandHandle}
         platform={platform}
         aspectRatio={aspectRatio}
@@ -414,7 +426,8 @@ export function CarouselPreview({
               slide={slide}
               totalSlides={slides.length}
               template={template}
-              accentColor={accentColor}
+              primaryColor={primaryColor}
+              secondaryColor={secondaryColor}
               brandHandle={brandHandle}
               platform={platform}
               aspectRatio={aspectRatio}

@@ -120,6 +120,8 @@ export interface CarouselContent {
   visualTemplateId: string;
   aspectRatio: AspectRatio;
   brandHandle: string;
+  primaryColor?: string;
+  secondaryColor?: string;
   accentColorOverride?: string;
 }
 
@@ -143,6 +145,8 @@ export interface BrandVoicePreset {
   audience: string;
   cta: string;
   handle: string;
+  primaryColor: string;
+  secondaryColor: string;
   defaultWritingStyle: WritingStyleId;
   defaultTone?: string;
 }

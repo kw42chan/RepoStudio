@@ -1,5 +1,6 @@
 "use client";
 
+import Link from "next/link";
 import { useEffect, useState } from "react";
 import {
   BookmarkPlus,
@@ -49,6 +50,7 @@ import {
   BUILT_IN_VISUAL_TEMPLATES,
   DEFAULT_BRAND_PRESETS,
   SAMPLE_SOURCE_POSTS,
+  withBrandColors,
 } from "@/lib/presets";
 import { WritingStyleControls } from "@/components/studio/writing-style-controls";
 import { ReelEditor } from "@/components/studio/reel-editor";
@@ -83,6 +85,12 @@ export default function RepurposeWorkspacePage() {
   );
   const [brandHandle, setBrandHandle] = useState(
     DEFAULT_BRAND_PRESETS[0].handle
+  );
+  const [primaryColor, setPrimaryColor] = useState(
+    DEFAULT_BRAND_PRESETS[0].primaryColor
+  );
+  const [secondaryColor, setSecondaryColor] = useState(
+    DEFAULT_BRAND_PRESETS[0].secondaryColor
   );
 
   // Step 2: Ideation
@@ -141,7 +149,13 @@ export default function RepurposeWorkspacePage() {
         ]);
         if (pRes.ok) {
           const pData = await pRes.json();
-          if (pData.presets?.length) setPresets(pData.presets);
+          if (pData.presets?.length) {
+            const next = pData.presets.map(withBrandColors);
+            setPresets(next);
+            setPrimaryColor(next[0].primaryColor);
+            setSecondaryColor(next[0].secondaryColor);
+            setBrandHandle(next[0].handle);
+          }
         }
         if (tRes.ok) {
           const tData = await tRes.json();
@@ -160,7 +174,10 @@ export default function RepurposeWorkspacePage() {
     setBrandVoice(found.voice);
     setTargetAudience(found.audience);
     setCtaPreference(found.cta);
-    setBrandHandle(found.handle);
+    const colors = withBrandColors(found);
+    setBrandHandle(colors.handle);
+    setPrimaryColor(colors.primaryColor);
+    setSecondaryColor(colors.secondaryColor);
     setWritingStyle((prev) => ({
       ...prev,
       styleId: found.defaultWritingStyle,
@@ -287,8 +304,22 @@ export default function RepurposeWorkspacePage() {
           continue;
         }
         if (data.reel) setReel(data.reel);
-        if (data.igCarousel) setIgCarousel(data.igCarousel);
-        if (data.liCarousel) setLiCarousel(data.liCarousel);
+        if (data.igCarousel) {
+          setIgCarousel({
+            ...data.igCarousel,
+            primaryColor,
+            secondaryColor,
+            brandHandle,
+          });
+        }
+        if (data.liCarousel) {
+          setLiCarousel({
+            ...data.liCarousel,
+            primaryColor,
+            secondaryColor,
+            brandHandle,
+          });
+        }
         setActiveTab(format);
       }
       if (failures.length === formats.length) {
@@ -343,10 +374,22 @@ export default function RepurposeWorkspacePage() {
       const data = await res.json();
       if (!res.ok) return;
       if (format === "reel" && data.reel) setReel(data.reel);
-      if (format === "ig_carousel" && data.igCarousel)
-        setIgCarousel(data.igCarousel);
-      if (format === "li_carousel" && data.liCarousel)
-        setLiCarousel(data.liCarousel);
+      if (format === "ig_carousel" && data.igCarousel) {
+        setIgCarousel({
+          ...data.igCarousel,
+          primaryColor,
+          secondaryColor,
+          brandHandle,
+        });
+      }
+      if (format === "li_carousel" && data.liCarousel) {
+        setLiCarousel({
+          ...data.liCarousel,
+          primaryColor,
+          secondaryColor,
+          brandHandle,
+        });
+      }
     } finally {
       setRegeneratingFormat(null);
     }
@@ -533,9 +576,7 @@ export default function RepurposeWorkspacePage() {
 
             <div className="space-y-3 rounded-lg border p-3.5 bg-muted/20">
               <div className="flex items-center justify-between gap-2">
-                <Label className="text-sm font-medium">
-                  Brand Voice Preset
-                </Label>
+                <Label className="text-sm font-medium">Brand guidelines</Label>
                 <Select onValueChange={(v) => typeof v === "string" && applyPreset(v)}>
                   <SelectTrigger className="w-44 h-8 text-xs">
                     <SelectValue placeholder="Choose preset..." />
@@ -581,6 +622,25 @@ export default function RepurposeWorkspacePage() {
                     onChange={(e) => setBrandHandle(e.target.value)}
                   />
                 </div>
+              </div>
+              <div className="flex flex-wrap items-center gap-3 text-xs">
+                <span className="inline-flex items-center gap-1.5">
+                  <span
+                    className="h-4 w-4 rounded-sm"
+                    style={{ backgroundColor: primaryColor }}
+                  />
+                  Primary {primaryColor}
+                </span>
+                <span className="inline-flex items-center gap-1.5">
+                  <span
+                    className="h-4 w-4 rounded-sm"
+                    style={{ backgroundColor: secondaryColor }}
+                  />
+                  Secondary {secondaryColor}
+                </span>
+                <Link href="/settings" className="underline">
+                  Edit brand guidelines
+                </Link>
               </div>
             </div>
           </div>
@@ -866,6 +926,8 @@ export default function RepurposeWorkspacePage() {
                   <CarouselEditor
                     carousel={igCarousel}
                     templates={templates}
+                    primaryColor={primaryColor}
+                    secondaryColor={secondaryColor}
                     onChange={setIgCarousel}
                     onRegenerateStyle={(style) =>
                       handleRegenerateSingleFormat("ig_carousel", style)
@@ -883,6 +945,8 @@ export default function RepurposeWorkspacePage() {
                   <CarouselEditor
                     carousel={liCarousel}
                     templates={templates}
+                    primaryColor={primaryColor}
+                    secondaryColor={secondaryColor}
                     onChange={setLiCarousel}
                     onRegenerateStyle={(style) =>
                       handleRegenerateSingleFormat("li_carousel", style)

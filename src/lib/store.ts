@@ -11,6 +11,7 @@ import {
 import {
   BUILT_IN_VISUAL_TEMPLATES,
   DEFAULT_BRAND_PRESETS,
+  withBrandColors,
 } from "./presets";
 
 const DATA_DIR = path.join(process.cwd(), ".data");
@@ -54,7 +55,7 @@ export async function readStore(): Promise<AppStoreData> {
       drafts: parsed.drafts ?? initial.drafts,
       brandPresets:
         parsed.brandPresets && parsed.brandPresets.length > 0
-          ? parsed.brandPresets
+          ? parsed.brandPresets.map(withBrandColors)
           : initial.brandPresets,
       visualTemplates: parsed.visualTemplates ?? [],
       bufferConnection: parsed.bufferConnection ?? initial.bufferConnection,

@@ -13,6 +13,7 @@ import {
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Badge } from "@/components/ui/badge";
+import { withBrandColors } from "@/lib/presets";
 import { BrandVoicePreset } from "@/lib/types";
 
 export default function SettingsPage() {
@@ -34,6 +35,8 @@ export default function SettingsPage() {
   const [newPresetAudience, setNewPresetAudience] = useState("");
   const [newPresetCta, setNewPresetCta] = useState("");
   const [newPresetHandle, setNewPresetHandle] = useState("@yourbrand");
+  const [newPrimary, setNewPrimary] = useState("#1D4ED8");
+  const [newSecondary, setNewSecondary] = useState("#F59E0B");
 
   async function load() {
     const [sRes, pRes] = await Promise.all([
@@ -43,7 +46,7 @@ export default function SettingsPage() {
     if (sRes.ok) setStatus(await sRes.json());
     if (pRes.ok) {
       const p = await pRes.json();
-      setPresets(p.presets || []);
+      setPresets((p.presets || []).map(withBrandColors));
     }
   }
 
@@ -104,6 +107,8 @@ export default function SettingsPage() {
       audience: newPresetAudience.trim() || "Founders and creators",
       cta: newPresetCta.trim() || "Save & follow for more",
       handle: newPresetHandle.trim() || "@yourbrand",
+      primaryColor: newPrimary,
+      secondaryColor: newSecondary,
       defaultWritingStyle: "educational",
     };
     const res = await fetch("/api/presets", {
@@ -120,6 +125,21 @@ export default function SettingsPage() {
     }
   }
 
+  function patchPreset(id: string, patch: Partial<BrandVoicePreset>) {
+    setPresets((prev) =>
+      prev.map((item) => (item.id === id ? { ...item, ...patch } : item))
+    );
+  }
+
+  async function savePreset(preset: BrandVoicePreset) {
+    await fetch("/api/presets", {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({ preset: withBrandColors(preset) }),
+    });
+    await load();
+  }
+
   const mode = status?.connection.mode || "disconnected";
 
   return (
@@ -127,10 +147,126 @@ export default function SettingsPage() {
       <div>
         <h1 className="text-2xl font-bold tracking-tight">Settings</h1>
         <p className="text-sm text-muted-foreground">
-          Manage your one-click Buffer connection and reusable Brand Voice
-          presets.
+          Set the brand guidelines first. Carousel templates use that primary
+          and secondary color.
         </p>
       </div>
+
+
+      <Card>
+        <CardHeader>
+          <CardTitle className="text-base">Brand guidelines</CardTitle>
+          <CardDescription>
+            Name, voice, handle, and the two colors every visual template
+            follows.
+          </CardDescription>
+        </CardHeader>
+        <CardContent className="space-y-4">
+          <div className="grid gap-3 sm:grid-cols-2">
+            {presets.map((p) => (
+              <div key={p.id} className="rounded-lg border p-3 space-y-1">
+                <div className="flex items-center justify-between">
+                  <span className="font-semibold text-sm">{p.name}</span>
+                  <Badge variant="outline" className="text-[11px]">
+                    {p.handle}
+                  </Badge>
+                </div>
+                <p className="text-xs text-muted-foreground">{p.voice}</p>
+                <p className="text-xs text-muted-foreground">
+                  Audience: {p.audience}
+                </p>
+                <div className="flex flex-wrap items-end gap-2 pt-2">
+                  <label className="space-y-1 text-xs">
+                    Primary
+                    <Input
+                      type="color"
+                      value={p.primaryColor}
+                      onChange={(e) =>
+                        patchPreset(p.id, { primaryColor: e.target.value })
+                      }
+                      className="h-9 w-16 p-1"
+                    />
+                  </label>
+                  <label className="space-y-1 text-xs">
+                    Secondary
+                    <Input
+                      type="color"
+                      value={p.secondaryColor}
+                      onChange={(e) =>
+                        patchPreset(p.id, { secondaryColor: e.target.value })
+                      }
+                      className="h-9 w-16 p-1"
+                    />
+                  </label>
+                  <Button
+                    type="button"
+                    size="sm"
+                    variant="outline"
+                    onClick={() => savePreset(p)}
+                  >
+                    Save brand
+                  </Button>
+                </div>
+              </div>
+            ))}
+          </div>
+
+          <div className="rounded-lg border p-3.5 space-y-3 bg-muted/20">
+            <p className="text-sm font-medium">Add a brand</p>
+            <div className="grid gap-2 sm:grid-cols-2">
+              <Input
+                placeholder="Preset Name (e.g. SaaS Founder)"
+                value={newPresetName}
+                onChange={(e) => setNewPresetName(e.target.value)}
+              />
+              <Input
+                placeholder="Handle (e.g. @acme)"
+                value={newPresetHandle}
+                onChange={(e) => setNewPresetHandle(e.target.value)}
+              />
+              <Input
+                placeholder="Brand Voice"
+                value={newPresetVoice}
+                onChange={(e) => setNewPresetVoice(e.target.value)}
+              />
+              <Input
+                placeholder="Target Audience"
+                value={newPresetAudience}
+                onChange={(e) => setNewPresetAudience(e.target.value)}
+              />
+            </div>
+            <div className="flex flex-wrap items-end gap-2">
+              <Input
+                placeholder="Default CTA"
+                value={newPresetCta}
+                onChange={(e) => setNewPresetCta(e.target.value)}
+              />
+              <label className="space-y-1 text-xs">
+                Primary
+                <Input
+                  type="color"
+                  value={newPrimary}
+                  onChange={(e) => setNewPrimary(e.target.value)}
+                  className="h-9 w-16 p-1"
+                />
+              </label>
+              <label className="space-y-1 text-xs">
+                Secondary
+                <Input
+                  type="color"
+                  value={newSecondary}
+                  onChange={(e) => setNewSecondary(e.target.value)}
+                  className="h-9 w-16 p-1"
+                />
+              </label>
+              <Button onClick={addPreset} className="gap-1.5 shrink-0">
+                <Save className="h-4 w-4" />
+                Save brand
+              </Button>
+            </div>
+          </div>
+        </CardContent>
+      </Card>
 
       <Card>
         <CardHeader>
@@ -215,71 +351,6 @@ export default function SettingsPage() {
                 disabled={busy || !tokenInput.trim()}
               >
                 Save Token
-              </Button>
-            </div>
-          </div>
-        </CardContent>
-      </Card>
-
-      <Card>
-        <CardHeader>
-          <CardTitle className="text-base">Brand Voice Presets</CardTitle>
-          <CardDescription>
-            Quickly load your voice, target audience, and CTA in the Repurpose
-            Studio.
-          </CardDescription>
-        </CardHeader>
-        <CardContent className="space-y-4">
-          <div className="grid gap-3 sm:grid-cols-2">
-            {presets.map((p) => (
-              <div key={p.id} className="rounded-lg border p-3 space-y-1">
-                <div className="flex items-center justify-between">
-                  <span className="font-semibold text-sm">{p.name}</span>
-                  <Badge variant="outline" className="text-[11px]">
-                    {p.handle}
-                  </Badge>
-                </div>
-                <p className="text-xs text-muted-foreground">{p.voice}</p>
-                <p className="text-xs text-muted-foreground">
-                  Audience: {p.audience}
-                </p>
-              </div>
-            ))}
-          </div>
-
-          <div className="rounded-lg border p-3.5 space-y-3 bg-muted/20">
-            <p className="text-sm font-medium">Add New Preset</p>
-            <div className="grid gap-2 sm:grid-cols-2">
-              <Input
-                placeholder="Preset Name (e.g. SaaS Founder)"
-                value={newPresetName}
-                onChange={(e) => setNewPresetName(e.target.value)}
-              />
-              <Input
-                placeholder="Handle (e.g. @acme)"
-                value={newPresetHandle}
-                onChange={(e) => setNewPresetHandle(e.target.value)}
-              />
-              <Input
-                placeholder="Brand Voice"
-                value={newPresetVoice}
-                onChange={(e) => setNewPresetVoice(e.target.value)}
-              />
-              <Input
-                placeholder="Target Audience"
-                value={newPresetAudience}
-                onChange={(e) => setNewPresetAudience(e.target.value)}
-              />
-            </div>
-            <div className="flex gap-2">
-              <Input
-                placeholder="Default CTA"
-                value={newPresetCta}
-                onChange={(e) => setNewPresetCta(e.target.value)}
-              />
-              <Button onClick={addPreset} className="gap-1.5 shrink-0">
-                <Save className="h-4 w-4" />
-                Save Preset
               </Button>
             </div>
           </div>

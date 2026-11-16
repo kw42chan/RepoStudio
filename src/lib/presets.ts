@@ -141,6 +141,8 @@ export const DEFAULT_BRAND_PRESETS: BrandVoicePreset[] = [
     audience: "B2B founders, solo builders, and growth operators",
     cta: "Save this for your next launch & follow for weekly playbooks",
     handle: "@yourbrand",
+    primaryColor: "#1D4ED8",
+    secondaryColor: "#0F766E",
     defaultWritingStyle: "educational",
     defaultTone: "Confident, crisp, and grounded in real metrics",
   },
@@ -151,10 +153,21 @@ export const DEFAULT_BRAND_PRESETS: BrandVoicePreset[] = [
     audience: "Creators, freelancers, and digital marketers",
     cta: "Comment 'GUIDE' and I will send the full checklist",
     handle: "@creatorstudio",
+    primaryColor: "#2563EB",
+    secondaryColor: "#F59E0B",
     defaultWritingStyle: "tactical",
     defaultTone: "Encouraging, punchy, and conversational",
   },
 ];
+
+export function withBrandColors(preset: BrandVoicePreset): BrandVoicePreset {
+  const known = DEFAULT_BRAND_PRESETS.find((item) => item.id === preset.id);
+  return {
+    ...preset,
+    primaryColor: preset.primaryColor || known?.primaryColor || "#1D4ED8",
+    secondaryColor: preset.secondaryColor || known?.secondaryColor || "#F59E0B",
+  };
+}
 
 export const SAMPLE_SOURCE_POSTS = [
   {

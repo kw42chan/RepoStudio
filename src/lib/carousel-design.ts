@@ -4,6 +4,7 @@ export type SlideGround = "light" | "dark" | "gradient";
 
 export interface CarouselPalette {
   brandPrimary: string;
+  brandSecondary: string;
   brandLight: string;
   brandDark: string;
   lightBg: string;
@@ -36,14 +37,19 @@ function mix(from: Rgb, to: Rgb, amount: number): string {
   return toHex(mixed);
 }
 
-export function carouselPalette(accent: string): CarouselPalette {
-  const primary = parseHex(accent);
-  const warm = primary[0] >= primary[2];
+export function carouselPalette(
+  primary: string,
+  secondary?: string
+): CarouselPalette {
+  const primaryRgb = parseHex(primary);
+  const secondaryHex = toHex(parseHex(secondary || primary));
+  const warm = primaryRgb[0] >= primaryRgb[2];
   const lightBg = warm ? "#F6F3EE" : "#F4F6F8";
   return {
-    brandPrimary: toHex(primary),
-    brandLight: mix(primary, [255, 255, 255], 0.2),
-    brandDark: mix(primary, [0, 0, 0], 0.3),
+    brandPrimary: toHex(primaryRgb),
+    brandSecondary: secondaryHex,
+    brandLight: secondaryHex,
+    brandDark: mix(primaryRgb, [0, 0, 0], 0.3),
     lightBg,
     lightBorder: mix(parseHex(lightBg), [0, 0, 0], 0.08),
     darkBg: warm ? "#1A1918" : "#0F172A",

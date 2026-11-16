@@ -1,5 +1,6 @@
 "use client";
 
+import Link from "next/link";
 import { useRef, useState } from "react";
 import {
   Download,
@@ -38,6 +39,8 @@ import { WritingStyleControls } from "./writing-style-controls";
 interface CarouselEditorProps {
   carousel: CarouselContent;
   templates: VisualTemplate[];
+  primaryColor: string;
+  secondaryColor: string;
   onChange: (next: CarouselContent) => void;
   onRegenerateStyle: (style: WritingStyleConfig) => void;
   regenerating?: boolean;
@@ -49,6 +52,8 @@ interface CarouselEditorProps {
 export function CarouselEditor({
   carousel,
   templates,
+  primaryColor,
+  secondaryColor,
   onChange,
   onRegenerateStyle,
   regenerating,
@@ -66,8 +71,7 @@ export function CarouselEditor({
 
   const activeTemplate =
     templates.find((t) => t.id === carousel.visualTemplateId) || templates[0];
-  const effectiveAccent =
-    carousel.accentColorOverride || activeTemplate?.accentColor || "#2563EB";
+  const effectiveAccent = primaryColor;
 
   const activeSlide =
     carousel.slides[activeSlideIdx] || carousel.slides[0];
@@ -177,7 +181,6 @@ export function CarouselEditor({
                   onChange({
                     ...carousel,
                     visualTemplateId: v,
-                    accentColorOverride: undefined,
                   })
                 }
               >
@@ -213,19 +216,25 @@ export function CarouselEditor({
               </Select>
             </div>
 
-            <div className="w-[74px] space-y-1">
-              <Label className="text-xs">Accent</Label>
-              <Input
-                type="color"
-                value={effectiveAccent}
-                onChange={(e) =>
-                  onChange({
-                    ...carousel,
-                    accentColorOverride: e.target.value,
-                  })
-                }
-                className="h-9 p-1 cursor-pointer"
-              />
+            <div className="space-y-1">
+              <Label className="text-xs">Primary</Label>
+              <div className="flex h-9 items-center gap-2 rounded-md border bg-background px-2">
+                <span
+                  className="h-5 w-5 rounded-sm"
+                  style={{ backgroundColor: primaryColor }}
+                />
+                <span className="text-xs">{primaryColor}</span>
+              </div>
+            </div>
+            <div className="space-y-1">
+              <Label className="text-xs">Secondary</Label>
+              <div className="flex h-9 items-center gap-2 rounded-md border bg-background px-2">
+                <span
+                  className="h-5 w-5 rounded-sm"
+                  style={{ backgroundColor: secondaryColor }}
+                />
+                <span className="text-xs">{secondaryColor}</span>
+              </div>
             </div>
 
             <div className="min-w-[140px] flex-1 space-y-1">
@@ -249,6 +258,15 @@ export function CarouselEditor({
               Import / Upload Template
             </Button>
           </div>
+
+          <p className="text-sm">
+            This template sets the type and layout. Primary and secondary
+            colors come from the{" "}
+            <Link href="/settings" className="underline">
+              brand guidelines
+            </Link>
+            .
+          </p>
 
           {/* Optional Custom Visual Style & Tone + Save as New Template */}
           <div className="grid gap-2 sm:grid-cols-3 pt-1">
@@ -486,7 +504,8 @@ export function CarouselEditor({
               activeIndex={activeSlideIdx}
               onSelectIndex={setActiveSlideIdx}
               template={activeTemplate}
-              accentColor={effectiveAccent}
+              primaryColor={primaryColor}
+              secondaryColor={secondaryColor}
               brandHandle={carousel.brandHandle}
               platform={carousel.platform}
               aspectRatio={carousel.aspectRatio}

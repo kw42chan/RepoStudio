@@ -23,6 +23,8 @@ For each source:
 
 ## Last run
 
+16 November 2026, 4:14 PM Hong Kong time. Instagram carousel check on Load SaaS Growth Post. Slide 1 is a light cover with the handle, a tag, a progress bar reading 1/7, and a right chevron. Slide 7 is the brand close with a pill and no chevron. Slide 6 is dark. The source rows below were not repeated.
+
 16 November 2026, 3:50 PM Hong Kong time. This run checked the generate button on Load SaaS Growth Post. Selecting “The 5-step execution breakdown” did not write a reel. Content Studio appeared only after Generate selected angle. Opening hook: `Steal this exact playbook we used to turn insight into results`. The source rows below were not repeated.
 
 16 November 2026, about 12:00 AM Hong Kong time.

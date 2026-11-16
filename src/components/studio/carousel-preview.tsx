@@ -3,6 +3,11 @@
 import React from "react";
 import { ChevronLeft, ChevronRight } from "lucide-react";
 import { Button } from "@/components/ui/button";
+import {
+  brandMark,
+  carouselPalette,
+  slideGround,
+} from "@/lib/carousel-design";
 import { AspectRatio, CarouselSlide, VisualTemplate } from "@/lib/types";
 import { getExportDimensions } from "@/lib/export-carousel";
 
@@ -28,20 +33,38 @@ export function SlideCanvas({
   fullResolution = false,
 }: SlideCanvasProps) {
   const dims = getExportDimensions(aspectRatio);
-  const fontFamily =
+  const unit = dims.width / 420;
+  const px = (value: number) => Math.round(value * unit);
+  const palette = carouselPalette(accentColor || template.accentColor);
+  const ground = slideGround(slide.slideNumber - 1, totalSlides, slide.role);
+  const isLight = ground === "light";
+  const isLast = slide.slideNumber === totalSlides || slide.role === "cta";
+  const showLockup = slide.role === "cover" || slide.role === "cta";
+  const mark = brandMark(brandHandle);
+  const headingFont =
     template.fontStyle === "serif"
-      ? "Georgia, Cambria, 'Times New Roman', serif"
+      ? "Georgia, 'Times New Roman', serif"
       : template.fontStyle === "mono"
         ? "ui-monospace, SFMono-Regular, Menlo, monospace"
-        : "var(--font-geist-sans), system-ui, sans-serif";
-
-  const backgroundStyle: React.CSSProperties =
-    template.layoutMood === "gradient"
-      ? {
-          background: `linear-gradient(145deg, ${template.backgroundColor} 0%, ${template.surfaceColor} 55%, ${accentColor}22 100%)`,
-        }
-      : { backgroundColor: template.backgroundColor };
-
+        : 'var(--font-epilogue), "Epilogue", system-ui, sans-serif';
+  const bodyFont =
+    template.fontStyle === "serif"
+      ? 'var(--font-epilogue), "Epilogue", system-ui, sans-serif'
+      : headingFont;
+  const ink = isLight ? palette.darkBg : "#F7F7F5";
+  const muted = isLight ? "#8A8580" : "rgba(255,255,255,0.72)";
+  const tagColor = isLight
+    ? palette.brandPrimary
+    : ground === "gradient"
+      ? "rgba(255,255,255,0.6)"
+      : palette.brandLight;
+  const background =
+    ground === "gradient"
+      ? `linear-gradient(165deg, ${palette.brandDark} 0%, ${palette.brandPrimary} 50%, ${palette.brandLight} 100%)`
+      : ground === "dark"
+        ? palette.darkBg
+        : palette.lightBg;
+  const headingSize = px(slide.headline.length > 72 ? 26 : slide.role === "cover" ? 34 : 30);
   const scale = fullResolution ? 1 : 0.34;
 
   return (
@@ -56,23 +79,20 @@ export function SlideCanvas({
       className={fullResolution ? "" : "shadow-md border"}
     >
       <div
+        data-platform={platform}
         style={{
           width: `${dims.width}px`,
           height: `${dims.height}px`,
           transform: fullResolution ? "none" : `scale(${scale})`,
           transformOrigin: "top left",
-          color: template.textColor,
-          fontFamily,
           position: "relative",
-          display: "flex",
-          flexDirection: "column",
-          justifyContent: "space-between",
-          padding: "76px",
-          boxSizing: "border-box",
-          ...backgroundStyle,
+          overflow: "hidden",
+          background,
+          color: ink,
+          fontFamily: bodyFont,
         }}
       >
-        {template.backdropImageUrl && (
+        {template.backdropImageUrl && isLight && (
           <img
             src={template.backdropImageUrl}
             alt=""
@@ -82,145 +102,203 @@ export function SlideCanvas({
               width: "100%",
               height: "100%",
               objectFit: "cover",
-              opacity: template.backdropOpacity ?? 0.16,
+              opacity: Math.min(template.backdropOpacity ?? 0.16, 0.2),
               pointerEvents: "none",
             }}
           />
         )}
 
-        {/* Top Bar */}
         <div
           style={{
             position: "relative",
             zIndex: 1,
-            display: "flex",
-            alignItems: "center",
-            justifyContent: "space-between",
-            fontSize: "24px",
-            fontWeight: 600,
-            letterSpacing: "0.08em",
-            textTransform: "uppercase",
-            color: template.mutedColor,
-          }}
-        >
-          <span>{brandHandle || "@yourbrand"}</span>
-          <span
-            style={{
-              padding: "8px 18px",
-              borderRadius: "999px",
-              backgroundColor: `${accentColor}20`,
-              color: accentColor,
-              fontSize: "20px",
-              fontWeight: 700,
-            }}
-          >
-            {String(slide.slideNumber).padStart(2, "0")} /{" "}
-            {String(totalSlides).padStart(2, "0")}
-          </span>
-        </div>
-
-        {/* Main Content */}
-        <div
-          style={{
-            position: "relative",
-            zIndex: 1,
+            height: "100%",
             display: "flex",
             flexDirection: "column",
-            gap: "32px",
-            padding: template.layoutMood === "card" ? "56px" : "0px",
-            borderRadius: template.layoutMood === "card" ? "32px" : "0px",
-            backgroundColor:
-              template.layoutMood === "card"
-                ? template.surfaceColor
-                : "transparent",
-            border:
-              template.layoutMood === "card"
-                ? `2px solid ${accentColor}40`
-                : "none",
+            justifyContent: showLockup ? "center" : "flex-end",
+            gap: px(14),
+            boxSizing: "border-box",
+            padding: `${px(36)}px ${px(64)}px ${px(64)}px ${px(36)}px`,
           }}
         >
-          {slide.eyebrow && (
+          {showLockup && (
             <div
               style={{
-                display: "inline-flex",
+                display: "flex",
                 alignItems: "center",
-                gap: "12px",
-                fontSize: "24px",
-                fontWeight: 700,
-                letterSpacing: "0.1em",
-                textTransform: "uppercase",
-                color: accentColor,
+                gap: px(12),
+                marginBottom: px(8),
               }}
             >
               <span
                 style={{
-                  display: "inline-block",
-                  width: "36px",
-                  height: "4px",
-                  backgroundColor: accentColor,
-                  borderRadius: "2px",
+                  width: px(40),
+                  height: px(40),
+                  borderRadius: "50%",
+                  display: "inline-flex",
+                  alignItems: "center",
+                  justifyContent: "center",
+                  background: isLight ? palette.brandPrimary : palette.lightBg,
+                  color: isLight ? "#ffffff" : palette.brandDark,
+                  fontFamily: headingFont,
+                  fontWeight: 600,
+                  fontSize: px(16),
                 }}
-              />
-              {slide.eyebrow}
+              >
+                {mark.initial}
+              </span>
+              <span
+                style={{
+                  fontFamily: bodyFont,
+                  fontSize: px(13),
+                  fontWeight: 600,
+                  letterSpacing: `${px(0.5)}px`,
+                }}
+              >
+                {mark.label}
+              </span>
             </div>
+          )}
+
+          {slide.eyebrow && (
+            <span
+              style={{
+                display: "block",
+                fontFamily: bodyFont,
+                fontSize: px(10),
+                fontWeight: 600,
+                letterSpacing: `${px(2)}px`,
+                textTransform: "uppercase",
+                color: tagColor,
+              }}
+            >
+              {slide.eyebrow}
+            </span>
           )}
 
           <h2
             style={{
               margin: 0,
-              fontSize:
-                slide.role === "cover"
-                  ? "78px"
-                  : slide.role === "cta"
-                    ? "64px"
-                    : "58px",
+              maxWidth: "16ch",
+              fontFamily: headingFont,
+              fontSize: headingSize,
+              fontWeight: template.fontStyle === "bold-display" ? 700 : 600,
+              letterSpacing: `${-0.4 * unit}px`,
               lineHeight: 1.12,
-              fontWeight: template.fontStyle === "bold-display" ? 900 : 800,
-              letterSpacing: "-0.02em",
-              color: template.textColor,
+              color: ink,
             }}
           >
             {slide.headline}
           </h2>
 
-          <p
-            style={{
-              margin: 0,
-              fontSize: slide.role === "cover" ? "34px" : "36px",
-              lineHeight: 1.48,
-              color:
-                slide.role === "cover"
-                  ? template.mutedColor
-                  : template.textColor,
-              opacity: slide.role === "cover" ? 1 : 0.88,
-            }}
-          >
-            {slide.body}
-          </p>
+          {slide.role === "cta" && slide.body.length <= 90 ? (
+            <span
+              style={{
+                alignSelf: "flex-start",
+                maxWidth: "22ch",
+                marginTop: px(8),
+                padding: `${px(12)}px ${px(22)}px`,
+                borderRadius: px(28),
+                background: palette.lightBg,
+                color: palette.brandDark,
+                fontFamily: bodyFont,
+                fontWeight: 600,
+                fontSize: px(14),
+                lineHeight: 1.35,
+              }}
+            >
+              {slide.body}
+            </span>
+          ) : (
+            <p
+              style={{
+                margin: 0,
+                maxWidth: "28ch",
+                fontFamily: bodyFont,
+                fontSize: px(14),
+                fontWeight: 400,
+                lineHeight: 1.5,
+                color: muted,
+              }}
+            >
+              {slide.body}
+            </p>
+          )}
         </div>
 
-        {/* Footer */}
         <div
           style={{
-            position: "relative",
-            zIndex: 1,
+            position: "absolute",
+            left: 0,
+            right: 0,
+            bottom: 0,
+            zIndex: 10,
             display: "flex",
             alignItems: "center",
-            justifyContent: "space-between",
-            borderTop: `2px solid ${template.mutedColor}30`,
-            paddingTop: "28px",
-            fontSize: "22px",
-            color: template.mutedColor,
+            gap: px(10),
+            padding: `${px(16)}px ${px(28)}px ${px(20)}px`,
           }}
         >
-          <span>
-            {platform === "linkedin" ? "LinkedIn Carousel" : "Instagram Carousel"}{" "}
-            • {dims.width}×{dims.height}
-          </span>
-          <span style={{ color: accentColor, fontWeight: 700 }}>
-            {slide.role === "cta" ? "Save & Share" : "Swipe →"}
+          <div
+            style={{
+              flex: 1,
+              height: px(3),
+              borderRadius: px(2),
+              overflow: "hidden",
+              background: isLight
+                ? "rgba(0,0,0,0.08)"
+                : "rgba(255,255,255,0.12)",
+            }}
+          >
+            <div
+              style={{
+                height: "100%",
+                width: `${(slide.slideNumber / Math.max(totalSlides, 1)) * 100}%`,
+                borderRadius: px(2),
+                background: isLight ? palette.brandPrimary : "#ffffff",
+              }}
+            />
+          </div>
+          <span
+            style={{
+              fontFamily: bodyFont,
+              fontSize: px(11),
+              fontWeight: 500,
+              color: isLight ? "rgba(0,0,0,0.3)" : "rgba(255,255,255,0.4)",
+            }}
+          >
+            {slide.slideNumber}/{totalSlides}
           </span>
         </div>
+
+        {!isLast && (
+          <div
+            style={{
+              position: "absolute",
+              right: 0,
+              top: 0,
+              bottom: 0,
+              width: px(48),
+              zIndex: 9,
+              display: "flex",
+              alignItems: "center",
+              justifyContent: "center",
+              background: `linear-gradient(to right, transparent, ${
+                isLight ? "rgba(0,0,0,0.06)" : "rgba(255,255,255,0.08)"
+              })`,
+            }}
+          >
+            <svg width={px(24)} height={px(24)} viewBox="0 0 24 24" fill="none">
+              <path
+                d="M9 6l6 6-6 6"
+                stroke={isLight ? "rgba(0,0,0,0.25)" : "rgba(255,255,255,0.35)"}
+                strokeWidth="2.5"
+                strokeLinecap="round"
+                strokeLinejoin="round"
+              />
+            </svg>
+          </div>
+        )}
       </div>
     </div>
   );

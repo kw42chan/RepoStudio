@@ -329,75 +329,78 @@ function buildMockCarousel(
     "Custom";
 
   const isLinkedIn = platform === "linkedin";
-  const prefix = isLinkedIn ? "FRAMEWORK" : "PLAYBOOK";
 
   const slides = [
     {
       id: "slide-1",
       slideNumber: 1,
       role: "cover" as const,
-      eyebrow: `${prefix} • ${styleLabel.toUpperCase()}`,
+      eyebrow: styleLabel,
       headline: applyTonePrefix(idea.title, writingStyle),
       body: idea.hook,
-      visualDirection:
-        "High-contrast cover headline with bold accent rule and swipe indicator.",
+      visualDirection: "Light cover with logo lockup and a short tag.",
     },
     {
       id: "slide-2",
       slideNumber: 2,
       role: "body" as const,
-      eyebrow: "01 / THE SHIFT",
-      headline: "Stop optimizing the wrong lever",
+      eyebrow: "The problem",
+      headline: "The usual move misses the point",
       body: lines[0] || idea.summary,
-      visualDirection: "Clean single-column insight card with subtle divider.",
+      visualDirection: "Dark problem slide.",
     },
     {
       id: "slide-3",
       slideNumber: 3,
       role: "body" as const,
-      eyebrow: "02 / CORE INSIGHT",
-      headline: "Focus on high-leverage execution",
+      eyebrow: "The shift",
+      headline: "Change the first move",
       body:
         lines[1] ||
-        "Simplify the first 5 minutes of the experience before scaling traffic.",
-      visualDirection: "Numbered highlight block with accent badge.",
+        "Fix the offer before you buy another round of attention.",
+      visualDirection: "Light shift slide.",
     },
     {
       id: "slide-4",
       slideNumber: 4,
       role: "body" as const,
-      eyebrow: "03 / ACTION STEP",
-      headline: "Remove friction, add clarity",
+      eyebrow: "What you get",
+      headline: "One clear next action",
       body:
         lines[2] ||
-        "Replace blank states and vague prompts with concrete, ready-to-use templates.",
-      visualDirection: "Two-part comparison or checklist card.",
+        "A line the reader can use the same day, taken from the source post.",
+      visualDirection: "Dark detail slide.",
     },
     {
       id: "slide-5",
       slideNumber: 5,
       role: "body" as const,
-      eyebrow: "04 / THE PAYOFF",
+      eyebrow: "The detail",
       headline: isLinkedIn
-        ? "Compounding results without extra spend"
-        : "More saves, more shares, less burnout",
+        ? "The result compounds"
+        : "The post does more work",
       body:
         lines[3] ||
-        "When the core system works, every piece of distribution multiplies in value.",
-      visualDirection: "Metric callout or summary takeaway box.",
+        "Once the core line is right, every later slide has something to stand on.",
+      visualDirection: "Light detail slide.",
     },
     {
       id: "slide-6",
       slideNumber: 6,
+      role: "body" as const,
+      eyebrow: "How to use it",
+      headline: "Write from the source",
+      body: "Keep the original claim, then give the reader one action.",
+      visualDirection: "Dark how-to slide.",
+    },
+    {
+      id: "slide-7",
+      slideNumber: 7,
       role: "cta" as const,
-      eyebrow: "NEXT STEP",
-      headline: isLinkedIn
-        ? "Found this breakdown useful?"
-        : "Save this for your next post",
-      body:
-        source.ctaPreference ||
-        "Save this carousel, share it with a teammate, and follow for weekly playbooks.",
-      visualDirection: "Centered CTA card with handle and follow prompt.",
+      eyebrow: "Next",
+      headline: isLinkedIn ? "Send this to the team" : "Save this carousel",
+      body: source.ctaPreference || "Save this and use it on the next post.",
+      visualDirection: "Brand gradient close with a button and no swipe arrow.",
     },
   ];
 
@@ -531,7 +534,7 @@ Return JSON with hook, estimatedDuration, beats (each with id, timeframe, spoken
             carouselSchema,
             `${sameLanguageRule(sourcePost.rawText)}
 
-Create a 6-8 slide Instagram Carousel (1080x1350 portrait) from this repurpose angle.
+Create a 7-slide Instagram carousel from this repurpose angle.
 Source post: ${sourcePost.rawText}
 Angle: ${idea.title} — ${idea.hook} (${idea.summary})
 Brand Voice: ${sourcePost.brandVoice}
@@ -539,7 +542,11 @@ Target Audience: ${sourcePost.targetAudience}
 CTA: ${sourcePost.ctaPreference}
 Writing Style & Tone: ${styleDescription}
 
-Slide 1 must be role "cover", middle slides role "body" (concise, scannable copy that fits a 1080x1350 slide cleanly), and final slide role "cta".
+The slide design already shows a logo, a short tag, a progress bar, and a swipe arrow. Do not mention swiping, slide numbers, or dimensions in the copy.
+Slide 1 is role "cover": a claim that can stop a scroll.
+Then a problem, the shift, what the reader gets, one concrete detail from the source, and how to use it. Those are role "body".
+The last slide is role "cta": one action under 12 words.
+Each eyebrow is 1 to 3 words. Each headline is under 12 words. Each body is under 24 words and uses the source post.
 Return JSON with title, slides (id, slideNumber, role, eyebrow, headline, body, visualDirection), caption, and hashtags.`
           );
           results.igCarousel = {
@@ -557,7 +564,7 @@ Return JSON with title, slides (id, slideNumber, role, eyebrow, headline, body, 
             carouselSchema,
             `${sameLanguageRule(sourcePost.rawText)}
 
-Create a 6-8 slide LinkedIn Document Carousel (1080x1350) from this repurpose angle.
+Create a 7-slide LinkedIn document carousel from this repurpose angle.
 Source post: ${sourcePost.rawText}
 Angle: ${idea.title} — ${idea.hook} (${idea.summary})
 Brand Voice: ${sourcePost.brandVoice}
@@ -565,7 +572,10 @@ Target Audience: ${sourcePost.targetAudience}
 CTA: ${sourcePost.ctaPreference}
 Writing Style & Tone: ${styleDescription}
 
-Slide 1 must be role "cover", middle slides role "body" with crisp executive takeaways, and final slide role "cta". Include a strong long-form LinkedIn caption.
+The slide design already shows a logo, a short tag, a progress bar, and a swipe arrow. Do not mention swiping, slide numbers, or dimensions in the copy.
+Slide 1 is role "cover". Middle slides are role "body": the problem, the shift, what the reader gets, one detail from the source, and how to use it.
+The last slide is role "cta", one action under 12 words.
+Each eyebrow is 1 to 3 words. Each headline is under 12 words. Each body is under 24 words. The caption can be the longer LinkedIn post.
 Return JSON with title, slides (id, slideNumber, role, eyebrow, headline, body, visualDirection), caption, and hashtags.`
           );
           results.liCarousel = {

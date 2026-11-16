@@ -1,7 +1,7 @@
 "use client";
 
 import { useEffect, useState } from "react";
-import { CheckCircle2, Loader2, Pencil, PlugZap, Save, Trash2, Unplug } from "lucide-react";
+import { CheckCircle2, Loader2, PlugZap, Save, Trash2, Unplug } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import {
   Card,
@@ -41,8 +41,6 @@ export default function SettingsPage() {
   const [savingId, setSavingId] = useState<string | null>(null);
   const [brandMessage, setBrandMessage] = useState<string | null>(null);
   const [brandError, setBrandError] = useState<string | null>(null);
-  const [editingId, setEditingId] = useState<string | null>(null);
-  const [draft, setDraft] = useState<BrandVoicePreset | null>(null);
   const [pendingDeleteId, setPendingDeleteId] = useState<string | null>(null);
 
   async function load() {
@@ -145,17 +143,10 @@ export default function SettingsPage() {
     }
   }
 
-  function startEdit(preset: BrandVoicePreset) {
-    setEditingId(preset.id);
-    setDraft({ ...withBrandColors(preset) });
-    setPendingDeleteId(null);
-    setBrandError(null);
-    setBrandMessage(null);
-  }
-
-  function cancelEdit() {
-    setEditingId(null);
-    setDraft(null);
+  function patchPreset(id: string, patch: Partial<BrandVoicePreset>) {
+    setPresets((prev) =>
+      prev.map((item) => (item.id === id ? { ...item, ...patch } : item))
+    );
   }
 
   async function savePreset(preset: BrandVoicePreset) {
@@ -188,8 +179,6 @@ export default function SettingsPage() {
         return;
       }
       setBrandMessage(`Saved ${next.name}.`);
-      setEditingId(null);
-      setDraft(null);
       await load();
     } finally {
       setSavingId(null);
@@ -211,7 +200,6 @@ export default function SettingsPage() {
         setBrandError(data?.error || "Could not delete the brand.");
         return;
       }
-      if (editingId === preset.id) cancelEdit();
       setPendingDeleteId(null);
       setBrandMessage(`Deleted ${preset.name}.`);
       await load();
@@ -237,8 +225,8 @@ export default function SettingsPage() {
         <CardHeader>
           <CardTitle className="text-base">Brand guidelines</CardTitle>
           <CardDescription>
-            Name, voice, handle, and the two colors every visual template
-            follows.
+            Change the name, voice, and audience on a saved brand. Carousel
+            templates follow its two colors.
           </CardDescription>
         </CardHeader>
         <CardContent className="space-y-4">
@@ -246,220 +234,201 @@ export default function SettingsPage() {
             <p className="text-sm text-destructive">{brandError}</p>
           )}
           {brandMessage && <p className="text-sm">{brandMessage}</p>}
-          <div className="grid gap-3 sm:grid-cols-2">
-            {presets.map((p) => {
-              const isEditing = editingId === p.id && draft?.id === p.id;
-              return (
-                <div
-                  key={p.id}
-                  className={`rounded-lg border p-3 space-y-2 ${isEditing ? "sm:col-span-2" : ""}`}
-                >
-                  <div className="flex items-start justify-between gap-2">
-                    <span className="font-semibold text-sm">{p.name}</span>
-                    <Badge variant="outline" className="text-[11px]">
-                      {p.handle}
-                    </Badge>
+          <div className="space-y-3">
+            {presets.map((p) => (
+              <div key={p.id} className="rounded-lg border p-3.5 space-y-3">
+                <div className="flex items-center justify-between gap-2">
+                  <span className="font-semibold text-sm">{p.name}</span>
+                  <Badge variant="outline" className="text-[11px]">
+                    {p.handle}
+                  </Badge>
+                </div>
+                <div className="grid gap-3 sm:grid-cols-2">
+                  <div className="space-y-1.5">
+                    <Label htmlFor={`${p.id}-name`}>Preset name</Label>
+                    <Input
+                      id={`${p.id}-name`}
+                      value={p.name}
+                      onChange={(e) =>
+                        patchPreset(p.id, { name: e.target.value })
+                      }
+                    />
                   </div>
-                  {isEditing && draft ? (
-                    <div className="grid gap-2 sm:grid-cols-2">
-                      <Input
-                        aria-label="Brand name"
-                        value={draft.name}
-                        onChange={(e) =>
-                          setDraft({ ...draft, name: e.target.value })
-                        }
-                      />
-                      <Input
-                        aria-label="Handle"
-                        value={draft.handle}
-                        onChange={(e) =>
-                          setDraft({ ...draft, handle: e.target.value })
-                        }
-                      />
-                      <Textarea
-                        aria-label="Brand voice"
-                        value={draft.voice}
-                        onChange={(e) =>
-                          setDraft({ ...draft, voice: e.target.value })
-                        }
-                        className="sm:col-span-2 min-h-16"
-                      />
-                      <Input
-                        aria-label="Audience"
-                        value={draft.audience}
-                        onChange={(e) =>
-                          setDraft({ ...draft, audience: e.target.value })
-                        }
-                      />
-                      <Input
-                        aria-label="Call to action"
-                        value={draft.cta}
-                        onChange={(e) =>
-                          setDraft({ ...draft, cta: e.target.value })
-                        }
-                      />
-                      <div className="flex flex-wrap items-end gap-2 sm:col-span-2">
-                        <label className="space-y-1 text-xs">
-                          Primary
-                          <Input
-                            type="color"
-                            aria-label="Primary color"
-                            value={draft.primaryColor}
-                            onChange={(e) =>
-                              setDraft({
-                                ...draft,
-                                primaryColor: e.target.value,
-                              })
-                            }
-                            className="h-9 w-16 p-1"
-                          />
-                        </label>
-                        <label className="space-y-1 text-xs">
-                          Secondary
-                          <Input
-                            type="color"
-                            aria-label="Secondary color"
-                            value={draft.secondaryColor}
-                            onChange={(e) =>
-                              setDraft({
-                                ...draft,
-                                secondaryColor: e.target.value,
-                              })
-                            }
-                            className="h-9 w-16 p-1"
-                          />
-                        </label>
-                        <Button
-                          type="button"
-                          size="sm"
-                          disabled={savingId === p.id}
-                          onClick={() => savePreset(draft)}
-                        >
-                          {savingId === p.id ? "Saving..." : "Save changes"}
-                        </Button>
-                        <Button
-                          type="button"
-                          size="sm"
-                          variant="outline"
-                          disabled={savingId === p.id}
-                          onClick={cancelEdit}
-                        >
-                          Cancel
-                        </Button>
-                      </div>
-                    </div>
-                  ) : (
+                  <div className="space-y-1.5">
+                    <Label htmlFor={`${p.id}-handle`}>Handle</Label>
+                    <Input
+                      id={`${p.id}-handle`}
+                      value={p.handle}
+                      onChange={(e) =>
+                        patchPreset(p.id, { handle: e.target.value })
+                      }
+                    />
+                  </div>
+                  <div className="space-y-1.5 sm:col-span-2">
+                    <Label htmlFor={`${p.id}-voice`}>Brand voice</Label>
+                    <Textarea
+                      id={`${p.id}-voice`}
+                      value={p.voice}
+                      onChange={(e) =>
+                        patchPreset(p.id, { voice: e.target.value })
+                      }
+                      className="min-h-16"
+                    />
+                  </div>
+                  <div className="space-y-1.5 sm:col-span-2">
+                    <Label htmlFor={`${p.id}-audience`}>Target audience</Label>
+                    <Input
+                      id={`${p.id}-audience`}
+                      value={p.audience}
+                      onChange={(e) =>
+                        patchPreset(p.id, { audience: e.target.value })
+                      }
+                    />
+                  </div>
+                  <div className="space-y-1.5 sm:col-span-2">
+                    <Label htmlFor={`${p.id}-cta`}>Default CTA</Label>
+                    <Input
+                      id={`${p.id}-cta`}
+                      value={p.cta}
+                      onChange={(e) =>
+                        patchPreset(p.id, { cta: e.target.value })
+                      }
+                    />
+                  </div>
+                </div>
+                <div className="flex flex-wrap items-end gap-2">
+                  <label className="space-y-1 text-xs" htmlFor={`${p.id}-primary`}>
+                    Primary
+                    <Input
+                      id={`${p.id}-primary`}
+                      type="color"
+                      value={p.primaryColor}
+                      onChange={(e) =>
+                        patchPreset(p.id, { primaryColor: e.target.value })
+                      }
+                      className="h-9 w-16 p-1"
+                    />
+                  </label>
+                  <label className="space-y-1 text-xs" htmlFor={`${p.id}-secondary`}>
+                    Secondary
+                    <Input
+                      id={`${p.id}-secondary`}
+                      type="color"
+                      value={p.secondaryColor}
+                      onChange={(e) =>
+                        patchPreset(p.id, { secondaryColor: e.target.value })
+                      }
+                      className="h-9 w-16 p-1"
+                    />
+                  </label>
+                  <Button
+                    type="button"
+                    size="sm"
+                    disabled={savingId === p.id}
+                    aria-label={`Save ${p.name || "brand"}`}
+                    onClick={() => savePreset(p)}
+                    className="gap-1.5"
+                  >
+                    <Save className="h-3.5 w-3.5" />
+                    {savingId === p.id ? "Saving..." : "Save brand"}
+                  </Button>
+                  {pendingDeleteId === p.id ? (
                     <>
-                      <p className="text-xs text-muted-foreground">{p.voice}</p>
-                      <p className="text-xs text-muted-foreground">
-                        Audience: {p.audience}
-                      </p>
-                      <p className="text-xs text-muted-foreground">
-                        CTA: {p.cta}
-                      </p>
-                      <div className="flex flex-wrap items-center gap-2 pt-1">
-                        <span className="inline-flex items-center gap-1 text-xs">
-                          Primary
-                          <span
-                            className="h-4 w-4 rounded border"
-                            style={{ backgroundColor: p.primaryColor }}
-                          />
-                        </span>
-                        <span className="inline-flex items-center gap-1 text-xs">
-                          Secondary
-                          <span
-                            className="h-4 w-4 rounded border"
-                            style={{ backgroundColor: p.secondaryColor }}
-                          />
-                        </span>
-                        <Button
-                          type="button"
-                          size="sm"
-                          variant="outline"
-                          className="gap-1"
-                          onClick={() => startEdit(p)}
-                        >
-                          <Pencil className="h-3.5 w-3.5" />
-                          Edit
-                        </Button>
-                        {pendingDeleteId === p.id ? (
-                          <>
-                            <span className="text-xs text-muted-foreground">
-                              Delete {p.name}?
-                            </span>
-                            <Button
-                              type="button"
-                              size="sm"
-                              variant="destructive"
-                              disabled={savingId === p.id}
-                              onClick={() => removePreset(p)}
-                            >
-                              {savingId === p.id ? "Deleting..." : "Delete"}
-                            </Button>
-                            <Button
-                              type="button"
-                              size="sm"
-                              variant="outline"
-                              disabled={savingId === p.id}
-                              onClick={() => setPendingDeleteId(null)}
-                            >
-                              Keep
-                            </Button>
-                          </>
-                        ) : (
-                          <Button
-                            type="button"
-                            size="sm"
-                            variant="outline"
-                            className="gap-1"
-                            onClick={() => {
-                              setPendingDeleteId(p.id);
-                              setBrandError(null);
-                              setBrandMessage(null);
-                            }}
-                          >
-                            <Trash2 className="h-3.5 w-3.5" />
-                            Delete
-                          </Button>
-                        )}
-                      </div>
+                      <span className="text-xs text-muted-foreground">
+                        Delete {p.name}?
+                      </span>
+                      <Button
+                        type="button"
+                        size="sm"
+                        variant="destructive"
+                        disabled={savingId === p.id}
+                        aria-label={`Confirm delete ${p.name}`}
+                        onClick={() => removePreset(p)}
+                      >
+                        {savingId === p.id ? "Deleting..." : "Delete"}
+                      </Button>
+                      <Button
+                        type="button"
+                        size="sm"
+                        variant="outline"
+                        disabled={savingId === p.id}
+                        onClick={() => setPendingDeleteId(null)}
+                      >
+                        Keep
+                      </Button>
                     </>
+                  ) : (
+                    <Button
+                      type="button"
+                      size="sm"
+                      variant="outline"
+                      className="gap-1"
+                      aria-label={`Delete ${p.name}`}
+                      onClick={() => {
+                        setPendingDeleteId(p.id);
+                        setBrandError(null);
+                        setBrandMessage(null);
+                      }}
+                    >
+                      <Trash2 className="h-3.5 w-3.5" />
+                      Delete
+                    </Button>
                   )}
                 </div>
-              );
-            })}
+              </div>
+            ))}
           </div>
 
           <div className="rounded-lg border p-3.5 space-y-3 bg-muted/20">
             <p className="text-sm font-medium">Add a brand</p>
-            <div className="grid gap-2 sm:grid-cols-2">
-              <Input
-                placeholder="Preset Name (e.g. SaaS Founder)"
-                value={newPresetName}
-                onChange={(e) => setNewPresetName(e.target.value)}
-              />
-              <Input
-                placeholder="Handle (e.g. @acme)"
-                value={newPresetHandle}
-                onChange={(e) => setNewPresetHandle(e.target.value)}
-              />
-              <Input
-                placeholder="Brand Voice"
-                value={newPresetVoice}
-                onChange={(e) => setNewPresetVoice(e.target.value)}
-              />
-              <Input
-                placeholder="Target Audience"
-                value={newPresetAudience}
-                onChange={(e) => setNewPresetAudience(e.target.value)}
-              />
+            <div className="grid gap-3 sm:grid-cols-2">
+              <div className="space-y-1.5">
+                <Label htmlFor="new-brand-name">Preset name</Label>
+                <Input
+                  id="new-brand-name"
+                  placeholder="SaaS Founder"
+                  value={newPresetName}
+                  onChange={(e) => setNewPresetName(e.target.value)}
+                />
+              </div>
+              <div className="space-y-1.5">
+                <Label htmlFor="new-brand-handle">Handle</Label>
+                <Input
+                  id="new-brand-handle"
+                  placeholder="@acme"
+                  value={newPresetHandle}
+                  onChange={(e) => setNewPresetHandle(e.target.value)}
+                />
+              </div>
+              <div className="space-y-1.5 sm:col-span-2">
+                <Label htmlFor="new-brand-voice">Brand voice</Label>
+                <Input
+                  id="new-brand-voice"
+                  placeholder="Direct and practical"
+                  value={newPresetVoice}
+                  onChange={(e) => setNewPresetVoice(e.target.value)}
+                />
+              </div>
+              <div className="space-y-1.5 sm:col-span-2">
+                <Label htmlFor="new-brand-audience">Target audience</Label>
+                <Input
+                  id="new-brand-audience"
+                  placeholder="Founders and creators"
+                  value={newPresetAudience}
+                  onChange={(e) => setNewPresetAudience(e.target.value)}
+                />
+              </div>
             </div>
             <div className="flex flex-wrap items-end gap-2">
-              <Input
-                placeholder="Default CTA"
-                value={newPresetCta}
-                onChange={(e) => setNewPresetCta(e.target.value)}
-              />
+              <div className="min-w-48 flex-1 space-y-1.5">
+                <Label htmlFor="new-brand-cta">Default CTA</Label>
+                <Input
+                  id="new-brand-cta"
+                  placeholder="Save and follow for more"
+                  value={newPresetCta}
+                  onChange={(e) => setNewPresetCta(e.target.value)}
+                />
+              </div>
               <label className="space-y-1 text-xs">
                 Primary
                 <Input
@@ -482,6 +451,7 @@ export default function SettingsPage() {
                 type="button"
                 onClick={addPreset}
                 disabled={savingId === "new"}
+                aria-label="Save new brand"
                 className="gap-1.5 shrink-0"
               >
                 <Save className="h-4 w-4" />

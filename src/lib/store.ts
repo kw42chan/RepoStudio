@@ -1,5 +1,7 @@
 import { promises as fs } from "fs";
+import os from "os";
 import path from "path";
+import { sql } from "./db";
 import {
   AppStoreData,
   BrandVoicePreset,
@@ -14,8 +16,23 @@ import {
   withBrandColors,
 } from "./presets";
 
-const DATA_DIR = path.join(process.cwd(), ".data");
-const STORE_PATH = path.join(DATA_DIR, "store.json");
+const STORE_ROW_ID = "main";
+
+function dataDir(): string {
+  return (
+    process.env.REPOSTUDIO_DATA_DIR?.trim() || path.join(process.cwd(), ".data")
+  );
+}
+
+function storePaths(): { primary: string; fallback: string } {
+  const custom = process.env.REPOSTUDIO_DATA_DIR?.trim();
+  return {
+    primary: path.join(dataDir(), "store.json"),
+    fallback: custom
+      ? path.join(os.tmpdir(), "repostudio-fallback", path.basename(custom), "store.json")
+      : path.join(os.tmpdir(), "repostudio", "store.json"),
+  };
+}
 
 function createInitialStore(): AppStoreData {
   return {
@@ -46,29 +63,87 @@ function createInitialStore(): AppStoreData {
   };
 }
 
+function normalizeStore(parsed: Partial<AppStoreData>): AppStoreData {
+  const initial = createInitialStore();
+  return {
+    drafts: parsed.drafts ?? initial.drafts,
+    brandPresets:
+      parsed.brandPresets && parsed.brandPresets.length > 0
+        ? parsed.brandPresets.map(withBrandColors)
+        : initial.brandPresets,
+    visualTemplates: parsed.visualTemplates ?? [],
+    bufferConnection: parsed.bufferConnection ?? initial.bufferConnection,
+    mockQueue: parsed.mockQueue ?? initial.mockQueue,
+  };
+}
+
+async function readFileStore(): Promise<AppStoreData | null> {
+  const { primary, fallback } = storePaths();
+  for (const filePath of [primary, fallback]) {
+    try {
+      const raw = await fs.readFile(filePath, "utf-8");
+      return normalizeStore(JSON.parse(raw) as Partial<AppStoreData>);
+    } catch {
+      continue;
+    }
+  }
+  return null;
+}
+
+async function writeFileStore(data: AppStoreData): Promise<void> {
+  const payload = JSON.stringify(data, null, 2);
+  const { primary, fallback } = storePaths();
+  const targets = [primary, fallback];
+  let lastError: unknown;
+  for (const filePath of targets) {
+    try {
+      await fs.mkdir(path.dirname(filePath), { recursive: true });
+      await fs.writeFile(filePath, payload, "utf-8");
+      return;
+    } catch (error) {
+      lastError = error;
+    }
+  }
+  throw lastError;
+}
+
 export async function readStore(): Promise<AppStoreData> {
   try {
-    const raw = await fs.readFile(STORE_PATH, "utf-8");
-    const parsed = JSON.parse(raw) as Partial<AppStoreData>;
-    const initial = createInitialStore();
-    return {
-      drafts: parsed.drafts ?? initial.drafts,
-      brandPresets:
-        parsed.brandPresets && parsed.brandPresets.length > 0
-          ? parsed.brandPresets.map(withBrandColors)
-          : initial.brandPresets,
-      visualTemplates: parsed.visualTemplates ?? [],
-      bufferConnection: parsed.bufferConnection ?? initial.bufferConnection,
-      mockQueue: parsed.mockQueue ?? initial.mockQueue,
-    };
-  } catch {
-    return createInitialStore();
+    const rows = await sql<{ data: string }>(
+      "select data from app_store where id = $1",
+      [STORE_ROW_ID]
+    );
+    if (rows[0]?.data) {
+      return normalizeStore(JSON.parse(rows[0].data) as Partial<AppStoreData>);
+    }
+  } catch (error) {
+    console.error("Store read failed:", error);
+    return (await readFileStore()) ?? createInitialStore();
   }
+
+  const seeded = (await readFileStore()) ?? createInitialStore();
+  await writeStore(seeded);
+  return seeded;
 }
 
 export async function writeStore(data: AppStoreData): Promise<void> {
-  await fs.mkdir(DATA_DIR, { recursive: true });
-  await fs.writeFile(STORE_PATH, JSON.stringify(data, null, 2), "utf-8");
+  const payload = JSON.stringify(data);
+  let saved = false;
+  try {
+    await sql(
+      "insert into app_store (id, data) values ($1, $2) on conflict (id) do update set data = excluded.data",
+      [STORE_ROW_ID, payload]
+    );
+    saved = true;
+  } catch (error) {
+    console.error("Store database write failed:", error);
+  }
+  try {
+    await writeFileStore(data);
+  } catch (error) {
+    console.error("Store file write failed:", error);
+    if (!saved) throw error;
+  }
 }
 
 export async function getAllVisualTemplates(): Promise<VisualTemplate[]> {

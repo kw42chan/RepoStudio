@@ -9,7 +9,7 @@ For each source:
 1. Paste the link into Post URL and click Load link. For the video transcript, skip the link and paste the text instead.
 2. Read Copied Post Content.
 3. If a real post is in the box, click Generate Repurpose Ideas.
-4. Open two different angles and compare the first spoken line of each reel.
+4. Select an angle. Confirm the reel is not written yet. Press Generate selected angle, then select a second angle and press Generate selected angle again. Compare the first spoken line of each reel.
 
 ## Cases
 
@@ -22,6 +22,8 @@ For each source:
 | Video transcript | Set the source to Transcript and paste: `[00:00:01] The offer was weak, so more ads could not save it.` and `[00:00:04] Rewriting the first line made the same budget convert.` Also try `https://www.youtube.com/watch?v=jNQXAC9IVRw` with Load link. | Ideas quote `The offer was weak, so more ads could not save it.` and do not include `[00:00:01]`. The key insight is `Rewriting the first line made the same budget convert.` The two angle openings differ. No reel beat still contains `[00:00:01]` or `[00:00:04]`. A YouTube link passes only when the box receives the spoken transcript. |
 
 ## Last run
+
+16 November 2026, 3:50 PM Hong Kong time. This run checked the generate button on Load SaaS Growth Post. Selecting “The 5-step execution breakdown” did not write a reel. Content Studio appeared only after Generate selected angle. Opening hook: `Steal this exact playbook we used to turn insight into results`. The source rows below were not repeated.
 
 16 November 2026, about 12:00 AM Hong Kong time.
 

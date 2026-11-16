@@ -92,6 +92,7 @@ export default function RepurposeWorkspacePage() {
   const [sourcePost, setSourcePost] = useState<SourcePost | null>(null);
   const [ideation, setIdeation] = useState<IdeationResult | null>(null);
   const [selectedIdea, setSelectedIdea] = useState<RepurposeIdea | null>(null);
+  const [generatedIdeaId, setGeneratedIdeaId] = useState<string | null>(null);
 
   // Studio generation options
   const [writingStyle, setWritingStyle] = useState<WritingStyleConfig>({
@@ -237,7 +238,11 @@ export default function RepurposeWorkspacePage() {
         ideas: data.ideas,
         usedMock: Boolean(data.usedMock),
       });
-      setSelectedIdea(data.ideas[0] || null);
+      setSelectedIdea(null);
+      setGeneratedIdeaId(null);
+      setReel(undefined);
+      setIgCarousel(undefined);
+      setLiCarousel(undefined);
     } catch (err) {
       setIdeationError(
         err instanceof Error ? err.message : "Failed to generate ideas"
@@ -289,6 +294,7 @@ export default function RepurposeWorkspacePage() {
       if (failures.length === formats.length) {
         setGenerateError(failures[0] || "Could not write the content.");
       } else {
+        setGeneratedIdeaId(idea.id);
         window.setTimeout(() => {
           document
             .getElementById("content-studio")
@@ -639,8 +645,8 @@ export default function RepurposeWorkspacePage() {
           </CardHeader>
           <CardContent className="space-y-5">
             <p className="text-sm text-muted-foreground">
-              Tap an angle to write the reel script and both carousels in the
-              style below. Changing the writing style rewrites them.
+              Choose an angle, then press Generate selected angle. Selecting an
+              angle or changing the writing style does not start writing.
             </p>
             <div className="grid gap-3 md:grid-cols-2 lg:grid-cols-3">
               {ideation.ideas.map((idea) => {
@@ -649,12 +655,7 @@ export default function RepurposeWorkspacePage() {
                   <button
                     key={idea.id}
                     type="button"
-                    onClick={() =>
-                      handleGenerateFormats(
-                        ["reel", "ig_carousel", "li_carousel"],
-                        idea
-                      )
-                    }
+                    onClick={() => setSelectedIdea(idea)}
                     className={`text-left rounded-xl border p-4 transition-all space-y-2 ${
                       isSelected
                         ? "border-primary bg-primary/5 ring-1 ring-primary"
@@ -686,17 +687,7 @@ export default function RepurposeWorkspacePage() {
             <div className="grid gap-4 lg:grid-cols-[1.5fr_1fr] items-end">
               <WritingStyleControls
                 value={writingStyle}
-                onChange={(next) => {
-                  const styleChanged = next.styleId !== writingStyle.styleId;
-                  setWritingStyle(next);
-                  if (styleChanged && selectedIdea) {
-                    void handleGenerateFormats(
-                      ["reel", "ig_carousel", "li_carousel"],
-                      selectedIdea,
-                      next
-                    );
-                  }
-                }}
+                onChange={setWritingStyle}
               />
 
               <div className="rounded-lg border bg-muted/20 p-3 space-y-3">
@@ -739,6 +730,13 @@ export default function RepurposeWorkspacePage() {
                   </div>
                 </div>
 
+                <p className="text-sm">
+                  {selectedIdea
+                    ? generatedIdeaId === selectedIdea.id
+                      ? `Wrote “${selectedIdea.title}”. Choose another angle and press Generate selected angle to rewrite it.`
+                      : `Selected “${selectedIdea.title}”. Press Generate selected angle to write the reel and both carousels.`
+                    : "Choose an angle. Writing starts only after you press Generate selected angle."}
+                </p>
                 <div className="grid gap-2 sm:grid-cols-2">
                   <Button
                     type="button"
@@ -771,7 +769,7 @@ export default function RepurposeWorkspacePage() {
                     ) : (
                       <Wand2 className="h-4 w-4" />
                     )}
-                    {generating ? "Writing content..." : "Generate All 3 Formats"}
+                    {generating ? "Writing content..." : "Generate selected angle"}
                   </Button>
                 </div>
                 {generateError && (

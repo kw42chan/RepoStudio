@@ -1,7 +1,7 @@
 "use client";
 
 import { useEffect, useState } from "react";
-import { CheckCircle2, Loader2, PlugZap, Save, Unplug } from "lucide-react";
+import { CheckCircle2, Loader2, Pencil, PlugZap, Save, Trash2, Unplug } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import {
   Card,
@@ -11,6 +11,7 @@ import {
   CardTitle,
 } from "@/components/ui/card";
 import { Input } from "@/components/ui/input";
+import { Textarea } from "@/components/ui/textarea";
 import { Label } from "@/components/ui/label";
 import { Badge } from "@/components/ui/badge";
 import { withBrandColors } from "@/lib/presets";
@@ -37,9 +38,12 @@ export default function SettingsPage() {
   const [newPresetHandle, setNewPresetHandle] = useState("@yourbrand");
   const [newPrimary, setNewPrimary] = useState("#1D4ED8");
   const [newSecondary, setNewSecondary] = useState("#F59E0B");
-  const [savingBrand, setSavingBrand] = useState(false);
+  const [savingId, setSavingId] = useState<string | null>(null);
   const [brandMessage, setBrandMessage] = useState<string | null>(null);
   const [brandError, setBrandError] = useState<string | null>(null);
+  const [editingId, setEditingId] = useState<string | null>(null);
+  const [draft, setDraft] = useState<BrandVoicePreset | null>(null);
+  const [pendingDeleteId, setPendingDeleteId] = useState<string | null>(null);
 
   async function load() {
     const [sRes, pRes] = await Promise.all([
@@ -105,7 +109,7 @@ export default function SettingsPage() {
     const handle = newPresetHandle.trim() || "@yourbrand";
     const name =
       newPresetName.trim() || handle.replace(/^@/, "") || "New brand";
-    setSavingBrand(true);
+    setSavingId("new");
     setBrandError(null);
     setBrandMessage(null);
     try {
@@ -137,35 +141,82 @@ export default function SettingsPage() {
       setBrandMessage(`Saved ${name}.`);
       await load();
     } finally {
-      setSavingBrand(false);
+      setSavingId(null);
     }
   }
 
-  function patchPreset(id: string, patch: Partial<BrandVoicePreset>) {
-    setPresets((prev) =>
-      prev.map((item) => (item.id === id ? { ...item, ...patch } : item))
-    );
+  function startEdit(preset: BrandVoicePreset) {
+    setEditingId(preset.id);
+    setDraft({ ...withBrandColors(preset) });
+    setPendingDeleteId(null);
+    setBrandError(null);
+    setBrandMessage(null);
+  }
+
+  function cancelEdit() {
+    setEditingId(null);
+    setDraft(null);
   }
 
   async function savePreset(preset: BrandVoicePreset) {
-    setSavingBrand(true);
+    const name = preset.name.trim();
+    if (!name) {
+      setBrandError("Name the brand before saving.");
+      return;
+    }
+    const handle = preset.handle.trim() || `@${name.replace(/\s+/g, "").toLowerCase()}`;
+    const next = withBrandColors({
+      ...preset,
+      name,
+      handle: handle.startsWith("@") ? handle : `@${handle}`,
+      voice: preset.voice.trim() || "Direct and practical",
+      audience: preset.audience.trim() || "Founders and creators",
+      cta: preset.cta.trim() || "Save and follow for more",
+    });
+    setSavingId(preset.id);
     setBrandError(null);
     setBrandMessage(null);
     try {
       const res = await fetch("/api/presets", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ preset: withBrandColors(preset) }),
+        body: JSON.stringify({ preset: next }),
       });
       const data = await res.json().catch(() => null);
       if (!res.ok) {
         setBrandError(data?.error || "Could not save the brand.");
         return;
       }
-      setBrandMessage(`Saved ${preset.name}.`);
+      setBrandMessage(`Saved ${next.name}.`);
+      setEditingId(null);
+      setDraft(null);
       await load();
     } finally {
-      setSavingBrand(false);
+      setSavingId(null);
+    }
+  }
+
+  async function removePreset(preset: BrandVoicePreset) {
+    setSavingId(preset.id);
+    setBrandError(null);
+    setBrandMessage(null);
+    try {
+      const res = await fetch("/api/presets", {
+        method: "DELETE",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ id: preset.id }),
+      });
+      const data = await res.json().catch(() => null);
+      if (!res.ok) {
+        setBrandError(data?.error || "Could not delete the brand.");
+        return;
+      }
+      if (editingId === preset.id) cancelEdit();
+      setPendingDeleteId(null);
+      setBrandMessage(`Deleted ${preset.name}.`);
+      await load();
+    } finally {
+      setSavingId(null);
     }
   }
 
@@ -191,54 +242,192 @@ export default function SettingsPage() {
           </CardDescription>
         </CardHeader>
         <CardContent className="space-y-4">
+          {brandError && (
+            <p className="text-sm text-destructive">{brandError}</p>
+          )}
+          {brandMessage && <p className="text-sm">{brandMessage}</p>}
           <div className="grid gap-3 sm:grid-cols-2">
-            {presets.map((p) => (
-              <div key={p.id} className="rounded-lg border p-3 space-y-1">
-                <div className="flex items-center justify-between">
-                  <span className="font-semibold text-sm">{p.name}</span>
-                  <Badge variant="outline" className="text-[11px]">
-                    {p.handle}
-                  </Badge>
+            {presets.map((p) => {
+              const isEditing = editingId === p.id && draft?.id === p.id;
+              return (
+                <div
+                  key={p.id}
+                  className={`rounded-lg border p-3 space-y-2 ${isEditing ? "sm:col-span-2" : ""}`}
+                >
+                  <div className="flex items-start justify-between gap-2">
+                    <span className="font-semibold text-sm">{p.name}</span>
+                    <Badge variant="outline" className="text-[11px]">
+                      {p.handle}
+                    </Badge>
+                  </div>
+                  {isEditing && draft ? (
+                    <div className="grid gap-2 sm:grid-cols-2">
+                      <Input
+                        aria-label="Brand name"
+                        value={draft.name}
+                        onChange={(e) =>
+                          setDraft({ ...draft, name: e.target.value })
+                        }
+                      />
+                      <Input
+                        aria-label="Handle"
+                        value={draft.handle}
+                        onChange={(e) =>
+                          setDraft({ ...draft, handle: e.target.value })
+                        }
+                      />
+                      <Textarea
+                        aria-label="Brand voice"
+                        value={draft.voice}
+                        onChange={(e) =>
+                          setDraft({ ...draft, voice: e.target.value })
+                        }
+                        className="sm:col-span-2 min-h-16"
+                      />
+                      <Input
+                        aria-label="Audience"
+                        value={draft.audience}
+                        onChange={(e) =>
+                          setDraft({ ...draft, audience: e.target.value })
+                        }
+                      />
+                      <Input
+                        aria-label="Call to action"
+                        value={draft.cta}
+                        onChange={(e) =>
+                          setDraft({ ...draft, cta: e.target.value })
+                        }
+                      />
+                      <div className="flex flex-wrap items-end gap-2 sm:col-span-2">
+                        <label className="space-y-1 text-xs">
+                          Primary
+                          <Input
+                            type="color"
+                            aria-label="Primary color"
+                            value={draft.primaryColor}
+                            onChange={(e) =>
+                              setDraft({
+                                ...draft,
+                                primaryColor: e.target.value,
+                              })
+                            }
+                            className="h-9 w-16 p-1"
+                          />
+                        </label>
+                        <label className="space-y-1 text-xs">
+                          Secondary
+                          <Input
+                            type="color"
+                            aria-label="Secondary color"
+                            value={draft.secondaryColor}
+                            onChange={(e) =>
+                              setDraft({
+                                ...draft,
+                                secondaryColor: e.target.value,
+                              })
+                            }
+                            className="h-9 w-16 p-1"
+                          />
+                        </label>
+                        <Button
+                          type="button"
+                          size="sm"
+                          disabled={savingId === p.id}
+                          onClick={() => savePreset(draft)}
+                        >
+                          {savingId === p.id ? "Saving..." : "Save changes"}
+                        </Button>
+                        <Button
+                          type="button"
+                          size="sm"
+                          variant="outline"
+                          disabled={savingId === p.id}
+                          onClick={cancelEdit}
+                        >
+                          Cancel
+                        </Button>
+                      </div>
+                    </div>
+                  ) : (
+                    <>
+                      <p className="text-xs text-muted-foreground">{p.voice}</p>
+                      <p className="text-xs text-muted-foreground">
+                        Audience: {p.audience}
+                      </p>
+                      <p className="text-xs text-muted-foreground">
+                        CTA: {p.cta}
+                      </p>
+                      <div className="flex flex-wrap items-center gap-2 pt-1">
+                        <span className="inline-flex items-center gap-1 text-xs">
+                          Primary
+                          <span
+                            className="h-4 w-4 rounded border"
+                            style={{ backgroundColor: p.primaryColor }}
+                          />
+                        </span>
+                        <span className="inline-flex items-center gap-1 text-xs">
+                          Secondary
+                          <span
+                            className="h-4 w-4 rounded border"
+                            style={{ backgroundColor: p.secondaryColor }}
+                          />
+                        </span>
+                        <Button
+                          type="button"
+                          size="sm"
+                          variant="outline"
+                          className="gap-1"
+                          onClick={() => startEdit(p)}
+                        >
+                          <Pencil className="h-3.5 w-3.5" />
+                          Edit
+                        </Button>
+                        {pendingDeleteId === p.id ? (
+                          <>
+                            <span className="text-xs text-muted-foreground">
+                              Delete {p.name}?
+                            </span>
+                            <Button
+                              type="button"
+                              size="sm"
+                              variant="destructive"
+                              disabled={savingId === p.id}
+                              onClick={() => removePreset(p)}
+                            >
+                              {savingId === p.id ? "Deleting..." : "Delete"}
+                            </Button>
+                            <Button
+                              type="button"
+                              size="sm"
+                              variant="outline"
+                              disabled={savingId === p.id}
+                              onClick={() => setPendingDeleteId(null)}
+                            >
+                              Keep
+                            </Button>
+                          </>
+                        ) : (
+                          <Button
+                            type="button"
+                            size="sm"
+                            variant="outline"
+                            className="gap-1"
+                            onClick={() => {
+                              setPendingDeleteId(p.id);
+                              setBrandError(null);
+                              setBrandMessage(null);
+                            }}
+                          >
+                            <Trash2 className="h-3.5 w-3.5" />
+                            Delete
+                          </Button>
+                        )}
+                      </div>
+                    </>
+                  )}
                 </div>
-                <p className="text-xs text-muted-foreground">{p.voice}</p>
-                <p className="text-xs text-muted-foreground">
-                  Audience: {p.audience}
-                </p>
-                <div className="flex flex-wrap items-end gap-2 pt-2">
-                  <label className="space-y-1 text-xs">
-                    Primary
-                    <Input
-                      type="color"
-                      value={p.primaryColor}
-                      onChange={(e) =>
-                        patchPreset(p.id, { primaryColor: e.target.value })
-                      }
-                      className="h-9 w-16 p-1"
-                    />
-                  </label>
-                  <label className="space-y-1 text-xs">
-                    Secondary
-                    <Input
-                      type="color"
-                      value={p.secondaryColor}
-                      onChange={(e) =>
-                        patchPreset(p.id, { secondaryColor: e.target.value })
-                      }
-                      className="h-9 w-16 p-1"
-                    />
-                  </label>
-                  <Button
-                    type="button"
-                    size="sm"
-                    variant="outline"
-                    disabled={savingBrand}
-                    onClick={() => savePreset(p)}
-                  >
-                    {savingBrand ? "Saving..." : "Save brand"}
-                  </Button>
-                </div>
-              </div>
-            ))}
+              );
+            })}
           </div>
 
           <div className="rounded-lg border p-3.5 space-y-3 bg-muted/20">
@@ -292,19 +481,13 @@ export default function SettingsPage() {
               <Button
                 type="button"
                 onClick={addPreset}
-                disabled={savingBrand}
+                disabled={savingId === "new"}
                 className="gap-1.5 shrink-0"
               >
                 <Save className="h-4 w-4" />
-                {savingBrand ? "Saving..." : "Save brand"}
+                {savingId === "new" ? "Saving..." : "Save brand"}
               </Button>
             </div>
-            {brandError && (
-              <p className="text-sm text-destructive">{brandError}</p>
-            )}
-            {brandMessage && (
-              <p className="text-sm">{brandMessage}</p>
-            )}
           </div>
         </CardContent>
       </Card>

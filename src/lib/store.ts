@@ -67,10 +67,9 @@ function normalizeStore(parsed: Partial<AppStoreData>): AppStoreData {
   const initial = createInitialStore();
   return {
     drafts: parsed.drafts ?? initial.drafts,
-    brandPresets:
-      parsed.brandPresets && parsed.brandPresets.length > 0
-        ? parsed.brandPresets.map(withBrandColors)
-        : initial.brandPresets,
+    brandPresets: Array.isArray(parsed.brandPresets)
+      ? parsed.brandPresets.map(withBrandColors)
+      : initial.brandPresets,
     visualTemplates: parsed.visualTemplates ?? [],
     bufferConnection: parsed.bufferConnection ?? initial.bufferConnection,
     mockQueue: parsed.mockQueue ?? initial.mockQueue,
@@ -219,4 +218,10 @@ export async function upsertBrandPreset(
   }
   await writeStore(store);
   return preset;
+}
+
+export async function deleteBrandPreset(id: string): Promise<void> {
+  const store = await readStore();
+  store.brandPresets = store.brandPresets.filter((preset) => preset.id !== id);
+  await writeStore(store);
 }

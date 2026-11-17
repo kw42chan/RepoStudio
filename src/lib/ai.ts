@@ -376,6 +376,44 @@ function buildMockGridSlide(slideNumber: number): CarouselContent["slides"][numb
   };
 }
 
+function carouselHasGridSlide(carousel: CarouselContent): boolean {
+  return carousel.slides.some(
+    (slide) =>
+      slide.layout === "grid-2x3" && (slide.gridCells?.length ?? 0) === 6
+  );
+}
+
+export function ensureLinkedInGridSlide(
+  carousel: CarouselContent,
+  _sourcePost: SourcePost,
+  idea: RepurposeIdea
+): CarouselContent {
+  if (carouselHasGridSlide(carousel)) {
+    return carousel;
+  }
+
+  const slides = [...carousel.slides];
+  const byNumber = slides.findIndex((s) => s.slideNumber === 4);
+  const targetIndex = byNumber >= 0 ? byNumber : Math.min(3, slides.length);
+
+  const replacement = {
+    ...buildMockGridSlide(4),
+    headline: idea.title,
+  };
+
+  if (targetIndex < slides.length) {
+    slides[targetIndex] = {
+      ...replacement,
+      slideNumber: slides[targetIndex].slideNumber,
+      id: slides[targetIndex].id,
+    };
+  } else {
+    slides.push(replacement);
+  }
+
+  return { ...carousel, slides };
+}
+
 function buildMockCarousel(
   platform: "instagram" | "linkedin",
   source: SourcePost,
@@ -682,6 +720,14 @@ Prefer the grid-2x3 slide for LinkedIn listicles and tool roundups when the angl
           );
         }
       }
+    }
+
+    if (results.liCarousel) {
+      results.liCarousel = ensureLinkedInGridSlide(
+        results.liCarousel,
+        sourcePost,
+        idea
+      );
     }
 
     return { ...results, usedMock };

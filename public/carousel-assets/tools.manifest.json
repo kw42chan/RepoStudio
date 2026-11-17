@@ -1,0 +1,16 @@
+{
+  "tools": [
+    { "id": "claude", "label": "Claude", "logo": "logos/claude.svg" },
+    { "id": "chatgpt", "label": "ChatGPT", "logo": "logos/chatgpt.svg" },
+    { "id": "cursor", "label": "Cursor", "logo": "logos/cursor.svg" },
+    { "id": "figma", "label": "Figma", "logo": "logos/figma.svg" },
+    { "id": "github", "label": "GitHub", "logo": "logos/github.svg" },
+    { "id": "jira", "label": "Jira", "logo": "logos/jira.svg" },
+    { "id": "linear", "label": "Linear", "logo": "logos/linear.svg" },
+    { "id": "miro", "label": "Miro", "logo": "logos/miro.svg" },
+    { "id": "notion", "label": "Notion", "logo": "logos/notion.svg" },
+    { "id": "perplexity", "label": "Perplexity", "logo": "logos/perplexity.svg" },
+    { "id": "slack", "label": "Slack", "logo": "logos/slack.svg" },
+    { "id": "asana", "label": "Asana", "logo": "logos/asana.svg" }
+  ]
+}

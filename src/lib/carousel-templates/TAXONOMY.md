@@ -1,4 +1,4 @@
-# Carousel slide layout taxonomy (v1)
+# Carousel slide layout taxonomy (v1.1)
 
 This taxonomy aligns with `CarouselSlideLayout` in `src/lib/types.ts` (`default` | `grid-2x3`) and the templates in `manifest.v1.json`.
 
@@ -20,9 +20,13 @@ LLM slide JSON → ensureLinkedInGridSlide (LI listicles) → normalizeCarouselS
 
 Selection logic lives in `pickTemplateForSlide` (`src/lib/carousel-templates/index.ts`). Generation calls `normalizeCarouselSlideTemplates` from `generateContent` in `src/lib/ai.ts` after carousel JSON is parsed (and after the LinkedIn grid fallback).
 
+## Reference-only patterns (v1.1)
+
+Nine `ref-edwardai-*` templates document @edwardai.tech Instagram carousels. They use `implementationStatus: "reference-only"` and `productionFallbackId` until `carousel-preview.tsx` implements hero, profile, cheatsheet, stats, and numbered-list layouts. See `references[]` in the manifest and `/cursor/stores/self/docs/carousel-template-library.md`.
+
 ## Extending the library
 
-1. Add a template object to `manifest.v1.json` (or bump to `manifest.v2.json` and update the import in `index.ts`).
+1. Add a template object to `manifest.v1.json` (bump `version` and document in the store doc).
 2. Teach `pickTemplateForSlide` when to return the new `id`.
 3. If the layout is new, extend `CarouselSlideLayout` and branch in `carousel-preview.tsx`.
 4. Add vitest cases in `carousel-templates.test.ts`.

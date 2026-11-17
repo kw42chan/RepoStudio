@@ -2,9 +2,13 @@ import { describe, expect, it } from "vitest";
 import {
   carouselTemplateManifest,
   getCarouselTemplate,
+  getReferenceCarousel,
   ideaSuggestsToolGrid,
+  listReferenceCarousels,
+  listReferenceOnlyTemplates,
   normalizeCarouselSlideTemplates,
   pickTemplateForSlide,
+  resolveProductionTemplateId,
 } from "./carousel-templates";
 import type { CarouselContent, CarouselSlide, RepurposeIdea } from "./types";
 
@@ -29,12 +33,32 @@ const mockIdea: RepurposeIdea = {
 };
 
 describe("carousel template manifest", () => {
-  it("exposes four categories and aligned layout keys", () => {
-    expect(carouselTemplateManifest.version).toBe("1.0.0");
-    expect(carouselTemplateManifest.categories).toHaveLength(4);
+  it("exposes v1.1 categories and aligned layout keys", () => {
+    expect(carouselTemplateManifest.version).toBe("1.1.0");
+    expect(carouselTemplateManifest.categories.length).toBeGreaterThanOrEqual(9);
     const grid = getCarouselTemplate("body-tool-grid-2x3");
     expect(grid?.layout).toBe("grid-2x3");
     expect(grid?.category).toBe("body-grid");
+  });
+
+  it("indexes three edwardai reference carousels", () => {
+    expect(listReferenceCarousels()).toHaveLength(3);
+    const agents = getReferenceCarousel(
+      "https://www.instagram.com/p/DbP6R_8k4Y5/"
+    );
+    expect(agents?.slideSequence.some((s) => s.templateId.includes("agent"))).toBe(
+      true
+    );
+  });
+
+  it("resolves reference-only templates to production fallbacks", () => {
+    expect(listReferenceOnlyTemplates().length).toBeGreaterThanOrEqual(9);
+    expect(resolveProductionTemplateId("ref-edwardai-hook-hero-showcase")).toBe(
+      "hook-scroll-cover"
+    );
+    expect(resolveProductionTemplateId("hook-scroll-cover")).toBe(
+      "hook-scroll-cover"
+    );
   });
 });
 

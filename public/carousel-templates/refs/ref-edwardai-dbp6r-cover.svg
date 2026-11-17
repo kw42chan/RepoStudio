@@ -1,0 +1,9 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="270" height="338" viewBox="0 0 270 338">
+  <defs><linearGradient id="bg" x1="0" y1="0" x2="0" y2="1"><stop offset="0%" stop-color="#4a3728"/><stop offset="100%" stop-color="#1a1410"/></linearGradient></defs>
+  <rect width="270" height="338" fill="url(#bg)"/>
+  <circle cx="70" cy="130" r="28" fill="#333"/>
+  <circle cx="135" cy="125" r="32" fill="#555"/>
+  <circle cx="200" cy="130" r="28" fill="#333"/>
+  <text x="135" y="280" fill="#fff" font-size="16" font-weight="bold" text-anchor="middle" font-family="system-ui">hook headline</text>
+  <rect x="24" y="300" width="110" height="22" rx="11" fill="#fff"/>
+</svg>

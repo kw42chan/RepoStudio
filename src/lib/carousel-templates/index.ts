@@ -4,19 +4,39 @@ import type { CarouselSlideLayout } from "../types";
 
 export type CarouselTemplateCategoryId =
   | "hook-cover"
+  | "hook-hero"
   | "body-narrative"
   | "body-grid"
+  | "body-profile"
+  | "body-list"
+  | "body-stats"
+  | "body-cheatsheet"
   | "cta-close";
 
 export type CarouselTemplateIntent =
   | "hook"
   | "explain"
   | "list"
-  | "cta";
+  | "cta"
+  | "compare";
+
+export type CarouselTemplateImplementationStatus =
+  | "rendered"
+  | "reference-only";
 
 export interface CarouselTemplateSlots {
   required: string[];
   optional: string[];
+}
+
+export interface CarouselTemplateStructure {
+  zones?: string[];
+  background?: string;
+  pattern?: string;
+  columns?: string[];
+  repeatPerSlide?: number;
+  listItems?: { count: number; cellSlots: string[] };
+  metricCells?: { count: number; cellSlots: string[] };
 }
 
 export interface CarouselTemplateDefinition {
@@ -25,6 +45,11 @@ export interface CarouselTemplateDefinition {
   category: CarouselTemplateCategoryId;
   intent: CarouselTemplateIntent;
   layout: CarouselSlideLayout;
+  implementationStatus?: CarouselTemplateImplementationStatus;
+  productionFallbackId?: string;
+  sourceUrl?: string;
+  inspirationNotes?: string;
+  structure?: CarouselTemplateStructure;
   roles: Array<CarouselSlide["role"]>;
   slots: CarouselTemplateSlots;
   gridCells?: {
@@ -34,7 +59,22 @@ export interface CarouselTemplateDefinition {
   preview: {
     thumbnailKey: string;
     description: string;
+    thumbnailPath?: string;
   };
+}
+
+export interface CarouselReferenceCarousel {
+  id: string;
+  sourceUrl: string;
+  author: string;
+  topic: string;
+  typicalSlideCount: string;
+  fetchMethod: string;
+  slideSequence: Array<{
+    position: number | string;
+    templateId: string;
+    role: string;
+  }>;
 }
 
 export interface CarouselTemplateCategory {
@@ -45,6 +85,7 @@ export interface CarouselTemplateCategory {
 
 export interface CarouselTemplateManifest {
   version: string;
+  references?: CarouselReferenceCarousel[];
   categories: CarouselTemplateCategory[];
   templates: CarouselTemplateDefinition[];
 }
@@ -73,6 +114,40 @@ export function getLayoutForTemplate(
   templateId: string
 ): CarouselSlideLayout | undefined {
   return getCarouselTemplate(templateId)?.layout;
+}
+
+/** Maps a reference template id to the production template used for layout/render today. */
+export function resolveProductionTemplateId(templateId: string): string {
+  const template = getCarouselTemplate(templateId);
+  if (!template) {
+    return templateId;
+  }
+  if (template.implementationStatus === "reference-only") {
+    return template.productionFallbackId ?? templateId;
+  }
+  return templateId;
+}
+
+export function listReferenceCarousels(): CarouselReferenceCarousel[] {
+  return carouselTemplateManifest.references ?? [];
+}
+
+export function getReferenceCarousel(
+  sourceUrlOrId: string
+): CarouselReferenceCarousel | undefined {
+  const refs = listReferenceCarousels();
+  return refs.find(
+    (ref) =>
+      ref.id === sourceUrlOrId ||
+      ref.sourceUrl === sourceUrlOrId ||
+      ref.sourceUrl.replace(/\/$/, "") === sourceUrlOrId.replace(/\/$/, "")
+  );
+}
+
+export function listReferenceOnlyTemplates(): CarouselTemplateDefinition[] {
+  return carouselTemplateManifest.templates.filter(
+    (template) => template.implementationStatus === "reference-only"
+  );
 }
 
 const LISTICLE_ANGLE_HINTS = [
@@ -156,14 +231,15 @@ export function applyTemplateLayoutToSlide(
   slide: CarouselSlide,
   templateId: string
 ): CarouselSlide {
-  const template = getCarouselTemplate(templateId);
+  const productionId = resolveProductionTemplateId(templateId);
+  const template = getCarouselTemplate(productionId);
   if (!template) {
     return slide;
   }
 
   const next: CarouselSlide = {
     ...slide,
-    templateId,
+    templateId: productionId,
     layout: template.layout === "default" ? undefined : template.layout,
   };
 

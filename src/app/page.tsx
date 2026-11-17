@@ -821,12 +821,13 @@ export default function RepurposeWorkspacePage() {
                     <Label className="text-xs">Instagram layout pack</Label>
                     <Select
                       value={layoutPackIds.instagram ?? "default"}
-                      onValueChange={(v) =>
+                      onValueChange={(v) => {
+                        if (!v) return;
                         setLayoutPackIds((prev) => ({
                           ...prev,
                           instagram: v,
-                        }))
-                      }
+                        }));
+                      }}
                     >
                       <SelectTrigger>
                         <SelectValue />
@@ -850,12 +851,13 @@ export default function RepurposeWorkspacePage() {
                     <Label className="text-xs">LinkedIn layout pack</Label>
                     <Select
                       value={layoutPackIds.linkedin ?? "default"}
-                      onValueChange={(v) =>
+                      onValueChange={(v) => {
+                        if (!v) return;
                         setLayoutPackIds((prev) => ({
                           ...prev,
                           linkedin: v,
-                        }))
-                      }
+                        }));
+                      }}
                     >
                       <SelectTrigger>
                         <SelectValue />

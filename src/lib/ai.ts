@@ -13,6 +13,7 @@ import {
   WritingStyleConfig,
 } from "./types";
 import { WRITING_STYLES } from "./presets";
+import { normalizeCarouselSlideTemplates } from "./carousel-templates";
 import { spokenTextFromTranscript } from "./transcript";
 
 const ideationSchema = z.object({
@@ -75,6 +76,7 @@ export const carouselSlideSchema = z.object({
   headline: z.string(),
   body: z.string(),
   visualDirection: z.string(),
+  templateId: z.string().optional(),
   layout: z.enum(["default", "grid-2x3"]).optional(),
   gridCells: z.array(gridCellSchema).optional(),
 });
@@ -722,10 +724,21 @@ Prefer the grid-2x3 slide for LinkedIn listicles and tool roundups when the angl
       }
     }
 
+    if (results.igCarousel) {
+      results.igCarousel = normalizeCarouselSlideTemplates(
+        results.igCarousel,
+        idea
+      );
+    }
+
     if (results.liCarousel) {
       results.liCarousel = ensureLinkedInGridSlide(
         results.liCarousel,
         sourcePost,
+        idea
+      );
+      results.liCarousel = normalizeCarouselSlideTemplates(
+        results.liCarousel,
         idea
       );
     }

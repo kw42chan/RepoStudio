@@ -9,6 +9,7 @@ import {
   carouselPalette,
   slideGround,
 } from "@/lib/carousel-design";
+import { getCarouselTemplate } from "@/lib/carousel-templates";
 import { AspectRatio, CarouselSlide, VisualTemplate } from "@/lib/types";
 import { getExportDimensions } from "@/lib/export-carousel";
 
@@ -183,6 +184,10 @@ function GridSlideCanvas({
       <div
         data-platform={platform}
         data-layout="grid-2x3"
+        data-carousel-template={
+          slide.templateId ??
+          getCarouselTemplate("body-tool-grid-2x3")?.id
+        }
         style={{
           width: `${dims.width}px`,
           height: `${dims.height}px`,
@@ -455,6 +460,15 @@ export function SlideCanvas({
         : palette.lightBg;
   const headingSize = px(slide.headline.length > 72 ? 26 : slide.role === "cover" ? 34 : 30);
   const scale = fullResolution ? 1 : 0.34;
+  const carouselTemplateId =
+    slide.templateId ??
+    (slide.role === "cover"
+      ? "hook-scroll-cover"
+      : slide.role === "cta"
+        ? "cta-action-close"
+        : "body-narrative-default");
+  const carouselTemplateLayout =
+    getCarouselTemplate(carouselTemplateId)?.layout ?? "default";
 
   if (slide.layout === "grid-2x3" && (slide.gridCells?.length ?? 0) > 0) {
     return (
@@ -489,6 +503,8 @@ export function SlideCanvas({
     >
       <div
         data-platform={platform}
+        data-layout={carouselTemplateLayout}
+        data-carousel-template={carouselTemplateId}
         style={{
           width: `${dims.width}px`,
           height: `${dims.height}px`,

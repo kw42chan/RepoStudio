@@ -117,6 +117,8 @@ export interface CarouselSlide {
   headline: string;
   body: string;
   visualDirection: string;
+  /** Library template id from `src/lib/carousel-templates/` (set during normalize). */
+  templateId?: string;
   layout?: CarouselSlideLayout;
   gridCells?: GridCell[];
 }

@@ -1,0 +1,100 @@
+{
+  "version": "1.0.0",
+  "categories": [
+    {
+      "id": "hook-cover",
+      "label": "Hook / cover",
+      "whenToUse": "Slide 1 or role cover: scroll-stopping claim with eyebrow, headline, and short supporting line."
+    },
+    {
+      "id": "body-narrative",
+      "label": "Body narrative",
+      "whenToUse": "Middle slides: problem, shift, payoff, or how-to copy on alternating light/dark text layouts."
+    },
+    {
+      "id": "body-grid",
+      "label": "Body grid",
+      "whenToUse": "One slide per carousel for LinkedIn listicles and tool roundups: 2×3 numbered cards with logos."
+    },
+    {
+      "id": "cta-close",
+      "label": "CTA / close",
+      "whenToUse": "Final slide: single action, gradient ground, brand lockup."
+    }
+  ],
+  "templates": [
+    {
+      "id": "hook-scroll-cover",
+      "version": 1,
+      "category": "hook-cover",
+      "intent": "hook",
+      "layout": "default",
+      "roles": ["cover"],
+      "slots": {
+        "required": ["headline", "body", "visualDirection"],
+        "optional": ["eyebrow"]
+      },
+      "preview": {
+        "thumbnailKey": "hook-scroll-cover",
+        "description": "Light cover with logo, tag, headline stack, progress chrome."
+      }
+    },
+    {
+      "id": "body-narrative-default",
+      "version": 1,
+      "category": "body-narrative",
+      "intent": "explain",
+      "layout": "default",
+      "roles": ["body"],
+      "slots": {
+        "required": ["headline", "body", "visualDirection"],
+        "optional": ["eyebrow"]
+      },
+      "preview": {
+        "thumbnailKey": "body-narrative-default",
+        "description": "Standard PM-style text slide with eyebrow, headline, and body."
+      }
+    },
+    {
+      "id": "body-tool-grid-2x3",
+      "version": 1,
+      "category": "body-grid",
+      "intent": "list",
+      "layout": "grid-2x3",
+      "roles": ["body"],
+      "slots": {
+        "required": [
+          "headline",
+          "body",
+          "visualDirection",
+          "gridCells"
+        ],
+        "optional": ["eyebrow"]
+      },
+      "gridCells": {
+        "count": 6,
+        "cellSlots": ["number", "title", "toolIds", "description"]
+      },
+      "preview": {
+        "thumbnailKey": "body-tool-grid-2x3",
+        "description": "Header row plus six tool cards in a 2×3 grid."
+      }
+    },
+    {
+      "id": "cta-action-close",
+      "version": 1,
+      "category": "cta-close",
+      "intent": "cta",
+      "layout": "default",
+      "roles": ["cta"],
+      "slots": {
+        "required": ["headline", "body", "visualDirection"],
+        "optional": ["eyebrow"]
+      },
+      "preview": {
+        "thumbnailKey": "cta-action-close",
+        "description": "Brand gradient close with CTA headline and lockup."
+      }
+    }
+  ]
+}

@@ -5,6 +5,7 @@ import {
   getReferenceCarousel,
   ideaSuggestsToolGrid,
   listReferenceCarousels,
+  listLayoutPacksForPlatform,
   listReferenceOnlyTemplates,
   normalizeCarouselSlideTemplates,
   pickTemplateForSlide,
@@ -59,6 +60,19 @@ describe("carousel template manifest", () => {
     expect(resolveProductionTemplateId("hook-scroll-cover")).toBe(
       "hook-scroll-cover"
     );
+  });
+
+  it("lists layout packs per platform", () => {
+    expect(
+      listLayoutPacksForPlatform("instagram").some(
+        (pack) => pack.id === "instagram-edwardai-ref"
+      )
+    ).toBe(true);
+    expect(
+      listLayoutPacksForPlatform("linkedin").some(
+        (pack) => pack.id === "linkedin-edwardai-ref"
+      )
+    ).toBe(true);
   });
 });
 

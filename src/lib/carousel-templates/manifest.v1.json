@@ -46,6 +46,57 @@
       ]
     }
   ],
+  "layoutPacks": [
+    {
+      "id": "default",
+      "label": "Default",
+      "platforms": ["instagram", "linkedin"],
+      "description": "Automatic template picker. LinkedIn keeps the listicle grid fallback on slide 4 when missing.",
+      "forceLinkedInGrid": true
+    },
+    {
+      "id": "instagram-edwardai-ref",
+      "label": "Edward AI reference",
+      "platforms": ["instagram"],
+      "description": "Seven-slide arc inspired by @edwardai.tech IG references (hero → proof → tips → CTA). Reference template ids map to rendered fallbacks until Phase 2.",
+      "referenceId": "ref-edwardai-dc8yjg",
+      "slideTemplateIds": [
+        "ref-edwardai-hook-hero-showcase",
+        "ref-edwardai-body-scene-compare",
+        "ref-edwardai-body-scene-compare",
+        "ref-edwardai-body-tip-lock-three",
+        "body-narrative-default",
+        "body-narrative-default",
+        "cta-action-close"
+      ],
+      "slideRoles": ["cover", "body", "body", "body", "body", "body", "cta"]
+    },
+    {
+      "id": "linkedin-pm-grid",
+      "label": "Default + tool grid",
+      "platforms": ["linkedin"],
+      "description": "PM-style narrative slides with a guaranteed 2×3 tool grid on slide 4.",
+      "forceLinkedInGrid": true,
+      "slideTemplateIds": [
+        "hook-scroll-cover",
+        "body-narrative-default",
+        "body-narrative-default",
+        "body-tool-grid-2x3",
+        "body-narrative-default",
+        "body-narrative-default",
+        "cta-action-close"
+      ],
+      "slideRoles": ["cover", "body", "body", "body", "body", "body", "cta"]
+    },
+    {
+      "id": "linkedin-edwardai-ref",
+      "label": "Edward AI reference",
+      "platforms": ["linkedin"],
+      "description": "LinkedIn reference layouts from @edwardai.tech — coming soon.",
+      "comingSoon": true,
+      "disabled": true
+    }
+  ],
   "categories": [
     {
       "id": "hook-cover",

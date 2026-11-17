@@ -40,6 +40,7 @@ import {
   ContentDraft,
   ContentFormat,
   IdeationResult,
+  LayoutPackIds,
   ReelContent,
   RepurposeIdea,
   SourcePost,
@@ -62,6 +63,7 @@ import {
   originalLanguageName,
 } from "@/lib/language";
 import { TEXT_MODEL } from "@/lib/models";
+import { listLayoutPacksForPlatform } from "@/lib/carousel-templates";
 
 export default function RepurposeWorkspacePage() {
   const [presets, setPresets] =
@@ -111,6 +113,13 @@ export default function RepurposeWorkspacePage() {
   const [defaultTemplateId, setDefaultTemplateId] = useState("minimal-light");
   const [defaultAspectRatio, setDefaultAspectRatio] =
     useState<AspectRatio>("4:5");
+  const [layoutPackIds, setLayoutPackIds] = useState<LayoutPackIds>({
+    instagram: "default",
+    linkedin: "default",
+  });
+
+  const instagramLayoutPacks = listLayoutPacksForPlatform("instagram");
+  const linkedinLayoutPacks = listLayoutPacksForPlatform("linkedin");
 
   // Step 3: Content Studio
   const [generating, setGenerating] = useState(false);
@@ -296,6 +305,7 @@ export default function RepurposeWorkspacePage() {
             visualTemplateId: defaultTemplateId,
             aspectRatio: defaultAspectRatio,
             brandHandle,
+            layoutPackIds,
           }),
         });
         const data = await res.json().catch(() => null);
@@ -369,6 +379,19 @@ export default function RepurposeWorkspacePage() {
                 ? liCarousel?.aspectRatio || defaultAspectRatio
                 : defaultAspectRatio,
           brandHandle,
+          layoutPackIds:
+            format === "ig_carousel"
+              ? {
+                  ...layoutPackIds,
+                  instagram:
+                    igCarousel?.layoutPackId ?? layoutPackIds.instagram,
+                }
+              : format === "li_carousel"
+                ? {
+                    ...layoutPackIds,
+                    linkedin: liCarousel?.layoutPackId ?? layoutPackIds.linkedin,
+                  }
+                : layoutPackIds,
         }),
       });
       const data = await res.json();
@@ -791,6 +814,64 @@ export default function RepurposeWorkspacePage() {
                       <SelectContent>
                         <SelectItem value="4:5">1080 × 1350 (4:5)</SelectItem>
                         <SelectItem value="1:1">1080 × 1080 (1:1)</SelectItem>
+                      </SelectContent>
+                    </Select>
+                  </div>
+                  <div className="space-y-1">
+                    <Label className="text-xs">Instagram layout pack</Label>
+                    <Select
+                      value={layoutPackIds.instagram ?? "default"}
+                      onValueChange={(v) =>
+                        setLayoutPackIds((prev) => ({
+                          ...prev,
+                          instagram: v,
+                        }))
+                      }
+                    >
+                      <SelectTrigger>
+                        <SelectValue />
+                      </SelectTrigger>
+                      <SelectContent>
+                        {instagramLayoutPacks.map((pack) => (
+                          <SelectItem
+                            key={pack.id}
+                            value={pack.id}
+                            disabled={pack.disabled}
+                            title={pack.comingSoon ? "Coming soon" : pack.description}
+                          >
+                            {pack.label}
+                            {pack.comingSoon ? " (coming soon)" : ""}
+                          </SelectItem>
+                        ))}
+                      </SelectContent>
+                    </Select>
+                  </div>
+                  <div className="space-y-1">
+                    <Label className="text-xs">LinkedIn layout pack</Label>
+                    <Select
+                      value={layoutPackIds.linkedin ?? "default"}
+                      onValueChange={(v) =>
+                        setLayoutPackIds((prev) => ({
+                          ...prev,
+                          linkedin: v,
+                        }))
+                      }
+                    >
+                      <SelectTrigger>
+                        <SelectValue />
+                      </SelectTrigger>
+                      <SelectContent>
+                        {linkedinLayoutPacks.map((pack) => (
+                          <SelectItem
+                            key={pack.id}
+                            value={pack.id}
+                            disabled={pack.disabled}
+                            title={pack.comingSoon ? "Coming soon" : pack.description}
+                          >
+                            {pack.label}
+                            {pack.comingSoon ? " (coming soon)" : ""}
+                          </SelectItem>
+                        ))}
                       </SelectContent>
                     </Select>
                   </div>

@@ -1,5 +1,10 @@
 import manifest from "./manifest.v1.json";
-import type { CarouselContent, CarouselSlide, RepurposeIdea } from "../types";
+import type {
+  CarouselContent,
+  CarouselSlide,
+  LayoutPackIds,
+  RepurposeIdea,
+} from "../types";
 import type { CarouselSlideLayout } from "../types";
 
 export type CarouselTemplateCategoryId =
@@ -83,15 +88,33 @@ export interface CarouselTemplateCategory {
   whenToUse: string;
 }
 
+export interface CarouselLayoutPack {
+  id: string;
+  label: string;
+  platforms: Array<CarouselContent["platform"]>;
+  description: string;
+  referenceId?: string;
+  slideTemplateIds?: string[];
+  slideRoles?: Array<CarouselSlide["role"]>;
+  forceLinkedInGrid?: boolean;
+  comingSoon?: boolean;
+  disabled?: boolean;
+}
+
 export interface CarouselTemplateManifest {
   version: string;
   references?: CarouselReferenceCarousel[];
+  layoutPacks?: CarouselLayoutPack[];
   categories: CarouselTemplateCategory[];
   templates: CarouselTemplateDefinition[];
 }
 
 export const carouselTemplateManifest =
   manifest as CarouselTemplateManifest;
+
+const layoutPacksById = new Map(
+  (carouselTemplateManifest.layoutPacks ?? []).map((pack) => [pack.id, pack])
+);
 
 const templatesById = new Map(
   carouselTemplateManifest.templates.map((template) => [
@@ -150,6 +173,48 @@ export function listReferenceOnlyTemplates(): CarouselTemplateDefinition[] {
   );
 }
 
+export function getLayoutPack(packId: string): CarouselLayoutPack | undefined {
+  return layoutPacksById.get(packId);
+}
+
+export function listLayoutPacksForPlatform(
+  platform: CarouselContent["platform"]
+): CarouselLayoutPack[] {
+  return (carouselTemplateManifest.layoutPacks ?? []).filter((pack) =>
+    pack.platforms.includes(platform)
+  );
+}
+
+export function effectiveLayoutPackId(
+  platform: CarouselContent["platform"],
+  layoutPackIds?: LayoutPackIds
+): string {
+  const chosen =
+    platform === "instagram"
+      ? layoutPackIds?.instagram
+      : layoutPackIds?.linkedin;
+  const packId = chosen?.trim() || "default";
+  const pack = getLayoutPack(packId);
+  if (!pack || pack.disabled) {
+    return "default";
+  }
+  if (!pack.platforms.includes(platform)) {
+    return "default";
+  }
+  return packId;
+}
+
+export function layoutPackForcesLinkedInGrid(packId: string): boolean {
+  if (packId === "default" || packId === "linkedin-pm-grid") {
+    return true;
+  }
+  return getLayoutPack(packId)?.forceLinkedInGrid === true;
+}
+
+export interface NormalizeCarouselOptions {
+  layoutPackId?: string;
+}
+
 const LISTICLE_ANGLE_HINTS = [
   "step-by-step",
   "playbook",
@@ -175,6 +240,7 @@ export interface PickTemplateContext {
   idea?: RepurposeIdea;
   totalSlides: number;
   slideIndex: number;
+  layoutPackId?: string;
 }
 
 function ideaSuggestsToolGrid(idea: RepurposeIdea | undefined): boolean {
@@ -200,6 +266,15 @@ export function pickTemplateForSlide(
   slide: CarouselSlide,
   context: PickTemplateContext
 ): string {
+  const pack =
+    context.layoutPackId && context.layoutPackId !== "default"
+      ? getLayoutPack(context.layoutPackId)
+      : undefined;
+  const packedTemplate = pack?.slideTemplateIds?.[context.slideIndex];
+  if (packedTemplate) {
+    return packedTemplate;
+  }
+
   if (slideHasCompleteGrid(slide)) {
     return "body-tool-grid-2x3";
   }
@@ -239,7 +314,7 @@ export function applyTemplateLayoutToSlide(
 
   const next: CarouselSlide = {
     ...slide,
-    templateId: productionId,
+    templateId,
     layout: template.layout === "default" ? undefined : template.layout,
   };
 
@@ -255,18 +330,27 @@ export function applyTemplateLayoutToSlide(
 
 export function normalizeCarouselSlideTemplates(
   carousel: CarouselContent,
-  idea?: RepurposeIdea
+  idea?: RepurposeIdea,
+  options?: NormalizeCarouselOptions
 ): CarouselContent {
+  const layoutPackId = options?.layoutPackId ?? carousel.layoutPackId ?? "default";
+  const pack = getLayoutPack(layoutPackId);
   const totalSlides = carousel.slides.length;
   const slides = carousel.slides.map((slide, slideIndex) => {
-    const templateId = pickTemplateForSlide(slide, {
+    const roleFromPack = pack?.slideRoles?.[slideIndex];
+    const baseSlide =
+      roleFromPack && roleFromPack !== slide.role
+        ? { ...slide, role: roleFromPack }
+        : slide;
+    const templateId = pickTemplateForSlide(baseSlide, {
       platform: carousel.platform,
       idea,
       totalSlides,
       slideIndex,
+      layoutPackId,
     });
-    return applyTemplateLayoutToSlide(slide, templateId);
+    return applyTemplateLayoutToSlide(baseSlide, templateId);
   });
 
-  return { ...carousel, slides };
+  return { ...carousel, slides, layoutPackId };
 }

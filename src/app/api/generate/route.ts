@@ -49,6 +49,12 @@ const requestSchema = z.object({
   visualTemplateId: z.string().default("minimal-light"),
   aspectRatio: z.enum(["4:5", "1:1"]).default("4:5"),
   brandHandle: z.string().default("@yourbrand"),
+  layoutPackIds: z
+    .object({
+      instagram: z.string().optional(),
+      linkedin: z.string().optional(),
+    })
+    .optional(),
 });
 
 export async function POST(req: NextRequest) {

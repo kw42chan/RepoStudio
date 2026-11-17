@@ -18,7 +18,7 @@ LLM slide JSON → ensureLinkedInGridSlide (LI listicles) → normalizeCarouselS
   → pickTemplateForSlide + applyTemplateLayoutToSlide → carousel-preview (1080×1350 DOM) → PNG export
 ```
 
-Selection logic lives in `pickTemplateForSlide` (`src/lib/carousel-templates/index.ts`). Generation calls `normalizeCarouselSlideTemplates` from `generateContent` in `src/lib/ai.ts` after carousel JSON is parsed (and after the LinkedIn grid fallback).
+Selection logic lives in `pickTemplateForSlide` (`src/lib/carousel-templates/index.ts`), optionally driven by **layout packs** (`layoutPacks[]` in the manifest). The Studio sends `layoutPackIds` on `/api/generate`; `applyCarouselLayoutPipeline` in `src/lib/ai.ts` applies grid fallback then `normalizeCarouselSlideTemplates`.
 
 ## Reference-only patterns (v1.1)
 

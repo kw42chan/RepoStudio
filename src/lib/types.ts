@@ -123,6 +123,17 @@ export interface CarouselSlide {
   gridCells?: GridCell[];
 }
 
+export type CarouselLayoutPackId =
+  | "default"
+  | "instagram-edwardai-ref"
+  | "linkedin-pm-grid"
+  | "linkedin-edwardai-ref";
+
+export interface LayoutPackIds {
+  instagram?: CarouselLayoutPackId | string;
+  linkedin?: CarouselLayoutPackId | string;
+}
+
 export interface CarouselContent {
   platform: "instagram" | "linkedin";
   title: string;
@@ -133,6 +144,8 @@ export interface CarouselContent {
   visualTemplateId: string;
   aspectRatio: AspectRatio;
   brandHandle: string;
+  /** Layout pack used when normalizing slide templates (pre-generate choice). */
+  layoutPackId?: string;
   primaryColor?: string;
   secondaryColor?: string;
   accentColorOverride?: string;

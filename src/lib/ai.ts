@@ -7,13 +7,18 @@ import {
   CarouselContent,
   ContentFormat,
   IdeationResult,
+  LayoutPackIds,
   ReelContent,
   RepurposeIdea,
   SourcePost,
   WritingStyleConfig,
 } from "./types";
 import { WRITING_STYLES } from "./presets";
-import { normalizeCarouselSlideTemplates } from "./carousel-templates";
+import {
+  effectiveLayoutPackId,
+  layoutPackForcesLinkedInGrid,
+  normalizeCarouselSlideTemplates,
+} from "./carousel-templates";
 import { spokenTextFromTranscript } from "./transcript";
 
 const ideationSchema = z.object({
@@ -385,6 +390,21 @@ function carouselHasGridSlide(carousel: CarouselContent): boolean {
   );
 }
 
+export function applyCarouselLayoutPipeline(
+  carousel: CarouselContent,
+  platform: "instagram" | "linkedin",
+  sourcePost: SourcePost,
+  idea: RepurposeIdea,
+  layoutPackIds?: LayoutPackIds
+): CarouselContent {
+  const packId = effectiveLayoutPackId(platform, layoutPackIds);
+  let next: CarouselContent = { ...carousel, layoutPackId: packId };
+  if (platform === "linkedin" && layoutPackForcesLinkedInGrid(packId)) {
+    next = ensureLinkedInGridSlide(next, sourcePost, idea);
+  }
+  return normalizeCarouselSlideTemplates(next, idea, { layoutPackId: packId });
+}
+
 export function ensureLinkedInGridSlide(
   carousel: CarouselContent,
   _sourcePost: SourcePost,
@@ -554,6 +574,7 @@ export async function generateContentForFormats(params: {
   visualTemplateId: string;
   aspectRatio: AspectRatio;
   brandHandle: string;
+  layoutPackIds?: LayoutPackIds;
 }): Promise<{
   reel?: ReelContent;
   igCarousel?: CarouselContent;
@@ -568,36 +589,56 @@ export async function generateContentForFormats(params: {
     visualTemplateId,
     aspectRatio,
     brandHandle,
+    layoutPackIds,
   } = params;
 
   const styleDescription = describeWritingStyle(writingStyle);
   const llm = getLlmModels();
 
   if (!llm) {
+    const igRaw = formats.includes("ig_carousel")
+      ? buildMockCarousel(
+          "instagram",
+          sourcePost,
+          idea,
+          writingStyle,
+          visualTemplateId,
+          aspectRatio,
+          brandHandle
+        )
+      : undefined;
+    const liRaw = formats.includes("li_carousel")
+      ? buildMockCarousel(
+          "linkedin",
+          sourcePost,
+          idea,
+          writingStyle,
+          visualTemplateId,
+          aspectRatio,
+          brandHandle
+        )
+      : undefined;
+
     return {
       reel: formats.includes("reel")
         ? buildMockReel(sourcePost, idea, writingStyle)
         : undefined,
-      igCarousel: formats.includes("ig_carousel")
-        ? buildMockCarousel(
+      igCarousel: igRaw
+        ? applyCarouselLayoutPipeline(
+            igRaw,
             "instagram",
             sourcePost,
             idea,
-            writingStyle,
-            visualTemplateId,
-            aspectRatio,
-            brandHandle
+            layoutPackIds
           )
         : undefined,
-      liCarousel: formats.includes("li_carousel")
-        ? buildMockCarousel(
+      liCarousel: liRaw
+        ? applyCarouselLayoutPipeline(
+            liRaw,
             "linkedin",
             sourcePost,
             idea,
-            writingStyle,
-            visualTemplateId,
-            aspectRatio,
-            brandHandle
+            layoutPackIds
           )
         : undefined,
       usedMock: true,
@@ -700,46 +741,59 @@ Prefer the grid-2x3 slide for LinkedIn listicles and tool roundups when the angl
           results.reel = buildMockReel(sourcePost, idea, writingStyle);
         }
         if (format === "ig_carousel") {
-          results.igCarousel = buildMockCarousel(
+          results.igCarousel = applyCarouselLayoutPipeline(
+            buildMockCarousel(
+              "instagram",
+              sourcePost,
+              idea,
+              writingStyle,
+              visualTemplateId,
+              aspectRatio,
+              brandHandle
+            ),
             "instagram",
             sourcePost,
             idea,
-            writingStyle,
-            visualTemplateId,
-            aspectRatio,
-            brandHandle
+            layoutPackIds
           );
         }
         if (format === "li_carousel") {
-          results.liCarousel = buildMockCarousel(
+          results.liCarousel = applyCarouselLayoutPipeline(
+            buildMockCarousel(
+              "linkedin",
+              sourcePost,
+              idea,
+              writingStyle,
+              visualTemplateId,
+              aspectRatio,
+              brandHandle
+            ),
             "linkedin",
             sourcePost,
             idea,
-            writingStyle,
-            visualTemplateId,
-            aspectRatio,
-            brandHandle
+            layoutPackIds
           );
         }
       }
     }
 
     if (results.igCarousel) {
-      results.igCarousel = normalizeCarouselSlideTemplates(
+      results.igCarousel = applyCarouselLayoutPipeline(
         results.igCarousel,
-        idea
+        "instagram",
+        sourcePost,
+        idea,
+        layoutPackIds
       );
     }
 
     if (results.liCarousel) {
-      results.liCarousel = ensureLinkedInGridSlide(
+      results.liCarousel = applyCarouselLayoutPipeline(
         results.liCarousel,
+        "linkedin",
         sourcePost,
-        idea
-      );
-      results.liCarousel = normalizeCarouselSlideTemplates(
-        results.liCarousel,
-        idea
+        idea,
+        layoutPackIds
       );
     }
 

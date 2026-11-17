@@ -60,22 +60,28 @@ const reelSchema = z.object({
   hashtags: z.array(z.string()),
 });
 
+const gridCellSchema = z.object({
+  number: z.number(),
+  title: z.string(),
+  toolIds: z.array(z.string()),
+  description: z.string(),
+});
+
+const carouselSlideSchema = z.object({
+  id: z.string(),
+  slideNumber: z.number(),
+  role: z.enum(["cover", "body", "cta"]),
+  eyebrow: z.string().optional(),
+  headline: z.string(),
+  body: z.string(),
+  visualDirection: z.string(),
+  layout: z.enum(["default", "grid-2x3"]).optional(),
+  gridCells: z.array(gridCellSchema).optional(),
+});
+
 const carouselSchema = z.object({
   title: z.string(),
-  slides: z
-    .array(
-      z.object({
-        id: z.string(),
-        slideNumber: z.number(),
-        role: z.enum(["cover", "body", "cta"]),
-        eyebrow: z.string().optional(),
-        headline: z.string(),
-        body: z.string(),
-        visualDirection: z.string(),
-      })
-    )
-    .min(5)
-    .max(10),
+  slides: z.array(carouselSlideSchema).min(5).max(10),
   caption: z.string(),
   hashtags: z.array(z.string()),
 });

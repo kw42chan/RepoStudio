@@ -100,6 +100,15 @@ export interface ReelContent {
   videoSizeBytes?: number;
 }
 
+export type CarouselSlideLayout = "default" | "grid-2x3";
+
+export interface GridCell {
+  number: number;
+  title: string;
+  toolIds: string[];
+  description: string;
+}
+
 export interface CarouselSlide {
   id: string;
   slideNumber: number;
@@ -108,6 +117,8 @@ export interface CarouselSlide {
   headline: string;
   body: string;
   visualDirection: string;
+  layout?: CarouselSlideLayout;
+  gridCells?: GridCell[];
 }
 
 export interface CarouselContent {

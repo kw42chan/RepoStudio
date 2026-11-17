@@ -3,6 +3,7 @@
 import React from "react";
 import { ChevronLeft, ChevronRight } from "lucide-react";
 import { Button } from "@/components/ui/button";
+import { getToolLogo } from "@/lib/carousel-assets";
 import {
   brandMark,
   carouselPalette,
@@ -21,6 +22,389 @@ interface SlideCanvasProps {
   platform: "instagram" | "linkedin";
   aspectRatio: AspectRatio;
   fullResolution?: boolean;
+}
+
+interface SlideChromeProps {
+  slide: CarouselSlide;
+  totalSlides: number;
+  palette: ReturnType<typeof carouselPalette>;
+  bodyFont: string;
+  px: (value: number) => number;
+  isLight: boolean;
+  ground: ReturnType<typeof slideGround>;
+  isLast: boolean;
+}
+
+function SlideProgressChrome({
+  slide,
+  totalSlides,
+  palette,
+  bodyFont,
+  px,
+  isLight,
+  ground,
+  isLast,
+}: SlideChromeProps) {
+  return (
+    <>
+      <div
+        style={{
+          position: "absolute",
+          left: 0,
+          right: 0,
+          bottom: 0,
+          zIndex: 10,
+          display: "flex",
+          alignItems: "center",
+          gap: px(10),
+          padding: `${px(16)}px ${px(28)}px ${px(20)}px`,
+        }}
+      >
+        <div
+          style={{
+            flex: 1,
+            height: px(3),
+            borderRadius: px(2),
+            overflow: "hidden",
+            background: isLight
+              ? "rgba(0,0,0,0.08)"
+              : "rgba(255,255,255,0.12)",
+          }}
+        >
+          <div
+            style={{
+              height: "100%",
+              width: `${(slide.slideNumber / Math.max(totalSlides, 1)) * 100}%`,
+              borderRadius: px(2),
+              background: isLight
+                ? palette.brandPrimary
+                : ground === "dark"
+                  ? palette.brandSecondary
+                  : "#ffffff",
+            }}
+          />
+        </div>
+        <span
+          style={{
+            fontFamily: bodyFont,
+            fontSize: px(11),
+            fontWeight: 500,
+            color: isLight ? "rgba(0,0,0,0.3)" : "rgba(255,255,255,0.4)",
+          }}
+        >
+          {slide.slideNumber}/{totalSlides}
+        </span>
+      </div>
+
+      {!isLast && (
+        <div
+          style={{
+            position: "absolute",
+            right: 0,
+            top: 0,
+            bottom: 0,
+            width: px(48),
+            zIndex: 9,
+            display: "flex",
+            alignItems: "center",
+            justifyContent: "center",
+            background: `linear-gradient(to right, transparent, ${
+              isLight ? "rgba(0,0,0,0.06)" : "rgba(255,255,255,0.08)"
+            })`,
+          }}
+        >
+          <svg width={px(24)} height={px(24)} viewBox="0 0 24 24" fill="none">
+            <path
+              d="M9 6l6 6-6 6"
+              stroke={isLight ? "rgba(0,0,0,0.25)" : "rgba(255,255,255,0.35)"}
+              strokeWidth="2.5"
+              strokeLinecap="round"
+              strokeLinejoin="round"
+            />
+          </svg>
+        </div>
+      )}
+    </>
+  );
+}
+
+interface GridSlideCanvasProps {
+  slide: CarouselSlide;
+  totalSlides: number;
+  template: VisualTemplate;
+  palette: ReturnType<typeof carouselPalette>;
+  brandHandle: string;
+  platform: "instagram" | "linkedin";
+  dims: { width: number; height: number };
+  unit: number;
+  px: (value: number) => number;
+  headingFont: string;
+  bodyFont: string;
+  fullResolution: boolean;
+  isLast: boolean;
+}
+
+function GridSlideCanvas({
+  slide,
+  totalSlides,
+  template,
+  palette,
+  brandHandle,
+  platform,
+  dims,
+  unit,
+  px,
+  headingFont,
+  bodyFont,
+  fullResolution,
+  isLast,
+}: GridSlideCanvasProps) {
+  const mark = brandMark(brandHandle);
+  const cells = (slide.gridCells || []).slice(0, 6);
+  const ink = "#F7F7F5";
+  const muted = "rgba(255,255,255,0.72)";
+  const accent = palette.brandSecondary;
+  const cardBg = "rgba(255,255,255,0.08)";
+  const cardBorder = "rgba(255,255,255,0.14)";
+  const scale = fullResolution ? 1 : 0.34;
+  const ground = "dark" as const;
+
+  return (
+    <div
+      style={{
+        width: `${dims.width * scale}px`,
+        height: `${dims.height * scale}px`,
+        overflow: "hidden",
+        position: "relative",
+        borderRadius: fullResolution ? "0px" : "12px",
+      }}
+      className={fullResolution ? "" : "shadow-md border"}
+    >
+      <div
+        data-platform={platform}
+        data-layout="grid-2x3"
+        style={{
+          width: `${dims.width}px`,
+          height: `${dims.height}px`,
+          transform: fullResolution ? "none" : `scale(${scale})`,
+          transformOrigin: "top left",
+          position: "relative",
+          overflow: "hidden",
+          background: palette.darkBg,
+          color: ink,
+          fontFamily: bodyFont,
+        }}
+      >
+        <div
+          style={{
+            position: "relative",
+            zIndex: 1,
+            height: "100%",
+            display: "flex",
+            flexDirection: "column",
+            boxSizing: "border-box",
+            padding: `${px(32)}px ${px(56)}px ${px(52)}px ${px(32)}px`,
+            gap: px(18),
+          }}
+        >
+          <div
+            style={{
+              display: "flex",
+              alignItems: "center",
+              gap: px(10),
+            }}
+          >
+            <span
+              style={{
+                width: px(34),
+                height: px(34),
+                borderRadius: "50%",
+                display: "inline-flex",
+                alignItems: "center",
+                justifyContent: "center",
+                background: palette.brandPrimary,
+                color: "#ffffff",
+                fontFamily: headingFont,
+                fontWeight: 600,
+                fontSize: px(14),
+              }}
+            >
+              {mark.initial}
+            </span>
+            <span
+              style={{
+                fontSize: px(12),
+                fontWeight: 600,
+                letterSpacing: `${px(0.4)}px`,
+              }}
+            >
+              {mark.label}
+            </span>
+          </div>
+
+          {slide.eyebrow && (
+            <span
+              style={{
+                fontSize: px(10),
+                fontWeight: 600,
+                letterSpacing: `${px(2)}px`,
+                textTransform: "uppercase",
+                color: accent,
+              }}
+            >
+              {slide.eyebrow}
+            </span>
+          )}
+
+          <h2
+            style={{
+              margin: 0,
+              fontFamily: headingFont,
+              fontSize: px(28),
+              fontWeight: template.fontStyle === "bold-display" ? 700 : 600,
+              letterSpacing: `${-0.3 * unit}px`,
+              lineHeight: 1.1,
+              maxWidth: "20ch",
+            }}
+          >
+            {slide.headline}
+          </h2>
+
+          {slide.body && (
+            <p
+              style={{
+                margin: 0,
+                fontSize: px(13),
+                lineHeight: 1.45,
+                color: muted,
+                maxWidth: "36ch",
+              }}
+            >
+              {slide.body}
+            </p>
+          )}
+
+          <div
+            style={{
+              flex: 1,
+              display: "grid",
+              gridTemplateColumns: "1fr 1fr",
+              gridTemplateRows: "repeat(3, minmax(0, 1fr))",
+              gap: px(10),
+              minHeight: 0,
+            }}
+          >
+            {cells.map((cell) => (
+              <div
+                key={cell.number}
+                style={{
+                  borderRadius: px(12),
+                  border: `1px solid ${cardBorder}`,
+                  background: cardBg,
+                  padding: `${px(10)}px ${px(12)}px`,
+                  display: "flex",
+                  flexDirection: "column",
+                  gap: px(4),
+                  minHeight: 0,
+                }}
+              >
+                <div
+                  style={{
+                    display: "flex",
+                    alignItems: "center",
+                    gap: px(8),
+                  }}
+                >
+                  <span
+                    style={{
+                      width: px(22),
+                      height: px(22),
+                      borderRadius: px(6),
+                      display: "inline-flex",
+                      alignItems: "center",
+                      justifyContent: "center",
+                      background: accent,
+                      color: palette.brandDark,
+                      fontWeight: 700,
+                      fontSize: px(11),
+                      flexShrink: 0,
+                    }}
+                  >
+                    {cell.number}
+                  </span>
+                  <span
+                    style={{
+                      fontWeight: 600,
+                      fontSize: px(12),
+                      lineHeight: 1.2,
+                      overflow: "hidden",
+                      textOverflow: "ellipsis",
+                      whiteSpace: "nowrap",
+                    }}
+                  >
+                    {cell.title}
+                  </span>
+                </div>
+                {cell.toolIds.length > 0 && (
+                  <div
+                    style={{
+                      display: "flex",
+                      alignItems: "center",
+                      gap: px(4),
+                      flexWrap: "wrap",
+                    }}
+                  >
+                    {cell.toolIds.map((toolId) => {
+                      const { src, label } = getToolLogo(toolId);
+                      return (
+                        <img
+                          key={`${cell.number}-${toolId}`}
+                          src={src}
+                          alt={label}
+                          title={label}
+                          width={px(18)}
+                          height={px(18)}
+                          style={{
+                            borderRadius: "50%",
+                            objectFit: "cover",
+                          }}
+                        />
+                      );
+                    })}
+                  </div>
+                )}
+                <p
+                  style={{
+                    margin: 0,
+                    fontSize: px(10),
+                    lineHeight: 1.35,
+                    color: muted,
+                    overflow: "hidden",
+                    display: "-webkit-box",
+                    WebkitLineClamp: 2,
+                    WebkitBoxOrient: "vertical",
+                  }}
+                >
+                  {cell.description}
+                </p>
+              </div>
+            ))}
+          </div>
+        </div>
+
+        <SlideProgressChrome
+          slide={slide}
+          totalSlides={totalSlides}
+          palette={palette}
+          bodyFont={bodyFont}
+          px={px}
+          isLight={false}
+          ground={ground}
+          isLast={isLast}
+        />
+      </div>
+    </div>
+  );
 }
 
 export function SlideCanvas({
@@ -71,6 +455,26 @@ export function SlideCanvas({
         : palette.lightBg;
   const headingSize = px(slide.headline.length > 72 ? 26 : slide.role === "cover" ? 34 : 30);
   const scale = fullResolution ? 1 : 0.34;
+
+  if (slide.layout === "grid-2x3" && (slide.gridCells?.length ?? 0) > 0) {
+    return (
+      <GridSlideCanvas
+        slide={slide}
+        totalSlides={totalSlides}
+        template={template}
+        palette={palette}
+        brandHandle={brandHandle}
+        platform={platform}
+        dims={dims}
+        unit={unit}
+        px={px}
+        headingFont={headingFont}
+        bodyFont={bodyFont}
+        fullResolution={fullResolution}
+        isLast={isLast}
+      />
+    );
+  }
 
   return (
     <div
@@ -231,83 +635,16 @@ export function SlideCanvas({
           )}
         </div>
 
-        <div
-          style={{
-            position: "absolute",
-            left: 0,
-            right: 0,
-            bottom: 0,
-            zIndex: 10,
-            display: "flex",
-            alignItems: "center",
-            gap: px(10),
-            padding: `${px(16)}px ${px(28)}px ${px(20)}px`,
-          }}
-        >
-          <div
-            style={{
-              flex: 1,
-              height: px(3),
-              borderRadius: px(2),
-              overflow: "hidden",
-              background: isLight
-                ? "rgba(0,0,0,0.08)"
-                : "rgba(255,255,255,0.12)",
-            }}
-          >
-            <div
-              style={{
-                height: "100%",
-                width: `${(slide.slideNumber / Math.max(totalSlides, 1)) * 100}%`,
-                borderRadius: px(2),
-                background: isLight
-                  ? palette.brandPrimary
-                  : ground === "dark"
-                    ? palette.brandSecondary
-                    : "#ffffff",
-              }}
-            />
-          </div>
-          <span
-            style={{
-              fontFamily: bodyFont,
-              fontSize: px(11),
-              fontWeight: 500,
-              color: isLight ? "rgba(0,0,0,0.3)" : "rgba(255,255,255,0.4)",
-            }}
-          >
-            {slide.slideNumber}/{totalSlides}
-          </span>
-        </div>
-
-        {!isLast && (
-          <div
-            style={{
-              position: "absolute",
-              right: 0,
-              top: 0,
-              bottom: 0,
-              width: px(48),
-              zIndex: 9,
-              display: "flex",
-              alignItems: "center",
-              justifyContent: "center",
-              background: `linear-gradient(to right, transparent, ${
-                isLight ? "rgba(0,0,0,0.06)" : "rgba(255,255,255,0.08)"
-              })`,
-            }}
-          >
-            <svg width={px(24)} height={px(24)} viewBox="0 0 24 24" fill="none">
-              <path
-                d="M9 6l6 6-6 6"
-                stroke={isLight ? "rgba(0,0,0,0.25)" : "rgba(255,255,255,0.35)"}
-                strokeWidth="2.5"
-                strokeLinecap="round"
-                strokeLinejoin="round"
-              />
-            </svg>
-          </div>
-        )}
+        <SlideProgressChrome
+          slide={slide}
+          totalSlides={totalSlides}
+          palette={palette}
+          bodyFont={bodyFont}
+          px={px}
+          isLight={isLight}
+          ground={ground}
+          isLast={isLast}
+        />
       </div>
     </div>
   );

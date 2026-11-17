@@ -60,14 +60,14 @@ const reelSchema = z.object({
   hashtags: z.array(z.string()),
 });
 
-const gridCellSchema = z.object({
+export const gridCellSchema = z.object({
   number: z.number(),
   title: z.string(),
   toolIds: z.array(z.string()),
   description: z.string(),
 });
 
-const carouselSlideSchema = z.object({
+export const carouselSlideSchema = z.object({
   id: z.string(),
   slideNumber: z.number(),
   role: z.enum(["cover", "body", "cta"]),
@@ -320,6 +320,62 @@ function buildMockReel(
   };
 }
 
+const CAROUSEL_TOOL_IDS =
+  "claude, chatgpt, cursor, figma, github, jira, linear, miro, notion, perplexity, slack, asana";
+
+const CAROUSEL_GRID_PROMPT = `For listicles and "tools every X should know" angles, use exactly one slide with layout "grid-2x3" and gridCells (exactly 6 items). Each gridCell needs number (1-6), title (under 6 words), toolIds (1-2 ids from: ${CAROUSEL_TOOL_IDS}), and description (under 12 words). That slide still needs headline, body, and visualDirection for the header area. All other slides omit layout and gridCells (default text slides).`;
+
+function buildMockGridSlide(slideNumber: number): CarouselContent["slides"][number] {
+  return {
+    id: "slide-grid",
+    slideNumber,
+    role: "body",
+    eyebrow: "Toolkit",
+    headline: "Tools that compound your workflow",
+    body: "Six staples PMs reach for before the standup ends.",
+    visualDirection: "Dark 2x3 grid with numbered cards and tool logos.",
+    layout: "grid-2x3",
+    gridCells: [
+      {
+        number: 1,
+        title: "Planning",
+        toolIds: ["notion", "linear"],
+        description: "Align roadmap and delivery in one place.",
+      },
+      {
+        number: 2,
+        title: "Design sync",
+        toolIds: ["figma", "miro"],
+        description: "Share flows before engineering starts.",
+      },
+      {
+        number: 3,
+        title: "Research",
+        toolIds: ["perplexity", "claude"],
+        description: "Shorten discovery with focused answers.",
+      },
+      {
+        number: 4,
+        title: "Build",
+        toolIds: ["cursor", "github"],
+        description: "Ship specs tied to real diffs.",
+      },
+      {
+        number: 5,
+        title: "Launch comms",
+        toolIds: ["slack", "asana"],
+        description: "Keep GTM and product on one thread.",
+      },
+      {
+        number: 6,
+        title: "Feedback",
+        toolIds: ["jira", "chatgpt"],
+        description: "Turn tickets into ranked backlog bets.",
+      },
+    ],
+  };
+}
+
 function buildMockCarousel(
   platform: "instagram" | "linkedin",
   source: SourcePost,
@@ -366,17 +422,19 @@ function buildMockCarousel(
         "Fix the offer before you buy another round of attention.",
       visualDirection: "Light shift slide.",
     },
-    {
-      id: "slide-4",
-      slideNumber: 4,
-      role: "body" as const,
-      eyebrow: "What you get",
-      headline: "One clear next action",
-      body:
-        lines[2] ||
-        "A line the reader can use the same day, taken from the source post.",
-      visualDirection: "Dark detail slide.",
-    },
+    isLinkedIn
+      ? buildMockGridSlide(4)
+      : {
+          id: "slide-4",
+          slideNumber: 4,
+          role: "body" as const,
+          eyebrow: "What you get",
+          headline: "One clear next action",
+          body:
+            lines[2] ||
+            "A line the reader can use the same day, taken from the source post.",
+          visualDirection: "Dark detail slide.",
+        },
     {
       id: "slide-5",
       slideNumber: 5,
@@ -553,7 +611,8 @@ Slide 1 is role "cover": a claim that can stop a scroll.
 Then a problem, the shift, what the reader gets, one concrete detail from the source, and how to use it. Those are role "body".
 The last slide is role "cta": one action under 12 words.
 Each eyebrow is 1 to 3 words. Each headline is under 12 words. Each body is under 24 words and uses the source post.
-Return JSON with title, slides (id, slideNumber, role, eyebrow, headline, body, visualDirection), caption, and hashtags.`
+${CAROUSEL_GRID_PROMPT}
+Return JSON with title, slides (id, slideNumber, role, eyebrow, headline, body, visualDirection, optional layout and gridCells), caption, and hashtags.`
           );
           results.igCarousel = {
             platform: "instagram",
@@ -582,7 +641,8 @@ The slide design already shows a logo, a short tag, a progress bar, and a swipe 
 Slide 1 is role "cover". Middle slides are role "body": the problem, the shift, what the reader gets, one detail from the source, and how to use it.
 The last slide is role "cta", one action under 12 words.
 Each eyebrow is 1 to 3 words. Each headline is under 12 words. Each body is under 24 words. The caption can be the longer LinkedIn post.
-Return JSON with title, slides (id, slideNumber, role, eyebrow, headline, body, visualDirection), caption, and hashtags.`
+${CAROUSEL_GRID_PROMPT}
+Prefer the grid-2x3 slide for LinkedIn listicles and tool roundups when the angle fits. Return JSON with title, slides (id, slideNumber, role, eyebrow, headline, body, visualDirection, optional layout and gridCells), caption, and hashtags.`
           );
           results.liCarousel = {
             platform: "linkedin",

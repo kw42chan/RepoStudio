@@ -40,6 +40,9 @@ yarn-error.log*
 # taste-skill gate state (local page checks)
 /.taste-skill/
 
+# Agent skill docs stay on disk for local agents and are not part of the app.
+/.agents/skills/
+
 # vercel
 .vercel
 

@@ -35,6 +35,7 @@ import {
 import { exportSlidesAsPdf, exportSlidesAsPng } from "@/lib/export-carousel";
 import { CarouselPreview } from "./carousel-preview";
 import { GraphicsStylePicker } from "./graphics-style-picker";
+import { SlideSurfaceControls } from "./slide-surface-controls";
 import { WritingStyleControls } from "./writing-style-controls";
 
 interface CarouselEditorProps {
@@ -454,6 +455,38 @@ export function CarouselEditor({
                     })
                   }
                 />
+
+                {activeTemplate && (
+                  <SlideSurfaceControls
+                    slide={activeSlide}
+                    primaryColor={primaryColor}
+                    secondaryColor={secondaryColor}
+                    template={activeTemplate}
+                    isFirst={activeSlideIdx === 0}
+                    onChange={(patch) => updateSlide(activeSlide.id, patch)}
+                    onCopyFromFirst={() => {
+                      const first = carousel.slides[0];
+                      if (!first) return;
+                      updateSlide(activeSlide.id, {
+                        surface: first.surface ?? { kind: "inherit" },
+                        accentOverride: first.accentOverride,
+                      });
+                    }}
+                    onApplyToAll={() => {
+                      const patch = {
+                        surface: activeSlide.surface ?? { kind: "inherit" },
+                        accentOverride: activeSlide.accentOverride,
+                      };
+                      onChange({
+                        ...carousel,
+                        slides: carousel.slides.map((slide) => ({
+                          ...slide,
+                          ...patch,
+                        })),
+                      });
+                    }}
+                  />
+                )}
 
                 <div className="space-y-1">
                   <Label className="text-xs">Headline</Label>

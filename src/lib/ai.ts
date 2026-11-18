@@ -90,6 +90,28 @@ const cheatsheetRowSchema = z.object({
   note: z.string().optional(),
 });
 
+const slideHexSchema = z
+  .string()
+  .regex(/^#(?:[0-9a-fA-F]{3}|[0-9a-fA-F]{6})$/);
+
+const slideSurfaceSchema = z.discriminatedUnion("kind", [
+  z.object({ kind: z.literal("inherit") }),
+  z.object({ kind: z.literal("solid"), color: slideHexSchema }),
+  z.object({
+    kind: z.literal("gradient"),
+    angle: z.number().min(0).max(360).optional(),
+    stops: z
+      .array(
+        z.object({
+          color: slideHexSchema,
+          at: z.number().min(0).max(100),
+        })
+      )
+      .min(2)
+      .max(6),
+  }),
+]);
+
 export const carouselSlideSchema = z.object({
   id: z.string(),
   slideNumber: z.number(),
@@ -104,6 +126,8 @@ export const carouselSlideSchema = z.object({
   listItems: z.array(listItemSchema).optional(),
   metricCells: z.array(metricCellSchema).optional(),
   cheatsheetRows: z.array(cheatsheetRowSchema).optional(),
+  surface: slideSurfaceSchema.optional(),
+  accentOverride: slideHexSchema.optional(),
 });
 
 const carouselSchema = z.object({

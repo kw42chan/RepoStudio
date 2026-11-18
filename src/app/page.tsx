@@ -27,7 +27,9 @@ import { Textarea } from "@/components/ui/textarea";
 import {
   Select,
   SelectContent,
+  SelectGroup,
   SelectItem,
+  SelectLabel,
   SelectTrigger,
   SelectValue,
 } from "@/components/ui/select";
@@ -44,6 +46,7 @@ import {
   ReelContent,
   RepurposeIdea,
   SourcePost,
+  UserLayoutPack,
   VisualTemplate,
   WritingStyleConfig,
 } from "@/lib/types";
@@ -63,7 +66,10 @@ import {
   originalLanguageName,
 } from "@/lib/language";
 import { TEXT_MODEL } from "@/lib/models";
-import { listLayoutPacksForPlatform } from "@/lib/carousel-templates";
+import {
+  listLayoutPacksForPlatform,
+  userLayoutPackSelectId,
+} from "@/lib/carousel-templates";
 
 export default function RepurposeWorkspacePage() {
   const [presets, setPresets] =
@@ -118,8 +124,15 @@ export default function RepurposeWorkspacePage() {
     linkedin: "default",
   });
 
-  const instagramLayoutPacks = listLayoutPacksForPlatform("instagram");
-  const linkedinLayoutPacks = listLayoutPacksForPlatform("linkedin");
+  const [userLayoutPacks, setUserLayoutPacks] = useState<UserLayoutPack[]>([]);
+  const instagramLayoutPacks = listLayoutPacksForPlatform(
+    "instagram",
+    userLayoutPacks
+  );
+  const linkedinLayoutPacks = listLayoutPacksForPlatform(
+    "linkedin",
+    userLayoutPacks
+  );
 
   // Step 3: Content Studio
   const [generating, setGenerating] = useState(false);
@@ -152,9 +165,10 @@ export default function RepurposeWorkspacePage() {
   useEffect(() => {
     async function loadInitial() {
       try {
-        const [pRes, tRes] = await Promise.all([
+        const [pRes, tRes, packRes] = await Promise.all([
           fetch("/api/presets"),
           fetch("/api/templates"),
+          fetch("/api/layout-packs"),
         ]);
         if (pRes.ok) {
           const pData = await pRes.json();
@@ -170,12 +184,34 @@ export default function RepurposeWorkspacePage() {
           const tData = await tRes.json();
           if (tData.templates?.length) setTemplates(tData.templates);
         }
+        if (packRes.ok) {
+          const packData = await packRes.json();
+          if (packData.packs?.length) setUserLayoutPacks(packData.packs);
+        }
       } catch {
         // use defaults
       }
     }
     loadInitial();
   }, []);
+
+  function rememberLayoutPack(pack: UserLayoutPack) {
+    const selectId = userLayoutPackSelectId(pack.id);
+    setUserLayoutPacks((prev) => [
+      pack,
+      ...prev.filter((item) => item.id !== pack.id),
+    ]);
+    setLayoutPackIds((prev) => ({ ...prev, [pack.platform]: selectId }));
+    if (pack.platform === "instagram") {
+      setIgCarousel((prev) =>
+        prev ? { ...prev, layoutPackId: selectId } : prev
+      );
+    } else {
+      setLiCarousel((prev) =>
+        prev ? { ...prev, layoutPackId: selectId } : prev
+      );
+    }
+  }
 
   function applyPreset(presetId: string) {
     const found = presets.find((p) => p.id === presetId);
@@ -821,6 +857,12 @@ export default function RepurposeWorkspacePage() {
                     <Label className="text-xs">Instagram layout pack</Label>
                     <Select
                       value={layoutPackIds.instagram ?? "default"}
+                      items={instagramLayoutPacks.map((pack) => ({
+                        value: pack.id,
+                        label: pack.comingSoon
+                          ? `${pack.label} (coming soon)`
+                          : pack.label,
+                      }))}
                       onValueChange={(v) => {
                         if (!v) return;
                         setLayoutPackIds((prev) => ({
@@ -833,17 +875,40 @@ export default function RepurposeWorkspacePage() {
                         <SelectValue />
                       </SelectTrigger>
                       <SelectContent>
-                        {instagramLayoutPacks.map((pack) => (
-                          <SelectItem
-                            key={pack.id}
-                            value={pack.id}
-                            disabled={pack.disabled}
-                            title={pack.comingSoon ? "Coming soon" : pack.description}
-                          >
-                            {pack.label}
-                            {pack.comingSoon ? " (coming soon)" : ""}
-                          </SelectItem>
-                        ))}
+                        <SelectGroup>
+                          <SelectLabel>Built-in</SelectLabel>
+                          {instagramLayoutPacks
+                            .filter((pack) => !pack.id.startsWith("user-pack:"))
+                            .map((pack) => (
+                              <SelectItem
+                                key={pack.id}
+                                value={pack.id}
+                                disabled={pack.disabled}
+                                title={
+                                  pack.comingSoon
+                                    ? "Coming soon"
+                                    : pack.description
+                                }
+                              >
+                                {pack.label}
+                                {pack.comingSoon ? " (coming soon)" : ""}
+                              </SelectItem>
+                            ))}
+                        </SelectGroup>
+                        {instagramLayoutPacks.some((pack) =>
+                          pack.id.startsWith("user-pack:")
+                        ) ? (
+                          <SelectGroup>
+                            <SelectLabel>My packs</SelectLabel>
+                            {instagramLayoutPacks
+                              .filter((pack) => pack.id.startsWith("user-pack:"))
+                              .map((pack) => (
+                                <SelectItem key={pack.id} value={pack.id}>
+                                  {pack.label}
+                                </SelectItem>
+                              ))}
+                          </SelectGroup>
+                        ) : null}
                       </SelectContent>
                     </Select>
                     {(layoutPackIds.instagram ?? "default") ===
@@ -858,6 +923,12 @@ export default function RepurposeWorkspacePage() {
                     <Label className="text-xs">LinkedIn layout pack</Label>
                     <Select
                       value={layoutPackIds.linkedin ?? "default"}
+                      items={linkedinLayoutPacks.map((pack) => ({
+                        value: pack.id,
+                        label: pack.comingSoon
+                          ? `${pack.label} (coming soon)`
+                          : pack.label,
+                      }))}
                       onValueChange={(v) => {
                         if (!v) return;
                         setLayoutPackIds((prev) => ({
@@ -870,17 +941,40 @@ export default function RepurposeWorkspacePage() {
                         <SelectValue />
                       </SelectTrigger>
                       <SelectContent>
-                        {linkedinLayoutPacks.map((pack) => (
-                          <SelectItem
-                            key={pack.id}
-                            value={pack.id}
-                            disabled={pack.disabled}
-                            title={pack.comingSoon ? "Coming soon" : pack.description}
-                          >
-                            {pack.label}
-                            {pack.comingSoon ? " (coming soon)" : ""}
-                          </SelectItem>
-                        ))}
+                        <SelectGroup>
+                          <SelectLabel>Built-in</SelectLabel>
+                          {linkedinLayoutPacks
+                            .filter((pack) => !pack.id.startsWith("user-pack:"))
+                            .map((pack) => (
+                              <SelectItem
+                                key={pack.id}
+                                value={pack.id}
+                                disabled={pack.disabled}
+                                title={
+                                  pack.comingSoon
+                                    ? "Coming soon"
+                                    : pack.description
+                                }
+                              >
+                                {pack.label}
+                                {pack.comingSoon ? " (coming soon)" : ""}
+                              </SelectItem>
+                            ))}
+                        </SelectGroup>
+                        {linkedinLayoutPacks.some((pack) =>
+                          pack.id.startsWith("user-pack:")
+                        ) ? (
+                          <SelectGroup>
+                            <SelectLabel>My packs</SelectLabel>
+                            {linkedinLayoutPacks
+                              .filter((pack) => pack.id.startsWith("user-pack:"))
+                              .map((pack) => (
+                                <SelectItem key={pack.id} value={pack.id}>
+                                  {pack.label}
+                                </SelectItem>
+                              ))}
+                          </SelectGroup>
+                        ) : null}
                       </SelectContent>
                     </Select>
                   </div>
@@ -1032,6 +1126,8 @@ export default function RepurposeWorkspacePage() {
                     onOpenTemplateImporter={() => setImporterOpen(true)}
                     onSaveAsNewTemplate={handleSaveNewTemplate}
                     onOpenSchedule={(text) => openSchedule("ig_carousel", text)}
+                    userLayoutPacks={userLayoutPacks}
+                    onLayoutPackSaved={rememberLayoutPack}
                   />
                 )}
               </TabsContent>
@@ -1051,6 +1147,8 @@ export default function RepurposeWorkspacePage() {
                     onOpenTemplateImporter={() => setImporterOpen(true)}
                     onSaveAsNewTemplate={handleSaveNewTemplate}
                     onOpenSchedule={(text) => openSchedule("li_carousel", text)}
+                    userLayoutPacks={userLayoutPacks}
+                    onLayoutPackSaved={rememberLayoutPack}
                   />
                 )}
               </TabsContent>

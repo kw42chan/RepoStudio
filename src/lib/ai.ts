@@ -11,6 +11,7 @@ import {
   ReelContent,
   RepurposeIdea,
   SourcePost,
+  UserLayoutPack,
   WritingStyleConfig,
 } from "./types";
 import { WRITING_STYLES } from "./presets";
@@ -444,14 +445,18 @@ export function applyCarouselLayoutPipeline(
   platform: "instagram" | "linkedin",
   sourcePost: SourcePost,
   idea: RepurposeIdea,
-  layoutPackIds?: LayoutPackIds
+  layoutPackIds?: LayoutPackIds,
+  userLayoutPacks?: UserLayoutPack[]
 ): CarouselContent {
-  const packId = effectiveLayoutPackId(platform, layoutPackIds);
+  const packId = effectiveLayoutPackId(platform, layoutPackIds, userLayoutPacks);
   let next: CarouselContent = { ...carousel, layoutPackId: packId };
   if (platform === "linkedin" && layoutPackForcesLinkedInGrid(packId)) {
     next = ensureLinkedInGridSlide(next, sourcePost, idea);
   }
-  return normalizeCarouselSlideTemplates(next, idea, { layoutPackId: packId });
+  return normalizeCarouselSlideTemplates(next, idea, {
+    layoutPackId: packId,
+    userPacks: userLayoutPacks,
+  });
 }
 
 export function ensureLinkedInGridSlide(
@@ -624,6 +629,7 @@ export async function generateContentForFormats(params: {
   aspectRatio: AspectRatio;
   brandHandle: string;
   layoutPackIds?: LayoutPackIds;
+  userLayoutPacks?: UserLayoutPack[];
 }): Promise<{
   reel?: ReelContent;
   igCarousel?: CarouselContent;
@@ -639,6 +645,7 @@ export async function generateContentForFormats(params: {
     aspectRatio,
     brandHandle,
     layoutPackIds,
+    userLayoutPacks,
   } = params;
 
   const styleDescription = describeWritingStyle(writingStyle);
@@ -678,7 +685,8 @@ export async function generateContentForFormats(params: {
             "instagram",
             sourcePost,
             idea,
-            layoutPackIds
+            layoutPackIds,
+            userLayoutPacks
           )
         : undefined,
       liCarousel: liRaw
@@ -687,7 +695,8 @@ export async function generateContentForFormats(params: {
             "linkedin",
             sourcePost,
             idea,
-            layoutPackIds
+            layoutPackIds,
+            userLayoutPacks
           )
         : undefined,
       usedMock: true,
@@ -808,7 +817,8 @@ Prefer the grid-2x3 slide for LinkedIn listicles and tool roundups when the angl
             "instagram",
             sourcePost,
             idea,
-            layoutPackIds
+            layoutPackIds,
+            userLayoutPacks
           );
         }
         if (format === "li_carousel") {
@@ -825,7 +835,8 @@ Prefer the grid-2x3 slide for LinkedIn listicles and tool roundups when the angl
             "linkedin",
             sourcePost,
             idea,
-            layoutPackIds
+            layoutPackIds,
+            userLayoutPacks
           );
         }
       }
@@ -837,7 +848,8 @@ Prefer the grid-2x3 slide for LinkedIn listicles and tool roundups when the angl
         "instagram",
         sourcePost,
         idea,
-        layoutPackIds
+        layoutPackIds,
+        userLayoutPacks
       );
     }
 
@@ -847,7 +859,8 @@ Prefer the grid-2x3 slide for LinkedIn listicles and tool roundups when the angl
         "linkedin",
         sourcePost,
         idea,
-        layoutPackIds
+        layoutPackIds,
+        userLayoutPacks
       );
     }
 

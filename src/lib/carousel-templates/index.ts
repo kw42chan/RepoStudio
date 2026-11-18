@@ -5,6 +5,7 @@ import type {
   CarouselSlide,
   LayoutPackIds,
   RepurposeIdea,
+  UserLayoutPack,
 } from "../types";
 import type { CarouselSlideLayout } from "../types";
 
@@ -222,28 +223,80 @@ export function listReferenceOnlyTemplates(): CarouselTemplateDefinition[] {
   );
 }
 
-export function getLayoutPack(packId: string): CarouselLayoutPack | undefined {
-  return layoutPacksById.get(packId);
+export const USER_LAYOUT_PACK_PREFIX = "user-pack:";
+export const FALLBACK_GRAPHICS_STYLE_ID = "body-narrative-default";
+
+export function userLayoutPackSelectId(id: string): string {
+  return id.startsWith(USER_LAYOUT_PACK_PREFIX)
+    ? id
+    : `${USER_LAYOUT_PACK_PREFIX}${id}`;
+}
+
+export function userLayoutPackStorageId(id: string): string {
+  return id.startsWith(USER_LAYOUT_PACK_PREFIX)
+    ? id.slice(USER_LAYOUT_PACK_PREFIX.length)
+    : id;
+}
+
+export function layoutPackFromUser(pack: UserLayoutPack): CarouselLayoutPack {
+  return {
+    id: userLayoutPackSelectId(pack.id),
+    label: pack.name,
+    platforms: [pack.platform],
+    description: `Saved sequence from catalog ${pack.catalogVersion}.`,
+    slideTemplateIds: pack.slideTemplateIds,
+    slideRoles: pack.slideRoles,
+  };
+}
+
+export function getLayoutPack(
+  packId: string,
+  userPacks: UserLayoutPack[] = []
+): CarouselLayoutPack | undefined {
+  const builtin = layoutPacksById.get(packId);
+  if (builtin) return builtin;
+  if (!packId.startsWith(USER_LAYOUT_PACK_PREFIX)) return undefined;
+  const storageId = userLayoutPackStorageId(packId);
+  const found = userPacks.find((pack) => pack.id === storageId);
+  return found ? layoutPackFromUser(found) : undefined;
 }
 
 export function listLayoutPacksForPlatform(
-  platform: CarouselContent["platform"]
+  platform: CarouselContent["platform"],
+  userPacks: UserLayoutPack[] = []
 ): CarouselLayoutPack[] {
-  return (carouselTemplateManifest.layoutPacks ?? []).filter((pack) =>
+  const builtin = (carouselTemplateManifest.layoutPacks ?? []).filter((pack) =>
     pack.platforms.includes(platform)
   );
+  const mine = userPacks
+    .filter((pack) => pack.platform === platform)
+    .map(layoutPackFromUser);
+  return [...builtin, ...mine];
+}
+
+/** Known rendered graphics styles stay; anything else becomes Narrative. */
+export function resolveGraphicsStyleId(templateId: string): {
+  templateId: string;
+  invalid: boolean;
+} {
+  const template = getCarouselTemplate(templateId);
+  if (template && (template.implementationStatus ?? "rendered") === "rendered") {
+    return { templateId, invalid: false };
+  }
+  return { templateId: FALLBACK_GRAPHICS_STYLE_ID, invalid: true };
 }
 
 export function effectiveLayoutPackId(
   platform: CarouselContent["platform"],
-  layoutPackIds?: LayoutPackIds
+  layoutPackIds?: LayoutPackIds,
+  userPacks: UserLayoutPack[] = []
 ): string {
   const chosen =
     platform === "instagram"
       ? layoutPackIds?.instagram
       : layoutPackIds?.linkedin;
   const packId = chosen?.trim() || "default";
-  const pack = getLayoutPack(packId);
+  const pack = getLayoutPack(packId, userPacks);
   if (!pack || pack.disabled) {
     return "default";
   }
@@ -262,6 +315,7 @@ export function layoutPackForcesLinkedInGrid(packId: string): boolean {
 
 export interface NormalizeCarouselOptions {
   layoutPackId?: string;
+  userPacks?: UserLayoutPack[];
 }
 
 const LISTICLE_ANGLE_HINTS = [
@@ -290,6 +344,7 @@ export interface PickTemplateContext {
   totalSlides: number;
   slideIndex: number;
   layoutPackId?: string;
+  userPacks?: UserLayoutPack[];
 }
 
 function ideaSuggestsToolGrid(idea: RepurposeIdea | undefined): boolean {
@@ -317,7 +372,7 @@ export function pickTemplateForSlide(
 ): string {
   const pack =
     context.layoutPackId && context.layoutPackId !== "default"
-      ? getLayoutPack(context.layoutPackId)
+      ? getLayoutPack(context.layoutPackId, context.userPacks)
       : undefined;
   const packedTemplate = pack?.slideTemplateIds?.[context.slideIndex];
   if (packedTemplate) {
@@ -584,24 +639,41 @@ export function normalizeCarouselSlideTemplates(
   options?: NormalizeCarouselOptions
 ): CarouselContent {
   const layoutPackId = options?.layoutPackId ?? carousel.layoutPackId ?? "default";
-  const pack = getLayoutPack(layoutPackId);
+  const userPacks = options?.userPacks ?? [];
+  const pack = getLayoutPack(layoutPackId, userPacks);
   const totalSlides = carousel.slides.length;
+  const warnings: string[] = [];
   const slides = carousel.slides.map((slide, slideIndex) => {
     const roleFromPack = pack?.slideRoles?.[slideIndex];
     const baseSlide =
       roleFromPack && roleFromPack !== slide.role
         ? { ...slide, role: roleFromPack }
         : slide;
-    const templateId = pickTemplateForSlide(baseSlide, {
+    const picked = pickTemplateForSlide(baseSlide, {
       platform: carousel.platform,
       idea,
       totalSlides,
       slideIndex,
       layoutPackId,
+      userPacks,
     });
-    const withTemplate = applyTemplateLayoutToSlide(baseSlide, templateId);
+    const resolved = resolveGraphicsStyleId(picked);
+    if (resolved.invalid) {
+      warnings.push(
+        `Slide ${slideIndex + 1} used an unknown graphics style and fell back to Narrative.`
+      );
+    }
+    const withTemplate = applyTemplateLayoutToSlide(
+      baseSlide,
+      resolved.templateId
+    );
     return hydrateSlideStructuredSlots(withTemplate);
   });
 
-  return { ...carousel, slides, layoutPackId };
+  return {
+    ...carousel,
+    slides,
+    layoutPackId,
+    layoutWarnings: warnings.length > 0 ? warnings : undefined,
+  };
 }

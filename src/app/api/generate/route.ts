@@ -2,6 +2,7 @@ import { NextRequest, NextResponse } from "next/server";
 import { z } from "zod";
 import { generateContentForFormats } from "@/lib/ai";
 import { rejectNonJson } from "@/lib/json-body";
+import { readStore } from "@/lib/store";
 import { requireViewer } from "@/lib/viewer";
 
 export const maxDuration = 60;
@@ -72,7 +73,11 @@ export async function POST(req: NextRequest) {
       );
     }
 
-    const generated = await generateContentForFormats(parsed.data);
+    const store = await readStore();
+    const generated = await generateContentForFormats({
+      ...parsed.data,
+      userLayoutPacks: store.layoutPacks,
+    });
     return NextResponse.json(generated);
   } catch (err) {
     console.error("Generation error:", err);

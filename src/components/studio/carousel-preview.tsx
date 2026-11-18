@@ -9,6 +9,7 @@ import {
   carouselPalette,
   slideGround,
 } from "@/lib/carousel-design";
+import { resolveSlideColors } from "@/lib/carousel-slide-theme";
 import {
   getCarouselTemplate,
   getCarouselTemplateRenderVariant,
@@ -433,8 +434,15 @@ export function SlideCanvas({
     primaryColor || template.accentColor,
     secondaryColor || template.surfaceColor
   );
-  const ground = slideGround(slide.slideNumber - 1, totalSlides, slide.role);
-  const isLight = ground === "light";
+  const colors = resolveSlideColors(
+    slide,
+    template,
+    primaryColor,
+    secondaryColor,
+    totalSlides
+  );
+  const ground = colors.ground;
+  const isLight = colors.isLight;
   const isLast = slide.slideNumber === totalSlides || slide.role === "cta";
   const showLockup = slide.role === "cover" || slide.role === "cta";
   const mark = brandMark(brandHandle);
@@ -448,19 +456,10 @@ export function SlideCanvas({
     template.fontStyle === "serif"
       ? 'var(--font-epilogue), "Epilogue", system-ui, sans-serif'
       : headingFont;
-  const ink = isLight ? palette.darkBg : "#F7F7F5";
-  const muted = isLight ? "#8A8580" : "rgba(255,255,255,0.72)";
-  const tagColor = isLight
-    ? palette.brandPrimary
-    : ground === "gradient"
-      ? "rgba(255,255,255,0.6)"
-      : palette.brandSecondary;
-  const background =
-    ground === "gradient"
-      ? `linear-gradient(165deg, ${palette.brandDark} 0%, ${palette.brandPrimary} 50%, ${palette.brandLight} 100%)`
-      : ground === "dark"
-        ? palette.darkBg
-        : palette.lightBg;
+  const ink = colors.ink;
+  const muted = colors.muted;
+  const tagColor = colors.accent;
+  const background = colors.background;
   const headingSize = px(slide.headline.length > 72 ? 26 : slide.role === "cover" ? 34 : 30);
   const scale = fullResolution ? 1 : 0.34;
   const carouselTemplateId = previewCarouselTemplateId(slide);

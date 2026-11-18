@@ -5,6 +5,7 @@ import {
   brandMark,
   carouselPalette,
 } from "@/lib/carousel-design";
+import { resolveSlideColors } from "@/lib/carousel-slide-theme";
 import {
   previewCarouselTemplateId,
   type CarouselTemplateRenderVariant,
@@ -27,6 +28,8 @@ export interface EdwardAiSlideProps {
 }
 
 function EdwardPalette(
+  slide: CarouselSlide,
+  totalSlides: number,
   primaryColor: string,
   secondaryColor: string,
   template: VisualTemplate
@@ -35,18 +38,26 @@ function EdwardPalette(
     primaryColor || template.accentColor,
     secondaryColor || template.surfaceColor
   );
-  const mint =
-    secondaryColor?.startsWith("#") && secondaryColor.length >= 7
-      ? secondaryColor
-      : "#6ee7a0";
+  const resolved = resolveSlideColors(
+    slide,
+    template,
+    primaryColor,
+    secondaryColor,
+    totalSlides
+  );
+  const inherit = (slide.surface?.kind ?? "inherit") === "inherit";
+  const edwardPanel = "#163322";
   return {
     palette,
-    edwardBg: "#0d2818",
-    edwardPanel: "#163322",
+    edwardBg: inherit ? "#0d2818" : resolved.background,
+    edwardPanel,
     edwardStroke: "#2d5a40",
-    mint,
-    ink: "#F7F7F5",
-    muted: "rgba(255,255,255,0.72)",
+    stageFill: inherit
+      ? `linear-gradient(165deg, ${edwardPanel} 0%, #0a1f14 100%)`
+      : resolved.background,
+    mint: resolved.accent,
+    ink: inherit ? "#F7F7F5" : resolved.ink,
+    muted: inherit ? "rgba(255,255,255,0.72)" : resolved.muted,
   };
 }
 
@@ -130,16 +141,16 @@ function HeroStage({
   slide,
   px,
   heightPct,
-  edwardPanel,
   edwardStroke,
   mint,
+  stageFill,
 }: {
   slide: CarouselSlide;
   px: (n: number) => number;
   heightPct: number;
-  edwardPanel: string;
   edwardStroke: string;
   mint: string;
+  stageFill: string;
 }) {
   return (
     <div
@@ -148,7 +159,7 @@ function HeroStage({
         height: `${heightPct}%`,
         borderRadius: px(12),
         border: `1px solid ${edwardStroke}`,
-        background: `linear-gradient(165deg, ${edwardPanel} 0%, #0a1f14 100%)`,
+        background: stageFill,
         position: "relative",
         overflow: "hidden",
         flexShrink: 0,
@@ -199,7 +210,7 @@ function VariantBody({
   brandHandle: string;
 }) {
   const mark = brandMark(brandHandle);
-  const { edwardPanel, edwardStroke, mint, ink, muted, palette } = colors;
+  const { edwardPanel, edwardStroke, stageFill, mint, ink, muted, palette } = colors;
 
   switch (variant) {
     case "hero-showcase":
@@ -243,9 +254,9 @@ function VariantBody({
             slide={slide}
             px={px}
             heightPct={52}
-            edwardPanel={edwardPanel}
             edwardStroke={edwardStroke}
             mint={mint}
+            stageFill={stageFill}
           />
           <h1
             style={{
@@ -430,9 +441,9 @@ function VariantBody({
             slide={slide}
             px={px}
             heightPct={48}
-            edwardPanel={edwardPanel}
             edwardStroke={edwardStroke}
             mint={mint}
+            stageFill={stageFill}
           />
           <h2
             style={{
@@ -734,7 +745,13 @@ export function EdwardAiStructuredSlide({
   const unit = dims.width / 420;
   const px = (value: number) => Math.round(value * unit);
   const scale = fullResolution ? 1 : 0.34;
-  const colors = EdwardPalette(primaryColor, secondaryColor, template);
+  const colors = EdwardPalette(
+    slide,
+    totalSlides,
+    primaryColor,
+    secondaryColor,
+    template
+  );
   const headingFont =
     template.fontStyle === "serif"
       ? "Georgia, 'Times New Roman', serif"

@@ -126,6 +126,16 @@ export interface CheatsheetRow {
   note?: string;
 }
 
+/** Per-slide background. Omitted or `inherit` uses the visual template and layout defaults. */
+export type SlideSurface =
+  | { kind: "inherit" }
+  | { kind: "solid"; color: string }
+  | {
+      kind: "gradient";
+      angle?: number;
+      stops: { color: string; at: number }[];
+    };
+
 export interface CarouselSlide {
   id: string;
   slideNumber: number;
@@ -141,6 +151,10 @@ export interface CarouselSlide {
   listItems?: ListItem[];
   metricCells?: MetricCell[];
   cheatsheetRows?: CheatsheetRow[];
+  /** Background override. Missing means inherit. */
+  surface?: SlideSurface;
+  /** Optional accent / mint / CTA color for this slide. */
+  accentOverride?: string;
 }
 
 export type CarouselLayoutPackId =

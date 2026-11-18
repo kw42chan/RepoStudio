@@ -58,6 +58,13 @@ export interface CarouselTemplateDefinition {
   intent: CarouselTemplateIntent;
   layout: CarouselSlideLayout;
   implementationStatus?: CarouselTemplateImplementationStatus;
+  /** When true (and the template is rendered), the style appears in the per-slide picker. */
+  showInStylePicker?: boolean;
+  /** Short picker label when the catalog does not override it. */
+  styleLabel?: string;
+  tags?: string[];
+  experimental?: boolean;
+  platforms?: Array<CarouselContent["platform"]>;
   productionFallbackId?: string;
   sourceUrl?: string;
   inspirationNotes?: string;
@@ -108,10 +115,45 @@ export interface CarouselLayoutPack {
   disabled?: boolean;
 }
 
+export interface GraphicsStyleCatalogGroup {
+  id: string;
+  label: string;
+  categories: CarouselTemplateCategoryId[];
+}
+
+export interface GraphicsStyleCatalogEntry {
+  templateId: string;
+  label: string;
+  tags?: string[];
+  experimental?: boolean;
+  platforms?: Array<CarouselContent["platform"]>;
+}
+
+export interface GraphicsStyleCatalog {
+  version: number;
+  groups: GraphicsStyleCatalogGroup[];
+  styles?: GraphicsStyleCatalogEntry[];
+}
+
+export interface GraphicsStyle {
+  templateId: string;
+  label: string;
+  pickerLabel: string;
+  description: string;
+  thumbnailPath?: string;
+  tags: string[];
+  experimental: boolean;
+  platforms: Array<CarouselContent["platform"]>;
+  category: CarouselTemplateCategoryId;
+  groupId: string;
+  groupLabel: string;
+}
+
 export interface CarouselTemplateManifest {
   version: string;
   references?: CarouselReferenceCarousel[];
   layoutPacks?: CarouselLayoutPack[];
+  graphicsStyleCatalog?: GraphicsStyleCatalog;
   categories: CarouselTemplateCategory[];
   templates: CarouselTemplateDefinition[];
 }
@@ -308,6 +350,206 @@ export function pickTemplateForSlide(
 }
 
 export { ideaSuggestsToolGrid };
+
+const DEFAULT_STYLE_PLATFORMS: Array<CarouselContent["platform"]> = [
+  "instagram",
+  "linkedin",
+];
+
+export function formatGraphicsStyleLabel(style: {
+  label: string;
+  experimental?: boolean;
+}): string {
+  return style.experimental ? `${style.label} (preview)` : style.label;
+}
+
+function catalogStyleById(): Map<string, GraphicsStyleCatalogEntry> {
+  const entries = carouselTemplateManifest.graphicsStyleCatalog?.styles ?? [];
+  return new Map(entries.map((entry) => [entry.templateId, entry]));
+}
+
+function groupForCategory(
+  category: CarouselTemplateCategoryId
+): GraphicsStyleCatalogGroup {
+  const groups = carouselTemplateManifest.graphicsStyleCatalog?.groups ?? [];
+  return (
+    groups.find((group) => group.categories.includes(category)) ?? {
+      id: "other",
+      label: "Other",
+      categories: [],
+    }
+  );
+}
+
+function styleFromTemplate(
+  template: CarouselTemplateDefinition
+): GraphicsStyle {
+  const entry = catalogStyleById().get(template.id);
+  const experimental = entry?.experimental ?? template.experimental ?? false;
+  const label =
+    entry?.label ?? template.styleLabel ?? template.preview.description;
+  const group = groupForCategory(template.category);
+  return {
+    templateId: template.id,
+    label,
+    pickerLabel: formatGraphicsStyleLabel({ label, experimental }),
+    description: template.preview.description,
+    thumbnailPath: template.preview.thumbnailPath,
+    tags: entry?.tags ?? template.tags ?? [],
+    experimental,
+    platforms: entry?.platforms ?? template.platforms ?? DEFAULT_STYLE_PLATFORMS,
+    category: template.category,
+    groupId: group.id,
+    groupLabel: group.label,
+  };
+}
+
+function pickerTemplateIds(): string[] {
+  const ids = new Set<string>();
+  for (const template of carouselTemplateManifest.templates) {
+    if (
+      template.implementationStatus === "rendered" &&
+      template.showInStylePicker === true
+    ) {
+      ids.add(template.id);
+    }
+  }
+  for (const entry of carouselTemplateManifest.graphicsStyleCatalog?.styles ??
+    []) {
+    const template = getCarouselTemplate(entry.templateId);
+    if (
+      template &&
+      (template.implementationStatus ?? "rendered") === "rendered" &&
+      template.showInStylePicker !== false
+    ) {
+      ids.add(template.id);
+    }
+  }
+  return carouselTemplateManifest.templates
+    .map((template) => template.id)
+    .filter((id) => ids.has(id));
+}
+
+/** Catalog styles for the per-slide graphics picker. Grows with manifest entries. */
+export function listGraphicsStyles(options?: {
+  platform?: CarouselContent["platform"];
+}): GraphicsStyle[] {
+  const groupOrder = (
+    carouselTemplateManifest.graphicsStyleCatalog?.groups ?? []
+  ).map((group) => group.id);
+  const templateIndex = new Map(
+    carouselTemplateManifest.templates.map((template, index) => [
+      template.id,
+      index,
+    ])
+  );
+  const styles = pickerTemplateIds()
+    .map((id) => getCarouselTemplate(id))
+    .filter((template): template is CarouselTemplateDefinition =>
+      Boolean(template)
+    )
+    .map(styleFromTemplate)
+    .filter((style) =>
+      options?.platform ? style.platforms.includes(options.platform) : true
+    );
+
+  styles.sort((a, b) => {
+    const groupA = groupOrder.indexOf(a.groupId);
+    const groupB = groupOrder.indexOf(b.groupId);
+    const rankA = groupA === -1 ? 99 : groupA;
+    const rankB = groupB === -1 ? 99 : groupB;
+    if (rankA !== rankB) return rankA - rankB;
+    return (
+      (templateIndex.get(a.templateId) ?? 0) -
+      (templateIndex.get(b.templateId) ?? 0)
+    );
+  });
+  return styles;
+}
+
+export function listGraphicsStylesForPlatform(
+  platform: CarouselContent["platform"]
+): GraphicsStyle[] {
+  return listGraphicsStyles({ platform });
+}
+
+export function getGraphicsStyle(
+  templateId: string
+): GraphicsStyle | undefined {
+  return listGraphicsStyles().find((style) => style.templateId === templateId);
+}
+
+export function graphicsStyleCaption(
+  slideNumber: number,
+  templateId: string | undefined
+): string {
+  const style = templateId ? getGraphicsStyle(templateId) : undefined;
+  const label = style?.pickerLabel ?? "Pack default";
+  return `Slide ${slideNumber} · ${label}`;
+}
+
+/** Id written to `data-carousel-template` on the live preview. */
+export function previewCarouselTemplateId(
+  slide: Pick<CarouselSlide, "templateId" | "role" | "layout">
+): string {
+  if (slide.templateId) return slide.templateId;
+  if (slide.layout === "grid-2x3") return "body-tool-grid-2x3";
+  if (slide.role === "cover") return "hook-scroll-cover";
+  if (slide.role === "cta") return "cta-action-close";
+  return "body-narrative-default";
+}
+
+function templateKeepsListItems(
+  template: CarouselTemplateDefinition,
+  templateId: string
+): boolean {
+  return Boolean(
+    template.structure?.listItems?.count &&
+      (template.category === "body-list" ||
+        templateId.includes("tip-lock") ||
+        templateId.includes("switches"))
+  );
+}
+
+export function applyGraphicsStyleToSlide(
+  slide: CarouselSlide,
+  templateId: string
+): CarouselSlide {
+  const productionId = resolveProductionTemplateId(templateId);
+  const layoutTemplate = getCarouselTemplate(productionId);
+  if (!layoutTemplate && !getCarouselTemplate(templateId)) {
+    return slide;
+  }
+
+  const applied = applyTemplateLayoutToSlide(slide, templateId);
+  const slotTemplate = layoutTemplate ?? getCarouselTemplate(templateId);
+  if (!slotTemplate) return applied;
+
+  const usesList = templateKeepsListItems(slotTemplate, slotTemplate.id);
+  const usesMetrics =
+    slotTemplate.category === "body-stats" ||
+    slotTemplate.id.includes("metrics");
+  const usesCheatsheet =
+    slotTemplate.category === "body-cheatsheet" ||
+    slotTemplate.id.includes("cheatsheet");
+
+  return hydrateSlideStructuredSlots({
+    ...applied,
+    listItems: usesList ? applied.listItems : undefined,
+    metricCells: usesMetrics ? applied.metricCells : undefined,
+    cheatsheetRows: usesCheatsheet ? applied.cheatsheetRows : undefined,
+  });
+}
+
+export function resetSlideGraphicsStyle(
+  slide: CarouselSlide,
+  context: PickTemplateContext
+): CarouselSlide {
+  return applyGraphicsStyleToSlide(
+    slide,
+    pickTemplateForSlide(slide, context)
+  );
+}
 
 export function applyTemplateLayoutToSlide(
   slide: CarouselSlide,

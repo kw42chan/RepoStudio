@@ -1,5 +1,5 @@
 {
-  "version": "1.2.0",
+  "version": "1.3.0",
   "references": [
     {
       "id": "ref-edwardai-dc8yjg",
@@ -178,6 +178,126 @@
       "disabled": true
     }
   ],
+  "graphicsStyleCatalog": {
+    "version": 1,
+    "groups": [
+      {
+        "id": "hooks",
+        "label": "Hooks",
+        "categories": ["hook-cover", "hook-hero"]
+      },
+      {
+        "id": "body",
+        "label": "Body",
+        "categories": [
+          "body-narrative",
+          "body-list",
+          "body-stats",
+          "body-cheatsheet",
+          "body-profile",
+          "body-grid"
+        ]
+      },
+      {
+        "id": "close",
+        "label": "Close",
+        "categories": ["cta-close"]
+      }
+    ],
+    "styles": [
+      {
+        "templateId": "hook-scroll-cover",
+        "label": "Scroll cover",
+        "tags": ["cover", "light"],
+        "experimental": false,
+        "platforms": ["instagram", "linkedin"]
+      },
+      {
+        "templateId": "body-narrative-default",
+        "label": "Narrative",
+        "tags": ["text", "explain"],
+        "experimental": false,
+        "platforms": ["instagram", "linkedin"]
+      },
+      {
+        "templateId": "body-tool-grid-2x3",
+        "label": "Tool grid (2×3)",
+        "tags": ["grid", "list"],
+        "experimental": false,
+        "platforms": ["instagram", "linkedin"]
+      },
+      {
+        "templateId": "cta-action-close",
+        "label": "Action close",
+        "tags": ["cta", "gradient"],
+        "experimental": false,
+        "platforms": ["instagram", "linkedin"]
+      },
+      {
+        "templateId": "ref-edwardai-hook-hero-showcase",
+        "label": "Hero showcase (dark stage)",
+        "tags": ["edwardai", "dark", "hero"],
+        "experimental": false,
+        "platforms": ["instagram"]
+      },
+      {
+        "templateId": "ref-edwardai-body-scene-compare",
+        "label": "Scene compare (Edward)",
+        "tags": ["edwardai", "dark", "proof"],
+        "experimental": false,
+        "platforms": ["instagram"]
+      },
+      {
+        "templateId": "ref-edwardai-body-tip-lock-three",
+        "label": "Three-rule tip list",
+        "tags": ["edwardai", "list"],
+        "experimental": false,
+        "platforms": ["instagram"]
+      },
+      {
+        "templateId": "ref-edwardai-hook-photo-agent-cta",
+        "label": "Photo agent hook",
+        "tags": ["edwardai", "photo", "hero"],
+        "experimental": false,
+        "platforms": ["instagram"]
+      },
+      {
+        "templateId": "ref-edwardai-body-agent-profile-card",
+        "label": "Agent profile card",
+        "tags": ["edwardai", "profile"],
+        "experimental": false,
+        "platforms": ["instagram"]
+      },
+      {
+        "templateId": "ref-edwardai-body-cheatsheet-3way",
+        "label": "Three-way cheatsheet",
+        "tags": ["edwardai", "list"],
+        "experimental": false,
+        "platforms": ["instagram"]
+      },
+      {
+        "templateId": "ref-edwardai-hook-hero-centered-stat",
+        "label": "Centered stat hero",
+        "tags": ["edwardai", "dark", "hero"],
+        "experimental": false,
+        "platforms": ["instagram"]
+      },
+      {
+        "templateId": "ref-edwardai-body-numbered-switches",
+        "label": "Numbered switches",
+        "tags": ["edwardai", "list"],
+        "experimental": false,
+        "platforms": ["instagram"]
+      },
+      {
+        "templateId": "ref-edwardai-body-stats-metrics-row",
+        "label": "Metrics row",
+        "tags": ["edwardai", "stats"],
+        "experimental": false,
+        "platforms": ["instagram"]
+      }
+    ]
+  },
   "categories": [
     {
       "id": "hook-cover",
@@ -233,6 +353,7 @@
       "intent": "hook",
       "layout": "default",
       "implementationStatus": "rendered",
+      "showInStylePicker": true,
       "roles": [
         "cover"
       ],
@@ -258,6 +379,7 @@
       "intent": "explain",
       "layout": "default",
       "implementationStatus": "rendered",
+      "showInStylePicker": true,
       "roles": [
         "body"
       ],
@@ -283,6 +405,7 @@
       "intent": "list",
       "layout": "grid-2x3",
       "implementationStatus": "rendered",
+      "showInStylePicker": true,
       "roles": [
         "body"
       ],
@@ -318,6 +441,7 @@
       "intent": "cta",
       "layout": "default",
       "implementationStatus": "rendered",
+      "showInStylePicker": true,
       "roles": [
         "cta"
       ],
@@ -343,6 +467,7 @@
       "intent": "hook",
       "layout": "default",
       "implementationStatus": "rendered",
+      "showInStylePicker": true,
       "sourceUrl": "https://www.instagram.com/p/Dc8YjGygHb2/",
       "inspirationNotes": "Dark green 4:5 frame: top header pills, central diorama/hero (~55% height), bottom text block with serif headline, mint accent subhead, swipe CTA. Hero slot + blueprint/scene background — structure only, no artwork clone.",
       "roles": [
@@ -383,6 +508,7 @@
       "intent": "explain",
       "layout": "default",
       "implementationStatus": "rendered",
+      "showInStylePicker": true,
       "sourceUrl": "https://www.instagram.com/p/Dc8YjGygHb2/",
       "inspirationNotes": "Repeat hero asset in a new scene with short caption proving consistency; before/after or scene label chip.",
       "roles": [
@@ -419,6 +545,7 @@
       "intent": "list",
       "layout": "default",
       "implementationStatus": "rendered",
+      "showInStylePicker": true,
       "sourceUrl": "https://www.instagram.com/p/Dc8YjGygHb2/",
       "inspirationNotes": "Numbered list of exactly three locking rules (reference image, fixed geometry sentence, quantity words).",
       "roles": [
@@ -460,6 +587,7 @@
       "intent": "hook",
       "layout": "default",
       "implementationStatus": "rendered",
+      "showInStylePicker": true,
       "sourceUrl": "https://www.instagram.com/p/DbP6R_8k4Y5/",
       "inspirationNotes": "Full-bleed warm photo background; three labeled figurines across mid-frame; bottom third heavy white headline + orange/yellow subhead; pill CTA bottom-left.",
       "roles": [
@@ -499,6 +627,7 @@
       "intent": "explain",
       "layout": "default",
       "implementationStatus": "rendered",
+      "showInStylePicker": true,
       "sourceUrl": "https://www.instagram.com/p/DbP6R_8k4Y5/",
       "inspirationNotes": "One agent per slide: emoji/icon row, role title (e.g. 主力), pros block, trade-off/cost line.",
       "roles": [
@@ -536,6 +665,7 @@
       "intent": "list",
       "layout": "default",
       "implementationStatus": "rendered",
+      "showInStylePicker": true,
       "sourceUrl": "https://www.instagram.com/p/DbP6R_8k4Y5/",
       "inspirationNotes": "Save slide: compact matrix mapping scenario → which agent to hire (caption: slide 6 quick lookup). Not the six-cell tool grid.",
       "roles": [
@@ -575,6 +705,7 @@
       "intent": "hook",
       "layout": "default",
       "implementationStatus": "rendered",
+      "showInStylePicker": true,
       "sourceUrl": "https://www.instagram.com/p/DcLH-ofE_Nt/",
       "inspirationNotes": "Centered hero object on dark gradient; top tag pills; large serif headline; italic orange teaser; swipe CTA.",
       "roles": [
@@ -615,6 +746,7 @@
       "intent": "list",
       "layout": "default",
       "implementationStatus": "rendered",
+      "showInStylePicker": true,
       "sourceUrl": "https://www.instagram.com/p/DcLH-ofE_Nt/",
       "inspirationNotes": "Seven settings/switches; typically one switch per slide or stacked numbered rows with setting name + one-line payoff.",
       "roles": [
@@ -658,6 +790,7 @@
       "intent": "explain",
       "layout": "default",
       "implementationStatus": "rendered",
+      "showInStylePicker": true,
       "sourceUrl": "https://www.instagram.com/p/DcLH-ofE_Nt/",
       "inspirationNotes": "Social proof row: 3–4 large numerals (e.g. 51 roles, 77 commands, 14 connectors) with short labels.",
       "roles": [

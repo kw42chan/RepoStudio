@@ -12,6 +12,8 @@ import {
 import {
   getCarouselTemplate,
   getCarouselTemplateRenderVariant,
+  graphicsStyleCaption,
+  previewCarouselTemplateId,
 } from "@/lib/carousel-templates";
 import { EdwardAiStructuredSlide } from "@/components/studio/edwardai-slide-layouts";
 import { AspectRatio, CarouselSlide, VisualTemplate } from "@/lib/types";
@@ -188,10 +190,7 @@ function GridSlideCanvas({
       <div
         data-platform={platform}
         data-layout="grid-2x3"
-        data-carousel-template={
-          slide.templateId ??
-          getCarouselTemplate("body-tool-grid-2x3")?.id
-        }
+        data-carousel-template={previewCarouselTemplateId(slide)}
         style={{
           width: `${dims.width}px`,
           height: `${dims.height}px`,
@@ -464,13 +463,7 @@ export function SlideCanvas({
         : palette.lightBg;
   const headingSize = px(slide.headline.length > 72 ? 26 : slide.role === "cover" ? 34 : 30);
   const scale = fullResolution ? 1 : 0.34;
-  const carouselTemplateId =
-    slide.templateId ??
-    (slide.role === "cover"
-      ? "hook-scroll-cover"
-      : slide.role === "cta"
-        ? "cta-action-close"
-        : "body-narrative-default");
+  const carouselTemplateId = previewCarouselTemplateId(slide);
   const carouselTemplateLayout =
     getCarouselTemplate(carouselTemplateId)?.layout ?? "default";
   const edwardVariant = getCarouselTemplateRenderVariant(carouselTemplateId);
@@ -739,6 +732,10 @@ export function CarouselPreview({
         platform={platform}
         aspectRatio={aspectRatio}
       />
+
+      <p className="text-xs text-muted-foreground">
+        {graphicsStyleCaption(activeIndex + 1, currentSlide.templateId)}
+      </p>
 
       <div className="flex items-center gap-2">
         <Button

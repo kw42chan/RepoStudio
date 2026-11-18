@@ -2,6 +2,14 @@
 
 Plan for RepoStudio carousel: **explorable graphics styles per slide (A)**, **per-slide color/gradient (B)**, and **user-defined layout packs (C)**.
 
+## Status
+
+| Phase | Status |
+| --- | --- |
+| **3A** | Implemented (manifest v1.3.0): catalog, per-slide Graphics style picker, pack reset, preview caption. 3B and 3C are separate follow-ups. |
+| **3B** | Not started. |
+| **3C** | Not started. |
+
 Repo context: manifest `src/lib/carousel-templates/manifest.v1.json`, renderers `src/components/studio/carousel-preview.tsx` + `src/components/studio/edwardai-slide-layouts.tsx`, editor `src/components/studio/carousel-editor.tsx`.
 
 ---

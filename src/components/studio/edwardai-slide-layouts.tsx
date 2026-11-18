@@ -5,7 +5,10 @@ import {
   brandMark,
   carouselPalette,
 } from "@/lib/carousel-design";
-import type { CarouselTemplateRenderVariant } from "@/lib/carousel-templates";
+import {
+  previewCarouselTemplateId,
+  type CarouselTemplateRenderVariant,
+} from "@/lib/carousel-templates";
 import type { CarouselSlide, VisualTemplate } from "@/lib/types";
 import { getExportDimensions } from "@/lib/export-carousel";
 import type { AspectRatio } from "@/lib/types";
@@ -752,7 +755,7 @@ export function EdwardAiStructuredSlide({
       <div
         data-platform={platform}
         data-layout={`edwardai-${variant}`}
-        data-carousel-template={slide.templateId}
+        data-carousel-template={previewCarouselTemplateId(slide)}
         style={{
           width: `${dims.width}px`,
           height: `${dims.height}px`,

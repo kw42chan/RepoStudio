@@ -35,7 +35,7 @@ const mockIdea: RepurposeIdea = {
 
 describe("carousel template manifest", () => {
   it("exposes v1.2 categories and aligned layout keys", () => {
-    expect(carouselTemplateManifest.version).toBe("1.2.0");
+    expect(carouselTemplateManifest.version).toBe("1.3.0");
     expect(carouselTemplateManifest.categories.length).toBeGreaterThanOrEqual(9);
     const grid = getCarouselTemplate("body-tool-grid-2x3");
     expect(grid?.layout).toBe("grid-2x3");

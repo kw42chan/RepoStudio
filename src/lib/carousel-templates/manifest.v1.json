@@ -1,5 +1,5 @@
 {
-  "version": "1.1.0",
+  "version": "1.2.0",
   "references": [
     {
       "id": "ref-edwardai-dc8yjg",
@@ -9,11 +9,31 @@
       "typicalSlideCount": "8–10",
       "fetchMethod": "oEmbed cover thumbnail + captioned embed caption; full sidecar blocked without login",
       "slideSequence": [
-        { "position": 1, "templateId": "ref-edwardai-hook-hero-showcase", "role": "hook" },
-        { "position": "2–5", "templateId": "ref-edwardai-body-scene-compare", "role": "proof" },
-        { "position": 6, "templateId": "ref-edwardai-body-tip-lock-three", "role": "list" },
-        { "position": "7–8", "templateId": "body-narrative-default", "role": "explain" },
-        { "position": "last", "templateId": "cta-action-close", "role": "cta" }
+        {
+          "position": 1,
+          "templateId": "ref-edwardai-hook-hero-showcase",
+          "role": "hook"
+        },
+        {
+          "position": "2–5",
+          "templateId": "ref-edwardai-body-scene-compare",
+          "role": "proof"
+        },
+        {
+          "position": 6,
+          "templateId": "ref-edwardai-body-tip-lock-three",
+          "role": "list"
+        },
+        {
+          "position": "7–8",
+          "templateId": "body-narrative-default",
+          "role": "explain"
+        },
+        {
+          "position": "last",
+          "templateId": "cta-action-close",
+          "role": "cta"
+        }
       ]
     },
     {
@@ -24,11 +44,31 @@
       "typicalSlideCount": "7–8",
       "fetchMethod": "oEmbed cover thumbnail + captioned embed caption",
       "slideSequence": [
-        { "position": 1, "templateId": "ref-edwardai-hook-photo-agent-cta", "role": "hook" },
-        { "position": "2–4", "templateId": "ref-edwardai-body-agent-profile-card", "role": "compare" },
-        { "position": 5, "templateId": "body-narrative-default", "role": "synthesis" },
-        { "position": 6, "templateId": "ref-edwardai-body-cheatsheet-3way", "role": "cheatsheet" },
-        { "position": "last", "templateId": "cta-action-close", "role": "cta" }
+        {
+          "position": 1,
+          "templateId": "ref-edwardai-hook-photo-agent-cta",
+          "role": "hook"
+        },
+        {
+          "position": "2–4",
+          "templateId": "ref-edwardai-body-agent-profile-card",
+          "role": "compare"
+        },
+        {
+          "position": 5,
+          "templateId": "body-narrative-default",
+          "role": "synthesis"
+        },
+        {
+          "position": 6,
+          "templateId": "ref-edwardai-body-cheatsheet-3way",
+          "role": "cheatsheet"
+        },
+        {
+          "position": "last",
+          "templateId": "cta-action-close",
+          "role": "cta"
+        }
       ]
     },
     {
@@ -39,10 +79,26 @@
       "typicalSlideCount": "8–10",
       "fetchMethod": "oEmbed cover thumbnail + captioned embed caption",
       "slideSequence": [
-        { "position": 1, "templateId": "ref-edwardai-hook-hero-centered-stat", "role": "hook" },
-        { "position": "2–8", "templateId": "ref-edwardai-body-numbered-switches", "role": "list" },
-        { "position": "penultimate", "templateId": "ref-edwardai-body-stats-metrics-row", "role": "stats" },
-        { "position": "last", "templateId": "cta-action-close", "role": "cta" }
+        {
+          "position": 1,
+          "templateId": "ref-edwardai-hook-hero-centered-stat",
+          "role": "hook"
+        },
+        {
+          "position": "2–8",
+          "templateId": "ref-edwardai-body-numbered-switches",
+          "role": "list"
+        },
+        {
+          "position": "penultimate",
+          "templateId": "ref-edwardai-body-stats-metrics-row",
+          "role": "stats"
+        },
+        {
+          "position": "last",
+          "templateId": "cta-action-close",
+          "role": "cta"
+        }
       ]
     }
   ],
@@ -50,15 +106,20 @@
     {
       "id": "default",
       "label": "Default",
-      "platforms": ["instagram", "linkedin"],
+      "platforms": [
+        "instagram",
+        "linkedin"
+      ],
       "description": "Automatic template picker. LinkedIn keeps the listicle grid fallback on slide 4 when missing.",
       "forceLinkedInGrid": true
     },
     {
       "id": "instagram-edwardai-ref",
       "label": "Edward AI reference",
-      "platforms": ["instagram"],
-      "description": "Seven-slide arc inspired by @edwardai.tech IG references (hero → proof → tips → CTA). Reference template ids map to rendered fallbacks until Phase 2.",
+      "platforms": [
+        "instagram"
+      ],
+      "description": "Seven-slide arc inspired by @edwardai.tech IG references (hero, scene proof, numbered tips, CTA). Renders Edward AI layout variants in preview and export.",
       "referenceId": "ref-edwardai-dc8yjg",
       "slideTemplateIds": [
         "ref-edwardai-hook-hero-showcase",
@@ -69,12 +130,22 @@
         "body-narrative-default",
         "cta-action-close"
       ],
-      "slideRoles": ["cover", "body", "body", "body", "body", "body", "cta"]
+      "slideRoles": [
+        "cover",
+        "body",
+        "body",
+        "body",
+        "body",
+        "body",
+        "cta"
+      ]
     },
     {
       "id": "linkedin-pm-grid",
       "label": "Default + tool grid",
-      "platforms": ["linkedin"],
+      "platforms": [
+        "linkedin"
+      ],
       "description": "PM-style narrative slides with a guaranteed 2×3 tool grid on slide 4.",
       "forceLinkedInGrid": true,
       "slideTemplateIds": [
@@ -86,12 +157,22 @@
         "body-narrative-default",
         "cta-action-close"
       ],
-      "slideRoles": ["cover", "body", "body", "body", "body", "body", "cta"]
+      "slideRoles": [
+        "cover",
+        "body",
+        "body",
+        "body",
+        "body",
+        "body",
+        "cta"
+      ]
     },
     {
       "id": "linkedin-edwardai-ref",
       "label": "Edward AI reference",
-      "platforms": ["linkedin"],
+      "platforms": [
+        "linkedin"
+      ],
       "description": "LinkedIn reference layouts from @edwardai.tech — coming soon.",
       "comingSoon": true,
       "disabled": true
@@ -152,10 +233,18 @@
       "intent": "hook",
       "layout": "default",
       "implementationStatus": "rendered",
-      "roles": ["cover"],
+      "roles": [
+        "cover"
+      ],
       "slots": {
-        "required": ["headline", "body", "visualDirection"],
-        "optional": ["eyebrow"]
+        "required": [
+          "headline",
+          "body",
+          "visualDirection"
+        ],
+        "optional": [
+          "eyebrow"
+        ]
       },
       "preview": {
         "thumbnailKey": "hook-scroll-cover",
@@ -169,10 +258,18 @@
       "intent": "explain",
       "layout": "default",
       "implementationStatus": "rendered",
-      "roles": ["body"],
+      "roles": [
+        "body"
+      ],
       "slots": {
-        "required": ["headline", "body", "visualDirection"],
-        "optional": ["eyebrow"]
+        "required": [
+          "headline",
+          "body",
+          "visualDirection"
+        ],
+        "optional": [
+          "eyebrow"
+        ]
       },
       "preview": {
         "thumbnailKey": "body-narrative-default",
@@ -186,7 +283,9 @@
       "intent": "list",
       "layout": "grid-2x3",
       "implementationStatus": "rendered",
-      "roles": ["body"],
+      "roles": [
+        "body"
+      ],
       "slots": {
         "required": [
           "headline",
@@ -194,11 +293,18 @@
           "visualDirection",
           "gridCells"
         ],
-        "optional": ["eyebrow"]
+        "optional": [
+          "eyebrow"
+        ]
       },
       "gridCells": {
         "count": 6,
-        "cellSlots": ["number", "title", "toolIds", "description"]
+        "cellSlots": [
+          "number",
+          "title",
+          "toolIds",
+          "description"
+        ]
       },
       "preview": {
         "thumbnailKey": "body-tool-grid-2x3",
@@ -212,10 +318,18 @@
       "intent": "cta",
       "layout": "default",
       "implementationStatus": "rendered",
-      "roles": ["cta"],
+      "roles": [
+        "cta"
+      ],
       "slots": {
-        "required": ["headline", "body", "visualDirection"],
-        "optional": ["eyebrow"]
+        "required": [
+          "headline",
+          "body",
+          "visualDirection"
+        ],
+        "optional": [
+          "eyebrow"
+        ]
       },
       "preview": {
         "thumbnailKey": "cta-action-close",
@@ -228,17 +342,32 @@
       "category": "hook-hero",
       "intent": "hook",
       "layout": "default",
-      "implementationStatus": "reference-only",
-      "productionFallbackId": "hook-scroll-cover",
+      "implementationStatus": "rendered",
       "sourceUrl": "https://www.instagram.com/p/Dc8YjGygHb2/",
       "inspirationNotes": "Dark green 4:5 frame: top header pills, central diorama/hero (~55% height), bottom text block with serif headline, mint accent subhead, swipe CTA. Hero slot + blueprint/scene background — structure only, no artwork clone.",
-      "roles": ["cover"],
+      "roles": [
+        "cover"
+      ],
       "slots": {
-        "required": ["headline", "body", "visualDirection"],
-        "optional": ["eyebrow"]
+        "required": [
+          "headline",
+          "body",
+          "visualDirection"
+        ],
+        "optional": [
+          "eyebrow"
+        ]
       },
       "structure": {
-        "zones": ["header_left", "header_badge", "hero_image", "headline", "subheadline", "footer_handle", "swipe_cta"],
+        "zones": [
+          "header_left",
+          "header_badge",
+          "hero_image",
+          "headline",
+          "subheadline",
+          "footer_handle",
+          "swipe_cta"
+        ],
         "background": "dark-solid-with-hero-stage"
       },
       "preview": {
@@ -253,17 +382,28 @@
       "category": "body-narrative",
       "intent": "explain",
       "layout": "default",
-      "implementationStatus": "reference-only",
-      "productionFallbackId": "body-narrative-default",
+      "implementationStatus": "rendered",
       "sourceUrl": "https://www.instagram.com/p/Dc8YjGygHb2/",
       "inspirationNotes": "Repeat hero asset in a new scene with short caption proving consistency; before/after or scene label chip.",
-      "roles": ["body"],
+      "roles": [
+        "body"
+      ],
       "slots": {
-        "required": ["headline", "body", "visualDirection"],
-        "optional": ["eyebrow"]
+        "required": [
+          "headline",
+          "body",
+          "visualDirection"
+        ],
+        "optional": [
+          "eyebrow"
+        ]
       },
       "structure": {
-        "zones": ["scene_label", "hero_image", "proof_caption"],
+        "zones": [
+          "scene_label",
+          "hero_image",
+          "proof_caption"
+        ],
         "pattern": "same asset, new environment"
       },
       "preview": {
@@ -278,18 +418,34 @@
       "category": "body-list",
       "intent": "list",
       "layout": "default",
-      "implementationStatus": "reference-only",
-      "productionFallbackId": "body-narrative-default",
+      "implementationStatus": "rendered",
       "sourceUrl": "https://www.instagram.com/p/Dc8YjGygHb2/",
       "inspirationNotes": "Numbered list of exactly three locking rules (reference image, fixed geometry sentence, quantity words).",
-      "roles": ["body"],
+      "roles": [
+        "body"
+      ],
       "slots": {
-        "required": ["headline", "body", "visualDirection"],
-        "optional": ["eyebrow"]
+        "required": [
+          "headline",
+          "body",
+          "visualDirection"
+        ],
+        "optional": [
+          "eyebrow"
+        ]
       },
       "structure": {
-        "zones": ["list_items"],
-        "listItems": { "count": 3, "cellSlots": ["number", "title", "description"] }
+        "zones": [
+          "list_items"
+        ],
+        "listItems": {
+          "count": 3,
+          "cellSlots": [
+            "number",
+            "title",
+            "description"
+          ]
+        }
       },
       "preview": {
         "thumbnailKey": "ref-edwardai-body-tip-lock-three",
@@ -303,17 +459,31 @@
       "category": "hook-hero",
       "intent": "hook",
       "layout": "default",
-      "implementationStatus": "reference-only",
-      "productionFallbackId": "hook-scroll-cover",
+      "implementationStatus": "rendered",
       "sourceUrl": "https://www.instagram.com/p/DbP6R_8k4Y5/",
       "inspirationNotes": "Full-bleed warm photo background; three labeled figurines across mid-frame; bottom third heavy white headline + orange/yellow subhead; pill CTA bottom-left.",
-      "roles": ["cover"],
+      "roles": [
+        "cover"
+      ],
       "slots": {
-        "required": ["headline", "body", "visualDirection"],
-        "optional": ["eyebrow"]
+        "required": [
+          "headline",
+          "body",
+          "visualDirection"
+        ],
+        "optional": [
+          "eyebrow"
+        ]
       },
       "structure": {
-        "zones": ["brand_pill", "hero_figures", "figure_labels", "headline", "subheadline", "cta_pill"],
+        "zones": [
+          "brand_pill",
+          "hero_figures",
+          "figure_labels",
+          "headline",
+          "subheadline",
+          "cta_pill"
+        ],
         "background": "full-bleed-photo"
       },
       "preview": {
@@ -328,17 +498,29 @@
       "category": "body-profile",
       "intent": "explain",
       "layout": "default",
-      "implementationStatus": "reference-only",
-      "productionFallbackId": "body-narrative-default",
+      "implementationStatus": "rendered",
       "sourceUrl": "https://www.instagram.com/p/DbP6R_8k4Y5/",
       "inspirationNotes": "One agent per slide: emoji/icon row, role title (e.g. 主力), pros block, trade-off/cost line.",
-      "roles": ["body"],
+      "roles": [
+        "body"
+      ],
       "slots": {
-        "required": ["headline", "body", "visualDirection"],
-        "optional": ["eyebrow"]
+        "required": [
+          "headline",
+          "body",
+          "visualDirection"
+        ],
+        "optional": [
+          "eyebrow"
+        ]
       },
       "structure": {
-        "zones": ["icon", "role_badge", "strengths", "tradeoff"],
+        "zones": [
+          "icon",
+          "role_badge",
+          "strengths",
+          "tradeoff"
+        ],
         "repeatPerSlide": 1
       },
       "preview": {
@@ -353,18 +535,32 @@
       "category": "body-cheatsheet",
       "intent": "list",
       "layout": "default",
-      "implementationStatus": "reference-only",
-      "productionFallbackId": "body-narrative-default",
+      "implementationStatus": "rendered",
       "sourceUrl": "https://www.instagram.com/p/DbP6R_8k4Y5/",
       "inspirationNotes": "Save slide: compact matrix mapping scenario → which agent to hire (caption: slide 6 quick lookup). Not the six-cell tool grid.",
-      "roles": ["body"],
+      "roles": [
+        "body"
+      ],
       "slots": {
-        "required": ["headline", "body", "visualDirection"],
-        "optional": ["eyebrow"]
+        "required": [
+          "headline",
+          "body",
+          "visualDirection"
+        ],
+        "optional": [
+          "eyebrow"
+        ]
       },
       "structure": {
-        "zones": ["table_header", "table_rows"],
-        "columns": ["scenario", "agent", "note"]
+        "zones": [
+          "table_header",
+          "table_rows"
+        ],
+        "columns": [
+          "scenario",
+          "agent",
+          "note"
+        ]
       },
       "preview": {
         "thumbnailKey": "ref-edwardai-body-cheatsheet-3way",
@@ -378,17 +574,32 @@
       "category": "hook-hero",
       "intent": "hook",
       "layout": "default",
-      "implementationStatus": "reference-only",
-      "productionFallbackId": "hook-scroll-cover",
+      "implementationStatus": "rendered",
       "sourceUrl": "https://www.instagram.com/p/DcLH-ofE_Nt/",
       "inspirationNotes": "Centered hero object on dark gradient; top tag pills; large serif headline; italic orange teaser; swipe CTA.",
-      "roles": ["cover"],
+      "roles": [
+        "cover"
+      ],
       "slots": {
-        "required": ["headline", "body", "visualDirection"],
-        "optional": ["eyebrow"]
+        "required": [
+          "headline",
+          "body",
+          "visualDirection"
+        ],
+        "optional": [
+          "eyebrow"
+        ]
       },
       "structure": {
-        "zones": ["header_tags", "hero_image", "subheadline_top", "headline", "hook_teaser", "footer_handle", "swipe_cta"],
+        "zones": [
+          "header_tags",
+          "hero_image",
+          "subheadline_top",
+          "headline",
+          "hook_teaser",
+          "footer_handle",
+          "swipe_cta"
+        ],
         "background": "dark-gradient-scrim"
       },
       "preview": {
@@ -403,18 +614,36 @@
       "category": "body-list",
       "intent": "list",
       "layout": "default",
-      "implementationStatus": "reference-only",
-      "productionFallbackId": "body-narrative-default",
+      "implementationStatus": "rendered",
       "sourceUrl": "https://www.instagram.com/p/DcLH-ofE_Nt/",
       "inspirationNotes": "Seven settings/switches; typically one switch per slide or stacked numbered rows with setting name + one-line payoff.",
-      "roles": ["body"],
+      "roles": [
+        "body"
+      ],
       "slots": {
-        "required": ["headline", "body", "visualDirection"],
-        "optional": ["eyebrow"]
+        "required": [
+          "headline",
+          "body",
+          "visualDirection"
+        ],
+        "optional": [
+          "eyebrow"
+        ]
       },
       "structure": {
-        "zones": ["switch_number", "switch_name", "switch_payoff"],
-        "listItems": { "count": 7, "cellSlots": ["number", "title", "description"] }
+        "zones": [
+          "switch_number",
+          "switch_name",
+          "switch_payoff"
+        ],
+        "listItems": {
+          "count": 7,
+          "cellSlots": [
+            "number",
+            "title",
+            "description"
+          ]
+        }
       },
       "preview": {
         "thumbnailKey": "ref-edwardai-body-numbered-switches",
@@ -428,18 +657,33 @@
       "category": "body-stats",
       "intent": "explain",
       "layout": "default",
-      "implementationStatus": "reference-only",
-      "productionFallbackId": "body-narrative-default",
+      "implementationStatus": "rendered",
       "sourceUrl": "https://www.instagram.com/p/DcLH-ofE_Nt/",
       "inspirationNotes": "Social proof row: 3–4 large numerals (e.g. 51 roles, 77 commands, 14 connectors) with short labels.",
-      "roles": ["body"],
+      "roles": [
+        "body"
+      ],
       "slots": {
-        "required": ["headline", "body", "visualDirection"],
-        "optional": ["eyebrow"]
+        "required": [
+          "headline",
+          "body",
+          "visualDirection"
+        ],
+        "optional": [
+          "eyebrow"
+        ]
       },
       "structure": {
-        "zones": ["metric_cells"],
-        "metricCells": { "count": 3, "cellSlots": ["value", "label"] }
+        "zones": [
+          "metric_cells"
+        ],
+        "metricCells": {
+          "count": 3,
+          "cellSlots": [
+            "value",
+            "label"
+          ]
+        }
       },
       "preview": {
         "thumbnailKey": "ref-edwardai-body-stats-metrics-row",

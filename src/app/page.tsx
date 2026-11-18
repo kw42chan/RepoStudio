@@ -846,6 +846,13 @@ export default function RepurposeWorkspacePage() {
                         ))}
                       </SelectContent>
                     </Select>
+                    {(layoutPackIds.instagram ?? "default") ===
+                      "instagram-edwardai-ref" && (
+                      <p className="text-[11px] text-muted-foreground leading-snug">
+                        Edward AI reference layouts render in preview and PNG
+                        export (hero stage, scene proof, numbered tips).
+                      </p>
+                    )}
                   </div>
                   <div className="space-y-1">
                     <Label className="text-xs">LinkedIn layout pack</Label>

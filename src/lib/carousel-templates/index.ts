@@ -1,4 +1,5 @@
 import manifest from "./manifest.v1.json";
+import { hydrateSlideStructuredSlots } from "../carousel-slide-slots";
 import type {
   CarouselContent,
   CarouselSlide,
@@ -6,6 +7,12 @@ import type {
   RepurposeIdea,
 } from "../types";
 import type { CarouselSlideLayout } from "../types";
+
+export {
+  getCarouselTemplateRenderVariant,
+  templateIdUsesStructuredRenderer,
+  type CarouselTemplateRenderVariant,
+} from "./render-variants";
 
 export type CarouselTemplateCategoryId =
   | "hook-cover"
@@ -307,18 +314,19 @@ export function applyTemplateLayoutToSlide(
   templateId: string
 ): CarouselSlide {
   const productionId = resolveProductionTemplateId(templateId);
-  const template = getCarouselTemplate(productionId);
-  if (!template) {
+  const layoutTemplate = getCarouselTemplate(productionId);
+  if (!layoutTemplate) {
     return slide;
   }
 
   const next: CarouselSlide = {
     ...slide,
     templateId,
-    layout: template.layout === "default" ? undefined : template.layout,
+    layout:
+      layoutTemplate.layout === "default" ? undefined : layoutTemplate.layout,
   };
 
-  if (template.layout !== "grid-2x3") {
+  if (layoutTemplate.layout !== "grid-2x3") {
     return {
       ...next,
       gridCells: undefined,
@@ -349,7 +357,8 @@ export function normalizeCarouselSlideTemplates(
       slideIndex,
       layoutPackId,
     });
-    return applyTemplateLayoutToSlide(baseSlide, templateId);
+    const withTemplate = applyTemplateLayoutToSlide(baseSlide, templateId);
+    return hydrateSlideStructuredSlots(withTemplate);
   });
 
   return { ...carousel, slides, layoutPackId };

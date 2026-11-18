@@ -109,6 +109,23 @@ export interface GridCell {
   description: string;
 }
 
+export interface ListItem {
+  number: number;
+  title: string;
+  description: string;
+}
+
+export interface MetricCell {
+  value: string;
+  label: string;
+}
+
+export interface CheatsheetRow {
+  scenario: string;
+  agent: string;
+  note?: string;
+}
+
 export interface CarouselSlide {
   id: string;
   slideNumber: number;
@@ -121,6 +138,9 @@ export interface CarouselSlide {
   templateId?: string;
   layout?: CarouselSlideLayout;
   gridCells?: GridCell[];
+  listItems?: ListItem[];
+  metricCells?: MetricCell[];
+  cheatsheetRows?: CheatsheetRow[];
 }
 
 export type CarouselLayoutPackId =

@@ -9,7 +9,11 @@ import {
   carouselPalette,
   slideGround,
 } from "@/lib/carousel-design";
-import { getCarouselTemplate } from "@/lib/carousel-templates";
+import {
+  getCarouselTemplate,
+  getCarouselTemplateRenderVariant,
+} from "@/lib/carousel-templates";
+import { EdwardAiStructuredSlide } from "@/components/studio/edwardai-slide-layouts";
 import { AspectRatio, CarouselSlide, VisualTemplate } from "@/lib/types";
 import { getExportDimensions } from "@/lib/export-carousel";
 
@@ -469,6 +473,24 @@ export function SlideCanvas({
         : "body-narrative-default");
   const carouselTemplateLayout =
     getCarouselTemplate(carouselTemplateId)?.layout ?? "default";
+  const edwardVariant = getCarouselTemplateRenderVariant(carouselTemplateId);
+
+  if (edwardVariant) {
+    return (
+      <EdwardAiStructuredSlide
+        slide={slide}
+        totalSlides={totalSlides}
+        template={template}
+        primaryColor={primaryColor}
+        secondaryColor={secondaryColor}
+        brandHandle={brandHandle}
+        platform={platform}
+        aspectRatio={aspectRatio}
+        variant={edwardVariant}
+        fullResolution={fullResolution}
+      />
+    );
+  }
 
   if (slide.layout === "grid-2x3" && (slide.gridCells?.length ?? 0) > 0) {
     return (

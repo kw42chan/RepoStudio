@@ -34,8 +34,8 @@ const mockIdea: RepurposeIdea = {
 };
 
 describe("carousel template manifest", () => {
-  it("exposes v1.1 categories and aligned layout keys", () => {
-    expect(carouselTemplateManifest.version).toBe("1.1.0");
+  it("exposes v1.2 categories and aligned layout keys", () => {
+    expect(carouselTemplateManifest.version).toBe("1.2.0");
     expect(carouselTemplateManifest.categories.length).toBeGreaterThanOrEqual(9);
     const grid = getCarouselTemplate("body-tool-grid-2x3");
     expect(grid?.layout).toBe("grid-2x3");
@@ -52,10 +52,10 @@ describe("carousel template manifest", () => {
     );
   });
 
-  it("resolves reference-only templates to production fallbacks", () => {
-    expect(listReferenceOnlyTemplates().length).toBeGreaterThanOrEqual(9);
+  it("resolves rendered edward templates to themselves", () => {
+    expect(listReferenceOnlyTemplates()).toHaveLength(0);
     expect(resolveProductionTemplateId("ref-edwardai-hook-hero-showcase")).toBe(
-      "hook-scroll-cover"
+      "ref-edwardai-hook-hero-showcase"
     );
     expect(resolveProductionTemplateId("hook-scroll-cover")).toBe(
       "hook-scroll-cover"

@@ -73,6 +73,23 @@ export const gridCellSchema = z.object({
   description: z.string(),
 });
 
+const listItemSchema = z.object({
+  number: z.number(),
+  title: z.string(),
+  description: z.string(),
+});
+
+const metricCellSchema = z.object({
+  value: z.string(),
+  label: z.string(),
+});
+
+const cheatsheetRowSchema = z.object({
+  scenario: z.string(),
+  agent: z.string(),
+  note: z.string().optional(),
+});
+
 export const carouselSlideSchema = z.object({
   id: z.string(),
   slideNumber: z.number(),
@@ -84,6 +101,9 @@ export const carouselSlideSchema = z.object({
   templateId: z.string().optional(),
   layout: z.enum(["default", "grid-2x3"]).optional(),
   gridCells: z.array(gridCellSchema).optional(),
+  listItems: z.array(listItemSchema).optional(),
+  metricCells: z.array(metricCellSchema).optional(),
+  cheatsheetRows: z.array(cheatsheetRowSchema).optional(),
 });
 
 const carouselSchema = z.object({
@@ -331,6 +351,11 @@ const CAROUSEL_TOOL_IDS =
   "claude, chatgpt, cursor, figma, github, jira, linear, miro, notion, perplexity, slack, asana";
 
 const CAROUSEL_GRID_PROMPT = `For listicles and "tools every X should know" angles, use exactly one slide with layout "grid-2x3" and gridCells (exactly 6 items). Each gridCell needs number (1-6), title (under 6 words), toolIds (1-2 ids from: ${CAROUSEL_TOOL_IDS}), and description (under 12 words). That slide still needs headline, body, and visualDirection for the header area. All other slides omit layout and gridCells (default text slides).`;
+
+const CAROUSEL_EDWARDAI_STRUCT_PROMPT = `When the carousel will use Edward AI reference layouts, you may add optional structured fields (still include headline, body, visualDirection on every slide):
+- listItems: {number, title, description}[] — exactly 3 items on tip-list slides; up to 7 on numbered switch slides
+- metricCells: {value, label}[] — 3-4 proof metrics on stats slides
+- cheatsheetRows: {scenario, agent, note}[] — 3-5 rows on cheatsheet slides`;
 
 function buildMockGridSlide(slideNumber: number): CarouselContent["slides"][number] {
   return {
@@ -675,6 +700,11 @@ Return JSON with hook, estimatedDuration, beats (each with id, timeframe, spoken
         }
 
         if (format === "ig_carousel") {
+          const igPackId = effectiveLayoutPackId("instagram", layoutPackIds);
+          const edwardPackExtra =
+            igPackId === "instagram-edwardai-ref"
+              ? `\n${CAROUSEL_EDWARDAI_STRUCT_PROMPT}\nOn slide 4 (three locking rules), include listItems with exactly 3 entries.`
+              : "";
           const object = await generateTextObject(
             carouselSchema,
             `${sameLanguageRule(sourcePost.rawText)}
@@ -692,8 +722,8 @@ Slide 1 is role "cover": a claim that can stop a scroll.
 Then a problem, the shift, what the reader gets, one concrete detail from the source, and how to use it. Those are role "body".
 The last slide is role "cta": one action under 12 words.
 Each eyebrow is 1 to 3 words. Each headline is under 12 words. Each body is under 24 words and uses the source post.
-${CAROUSEL_GRID_PROMPT}
-Return JSON with title, slides (id, slideNumber, role, eyebrow, headline, body, visualDirection, optional layout and gridCells), caption, and hashtags.`
+${CAROUSEL_GRID_PROMPT}${edwardPackExtra}
+Return JSON with title, slides (id, slideNumber, role, eyebrow, headline, body, visualDirection, optional layout, gridCells, listItems, metricCells, cheatsheetRows), caption, and hashtags.`
           );
           results.igCarousel = {
             platform: "instagram",

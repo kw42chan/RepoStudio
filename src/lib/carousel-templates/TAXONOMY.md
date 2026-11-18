@@ -20,9 +20,9 @@ LLM slide JSON → ensureLinkedInGridSlide (LI listicles) → normalizeCarouselS
 
 Selection logic lives in `pickTemplateForSlide` (`src/lib/carousel-templates/index.ts`), optionally driven by **layout packs** (`layoutPacks[]` in the manifest). The Studio sends `layoutPackIds` on `/api/generate`; `applyCarouselLayoutPipeline` in `src/lib/ai.ts` applies grid fallback then `normalizeCarouselSlideTemplates`.
 
-## Reference-only patterns (v1.1)
+## Edward AI layouts (v1.2)
 
-Nine `ref-edwardai-*` templates document @edwardai.tech Instagram carousels. They use `implementationStatus: "reference-only"` and `productionFallbackId` until `carousel-preview.tsx` implements hero, profile, cheatsheet, stats, and numbered-list layouts. See `references[]` in the manifest and `/cursor/stores/self/docs/carousel-template-library.md`.
+Nine `ref-edwardai-*` templates render in `carousel-preview.tsx` via `edwardai-slide-layouts.tsx` (`getCarouselTemplateRenderVariant`). Structured slots (`listItems`, `metricCells`, `cheatsheetRows`) hydrate in `normalizeCarouselSlideTemplates`. See `references[]` in the manifest and `/cursor/stores/self/docs/carousel-template-library.md`.
 
 ## Extending the library
 

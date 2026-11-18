@@ -180,6 +180,8 @@ export interface CarouselContent {
   brandHandle: string;
   /** Layout pack used when normalizing slide templates (pre-generate choice). */
   layoutPackId?: string;
+  /** Notes from the layout pack pipeline, such as an unknown graphics style. */
+  layoutWarnings?: string[];
   primaryColor?: string;
   secondaryColor?: string;
   accentColorOverride?: string;
@@ -209,6 +211,19 @@ export interface BrandVoicePreset {
   secondaryColor: string;
   defaultWritingStyle: WritingStyleId;
   defaultTone?: string;
+}
+
+export interface UserLayoutPack {
+  id: string;
+  name: string;
+  platform: "instagram" | "linkedin";
+  /** Graphics style ids, one per slide. */
+  slideTemplateIds: string[];
+  slideRoles?: Array<CarouselSlide["role"]>;
+  createdAt: string;
+  /** Manifest version the styles were chosen from. */
+  catalogVersion: string;
+  basedOnPackId?: string;
 }
 
 export interface BufferConnection {
@@ -250,6 +265,7 @@ export interface AppStoreData {
   drafts: ContentDraft[];
   brandPresets: BrandVoicePreset[];
   visualTemplates: VisualTemplate[];
+  layoutPacks: UserLayoutPack[];
   bufferConnection: BufferConnection;
   mockQueue: ScheduledPost[];
 }

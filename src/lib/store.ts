@@ -8,6 +8,7 @@ import {
   BufferConnection,
   ContentDraft,
   ScheduledPost,
+  UserLayoutPack,
   VisualTemplate,
 } from "./types";
 import {
@@ -39,6 +40,7 @@ function createInitialStore(): AppStoreData {
     drafts: [],
     brandPresets: DEFAULT_BRAND_PRESETS,
     visualTemplates: [],
+    layoutPacks: [],
     bufferConnection: {
       mode: process.env.BUFFER_ACCESS_TOKEN ? "token" : "disconnected",
       accessToken: process.env.BUFFER_ACCESS_TOKEN || undefined,
@@ -71,6 +73,7 @@ function normalizeStore(parsed: Partial<AppStoreData>): AppStoreData {
       ? parsed.brandPresets.map(withBrandColors)
       : initial.brandPresets,
     visualTemplates: parsed.visualTemplates ?? [],
+    layoutPacks: Array.isArray(parsed.layoutPacks) ? parsed.layoutPacks : [],
     bufferConnection: parsed.bufferConnection ?? initial.bufferConnection,
     mockQueue: parsed.mockQueue ?? initial.mockQueue,
   };
@@ -167,6 +170,26 @@ export async function saveVisualTemplate(
 export async function deleteVisualTemplate(id: string): Promise<void> {
   const store = await readStore();
   store.visualTemplates = store.visualTemplates.filter((t) => t.id !== id);
+  await writeStore(store);
+}
+
+export async function upsertLayoutPack(
+  pack: UserLayoutPack
+): Promise<UserLayoutPack> {
+  const store = await readStore();
+  const idx = store.layoutPacks.findIndex((item) => item.id === pack.id);
+  if (idx >= 0) {
+    store.layoutPacks[idx] = pack;
+  } else {
+    store.layoutPacks.unshift(pack);
+  }
+  await writeStore(store);
+  return pack;
+}
+
+export async function deleteLayoutPack(id: string): Promise<void> {
+  const store = await readStore();
+  store.layoutPacks = store.layoutPacks.filter((pack) => pack.id !== id);
   await writeStore(store);
 }
 

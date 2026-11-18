@@ -18,7 +18,7 @@ import {
   resetSlideGraphicsStyle,
   type GraphicsStyle,
 } from "@/lib/carousel-templates";
-import type { CarouselContent, CarouselSlide } from "@/lib/types";
+import type { CarouselContent, CarouselSlide, UserLayoutPack } from "@/lib/types";
 
 interface GraphicsStylePickerProps {
   platform: CarouselContent["platform"];
@@ -26,6 +26,7 @@ interface GraphicsStylePickerProps {
   slideIndex: number;
   totalSlides: number;
   layoutPackId?: string;
+  userPacks?: UserLayoutPack[];
   onApply: (next: CarouselSlide) => void;
 }
 
@@ -47,6 +48,7 @@ export function GraphicsStylePicker({
   slideIndex,
   totalSlides,
   layoutPackId,
+  userPacks,
   onApply,
 }: GraphicsStylePickerProps) {
   const styles = stylesForSlide(platform, slide.templateId);
@@ -132,6 +134,7 @@ export function GraphicsStylePicker({
                 totalSlides,
                 slideIndex,
                 layoutPackId,
+                userPacks,
               })
             )
           }

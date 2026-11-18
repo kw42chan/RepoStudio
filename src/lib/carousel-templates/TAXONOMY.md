@@ -1,4 +1,4 @@
-# Carousel slide layout taxonomy (v1.1)
+# Carousel slide layout taxonomy (v1.3)
 
 This taxonomy aligns with `CarouselSlideLayout` in `src/lib/types.ts` (`default` | `grid-2x3`) and the templates in `manifest.v1.json`.
 
@@ -19,6 +19,10 @@ LLM slide JSON → ensureLinkedInGridSlide (LI listicles) → normalizeCarouselS
 ```
 
 Selection logic lives in `pickTemplateForSlide` (`src/lib/carousel-templates/index.ts`), optionally driven by **layout packs** (`layoutPacks[]` in the manifest). The Studio sends `layoutPackIds` on `/api/generate`; `applyCarouselLayoutPipeline` in `src/lib/ai.ts` applies grid fallback then `normalizeCarouselSlideTemplates`.
+
+## Graphics styles (v1.3)
+
+Per-slide **Graphics style** in Content Studio reads `graphicsStyleCatalog` plus any rendered template with `showInStylePicker: true`. The picker label is the catalog `styles[].label` (experimental styles append “ (preview)”). Changing a style calls `applyGraphicsStyleToSlide`, which sets `templateId`, layout, and structured slots. `listGraphicsStylesForPlatform` filters by `platforms`. Reset uses `pickTemplateForSlide` for that index when a layout pack is set.
 
 ## Edward AI layouts (v1.2)
 

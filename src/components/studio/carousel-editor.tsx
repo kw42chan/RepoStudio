@@ -34,6 +34,7 @@ import {
 } from "@/lib/types";
 import { exportSlidesAsPdf, exportSlidesAsPng } from "@/lib/export-carousel";
 import { CarouselPreview } from "./carousel-preview";
+import { GraphicsStylePicker } from "./graphics-style-picker";
 import { WritingStyleControls } from "./writing-style-controls";
 
 interface CarouselEditorProps {
@@ -437,6 +438,22 @@ export function CarouselEditor({
                     </Select>
                   </div>
                 </div>
+
+                <GraphicsStylePicker
+                  platform={carousel.platform}
+                  slide={activeSlide}
+                  slideIndex={activeSlideIdx}
+                  totalSlides={carousel.slides.length}
+                  layoutPackId={carousel.layoutPackId}
+                  onApply={(next) =>
+                    onChange({
+                      ...carousel,
+                      slides: carousel.slides.map((slide) =>
+                        slide.id === next.id ? next : slide
+                      ),
+                    })
+                  }
+                />
 
                 <div className="space-y-1">
                   <Label className="text-xs">Headline</Label>

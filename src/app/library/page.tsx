@@ -13,21 +13,29 @@ import {
 } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
-import { ContentDraft, ScheduledPost, VisualTemplate } from "@/lib/types";
+import { LayoutPackList } from "@/components/studio/layout-pack-list";
+import {
+  ContentDraft,
+  ScheduledPost,
+  UserLayoutPack,
+  VisualTemplate,
+} from "@/lib/types";
 
 export default function LibraryPage() {
   const [drafts, setDrafts] = useState<ContentDraft[]>([]);
   const [posts, setPosts] = useState<ScheduledPost[]>([]);
   const [templates, setTemplates] = useState<VisualTemplate[]>([]);
+  const [layoutPacks, setLayoutPacks] = useState<UserLayoutPack[]>([]);
   const [loading, setLoading] = useState(true);
 
   async function loadAll() {
     setLoading(true);
     try {
-      const [dRes, pRes, tRes] = await Promise.all([
+      const [dRes, pRes, tRes, packRes] = await Promise.all([
         fetch("/api/drafts"),
         fetch("/api/buffer/posts"),
         fetch("/api/templates"),
+        fetch("/api/layout-packs"),
       ]);
       if (dRes.ok) {
         const d = await dRes.json();
@@ -42,6 +50,10 @@ export default function LibraryPage() {
         setTemplates(
           (t.templates || []).filter((tpl: VisualTemplate) => !tpl.isBuiltIn)
         );
+      }
+      if (packRes.ok) {
+        const packs = await packRes.json();
+        setLayoutPacks(packs.packs || []);
       }
     } finally {
       setLoading(false);
@@ -72,7 +84,7 @@ export default function LibraryPage() {
         <div>
           <h1 className="text-2xl font-bold tracking-tight">Content Library</h1>
           <p className="text-sm text-muted-foreground">
-            Saved repurpose drafts, Buffer queue, and custom visual templates.
+            Saved drafts, Buffer queue, visual templates, and layout packs.
           </p>
         </div>
         <Link href="/">
@@ -99,6 +111,9 @@ export default function LibraryPage() {
             </TabsTrigger>
             <TabsTrigger value="templates">
               Saved Templates ({templates.length})
+            </TabsTrigger>
+            <TabsTrigger value="packs">
+              My layout packs ({layoutPacks.length})
             </TabsTrigger>
           </TabsList>
 
@@ -256,6 +271,9 @@ export default function LibraryPage() {
                 ))}
               </div>
             )}
+          </TabsContent>
+          <TabsContent value="packs" className="pt-4">
+            <LayoutPackList packs={layoutPacks} onChange={setLayoutPacks} />
           </TabsContent>
         </Tabs>
       )}

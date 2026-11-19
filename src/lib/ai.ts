@@ -11,6 +11,7 @@ import {
   ReelContent,
   RepurposeIdea,
   SourcePost,
+  UserLayoutPack,
   WritingStyleConfig,
 } from "./types";
 import { WRITING_STYLES } from "./presets";
@@ -90,6 +91,28 @@ const cheatsheetRowSchema = z.object({
   note: z.string().optional(),
 });
 
+const slideHexSchema = z
+  .string()
+  .regex(/^#(?:[0-9a-fA-F]{3}|[0-9a-fA-F]{6})$/);
+
+const slideSurfaceSchema = z.discriminatedUnion("kind", [
+  z.object({ kind: z.literal("inherit") }),
+  z.object({ kind: z.literal("solid"), color: slideHexSchema }),
+  z.object({
+    kind: z.literal("gradient"),
+    angle: z.number().min(0).max(360).optional(),
+    stops: z
+      .array(
+        z.object({
+          color: slideHexSchema,
+          at: z.number().min(0).max(100),
+        })
+      )
+      .min(2)
+      .max(6),
+  }),
+]);
+
 export const carouselSlideSchema = z.object({
   id: z.string(),
   slideNumber: z.number(),
@@ -104,6 +127,8 @@ export const carouselSlideSchema = z.object({
   listItems: z.array(listItemSchema).optional(),
   metricCells: z.array(metricCellSchema).optional(),
   cheatsheetRows: z.array(cheatsheetRowSchema).optional(),
+  surface: slideSurfaceSchema.optional(),
+  accentOverride: slideHexSchema.optional(),
 });
 
 const carouselSchema = z.object({
@@ -420,14 +445,18 @@ export function applyCarouselLayoutPipeline(
   platform: "instagram" | "linkedin",
   sourcePost: SourcePost,
   idea: RepurposeIdea,
-  layoutPackIds?: LayoutPackIds
+  layoutPackIds?: LayoutPackIds,
+  userLayoutPacks?: UserLayoutPack[]
 ): CarouselContent {
-  const packId = effectiveLayoutPackId(platform, layoutPackIds);
+  const packId = effectiveLayoutPackId(platform, layoutPackIds, userLayoutPacks);
   let next: CarouselContent = { ...carousel, layoutPackId: packId };
   if (platform === "linkedin" && layoutPackForcesLinkedInGrid(packId)) {
     next = ensureLinkedInGridSlide(next, sourcePost, idea);
   }
-  return normalizeCarouselSlideTemplates(next, idea, { layoutPackId: packId });
+  return normalizeCarouselSlideTemplates(next, idea, {
+    layoutPackId: packId,
+    userPacks: userLayoutPacks,
+  });
 }
 
 export function ensureLinkedInGridSlide(
@@ -600,6 +629,7 @@ export async function generateContentForFormats(params: {
   aspectRatio: AspectRatio;
   brandHandle: string;
   layoutPackIds?: LayoutPackIds;
+  userLayoutPacks?: UserLayoutPack[];
 }): Promise<{
   reel?: ReelContent;
   igCarousel?: CarouselContent;
@@ -615,6 +645,7 @@ export async function generateContentForFormats(params: {
     aspectRatio,
     brandHandle,
     layoutPackIds,
+    userLayoutPacks,
   } = params;
 
   const styleDescription = describeWritingStyle(writingStyle);
@@ -654,7 +685,8 @@ export async function generateContentForFormats(params: {
             "instagram",
             sourcePost,
             idea,
-            layoutPackIds
+            layoutPackIds,
+            userLayoutPacks
           )
         : undefined,
       liCarousel: liRaw
@@ -663,7 +695,8 @@ export async function generateContentForFormats(params: {
             "linkedin",
             sourcePost,
             idea,
-            layoutPackIds
+            layoutPackIds,
+            userLayoutPacks
           )
         : undefined,
       usedMock: true,
@@ -784,7 +817,8 @@ Prefer the grid-2x3 slide for LinkedIn listicles and tool roundups when the angl
             "instagram",
             sourcePost,
             idea,
-            layoutPackIds
+            layoutPackIds,
+            userLayoutPacks
           );
         }
         if (format === "li_carousel") {
@@ -801,7 +835,8 @@ Prefer the grid-2x3 slide for LinkedIn listicles and tool roundups when the angl
             "linkedin",
             sourcePost,
             idea,
-            layoutPackIds
+            layoutPackIds,
+            userLayoutPacks
           );
         }
       }
@@ -813,7 +848,8 @@ Prefer the grid-2x3 slide for LinkedIn listicles and tool roundups when the angl
         "instagram",
         sourcePost,
         idea,
-        layoutPackIds
+        layoutPackIds,
+        userLayoutPacks
       );
     }
 
@@ -823,7 +859,8 @@ Prefer the grid-2x3 slide for LinkedIn listicles and tool roundups when the angl
         "linkedin",
         sourcePost,
         idea,
-        layoutPackIds
+        layoutPackIds,
+        userLayoutPacks
       );
     }
 

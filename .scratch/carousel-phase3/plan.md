@@ -2,6 +2,14 @@
 
 Plan for RepoStudio carousel: **explorable graphics styles per slide (A)**, **per-slide color/gradient (B)**, and **user-defined layout packs (C)**.
 
+## Status
+
+| Phase | Status |
+| --- | --- |
+| **3A** | Merged (`9ccb0bc`). |
+| **3B** | Merged (`5bb522b`). Per-slide surface and accent via `resolveSlideColors`. Grid cell colors deferred. |
+| **3C** | Implemented: saved sequences in the app store, Step 2 “My packs”, and Content Studio save-as-pack. Unknown style ids fall back to Narrative. |
+
 Repo context: manifest `src/lib/carousel-templates/manifest.v1.json`, renderers `src/components/studio/carousel-preview.tsx` + `src/components/studio/edwardai-slide-layouts.tsx`, editor `src/components/studio/carousel-editor.tsx`.
 
 ---

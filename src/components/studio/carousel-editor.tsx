@@ -29,11 +29,15 @@ import {
   AspectRatio,
   CarouselContent,
   CarouselSlide,
+  UserLayoutPack,
   VisualTemplate,
   WritingStyleConfig,
 } from "@/lib/types";
 import { exportSlidesAsPdf, exportSlidesAsPng } from "@/lib/export-carousel";
 import { CarouselPreview } from "./carousel-preview";
+import { GraphicsStylePicker } from "./graphics-style-picker";
+import { SlideSurfaceControls } from "./slide-surface-controls";
+import { SaveLayoutPack } from "./save-layout-pack";
 import { WritingStyleControls } from "./writing-style-controls";
 
 interface CarouselEditorProps {
@@ -47,6 +51,10 @@ interface CarouselEditorProps {
   onOpenTemplateImporter: () => void;
   onSaveAsNewTemplate: (template: VisualTemplate) => Promise<void>;
   onOpenSchedule: (text: string) => void;
+  userLayoutPacks?: UserLayoutPack[];
+  onLayoutPackSaved?: (pack: UserLayoutPack) => void;
+  /** Step 2 selection. Reset uses this pack, not only the id stamped at generate time. */
+  layoutPackId?: string;
 }
 
 export function CarouselEditor({
@@ -60,6 +68,9 @@ export function CarouselEditor({
   onOpenTemplateImporter,
   onSaveAsNewTemplate,
   onOpenSchedule,
+  userLayoutPacks,
+  onLayoutPackSaved,
+  layoutPackId,
 }: CarouselEditorProps) {
   const [activeSlideIdx, setActiveSlideIdx] = useState(0);
   const [exporting, setExporting] = useState<"png" | "pdf" | null>(null);
@@ -370,6 +381,16 @@ export function CarouselEditor({
             </div>
           </div>
 
+          <SaveLayoutPack
+            carousel={carousel}
+            onSaved={(pack) => onLayoutPackSaved?.(pack)}
+          />
+          {carousel.layoutWarnings?.length ? (
+            <p className="text-xs text-amber-800 dark:text-amber-200">
+              {carousel.layoutWarnings.join(" ")}
+            </p>
+          ) : null}
+
           {/* Slide selector pills */}
           <div className="flex flex-wrap gap-1.5">
             {carousel.slides.map((s, idx) => (
@@ -437,6 +458,55 @@ export function CarouselEditor({
                     </Select>
                   </div>
                 </div>
+
+                <GraphicsStylePicker
+                  platform={carousel.platform}
+                  slide={activeSlide}
+                  slideIndex={activeSlideIdx}
+                  totalSlides={carousel.slides.length}
+                  layoutPackId={layoutPackId ?? carousel.layoutPackId}
+                  userPacks={userLayoutPacks}
+                  onApply={(next) =>
+                    onChange({
+                      ...carousel,
+                      slides: carousel.slides.map((slide) =>
+                        slide.id === next.id ? next : slide
+                      ),
+                    })
+                  }
+                />
+
+                {activeTemplate && (
+                  <SlideSurfaceControls
+                    slide={activeSlide}
+                    primaryColor={primaryColor}
+                    secondaryColor={secondaryColor}
+                    template={activeTemplate}
+                    isFirst={activeSlideIdx === 0}
+                    onChange={(patch) => updateSlide(activeSlide.id, patch)}
+                    onCopyFromFirst={() => {
+                      const first = carousel.slides[0];
+                      if (!first) return;
+                      updateSlide(activeSlide.id, {
+                        surface: first.surface ?? { kind: "inherit" },
+                        accentOverride: first.accentOverride,
+                      });
+                    }}
+                    onApplyToAll={() => {
+                      const patch = {
+                        surface: activeSlide.surface ?? { kind: "inherit" },
+                        accentOverride: activeSlide.accentOverride,
+                      };
+                      onChange({
+                        ...carousel,
+                        slides: carousel.slides.map((slide) => ({
+                          ...slide,
+                          ...patch,
+                        })),
+                      });
+                    }}
+                  />
+                )}
 
                 <div className="space-y-1">
                   <Label className="text-xs">Headline</Label>

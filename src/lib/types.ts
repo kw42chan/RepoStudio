@@ -126,6 +126,16 @@ export interface CheatsheetRow {
   note?: string;
 }
 
+/** Per-slide background. Omitted or `inherit` uses the visual template and layout defaults. */
+export type SlideSurface =
+  | { kind: "inherit" }
+  | { kind: "solid"; color: string }
+  | {
+      kind: "gradient";
+      angle?: number;
+      stops: { color: string; at: number }[];
+    };
+
 export interface CarouselSlide {
   id: string;
   slideNumber: number;
@@ -141,6 +151,10 @@ export interface CarouselSlide {
   listItems?: ListItem[];
   metricCells?: MetricCell[];
   cheatsheetRows?: CheatsheetRow[];
+  /** Background override. Missing means inherit. */
+  surface?: SlideSurface;
+  /** Optional accent / mint / CTA color for this slide. */
+  accentOverride?: string;
 }
 
 export type CarouselLayoutPackId =
@@ -166,6 +180,8 @@ export interface CarouselContent {
   brandHandle: string;
   /** Layout pack used when normalizing slide templates (pre-generate choice). */
   layoutPackId?: string;
+  /** Notes from the layout pack pipeline, such as an unknown graphics style. */
+  layoutWarnings?: string[];
   primaryColor?: string;
   secondaryColor?: string;
   accentColorOverride?: string;
@@ -195,6 +211,19 @@ export interface BrandVoicePreset {
   secondaryColor: string;
   defaultWritingStyle: WritingStyleId;
   defaultTone?: string;
+}
+
+export interface UserLayoutPack {
+  id: string;
+  name: string;
+  platform: "instagram" | "linkedin";
+  /** Graphics style ids, one per slide. */
+  slideTemplateIds: string[];
+  slideRoles?: Array<CarouselSlide["role"]>;
+  createdAt: string;
+  /** Manifest version the styles were chosen from. */
+  catalogVersion: string;
+  basedOnPackId?: string;
 }
 
 export interface BufferConnection {
@@ -236,6 +265,7 @@ export interface AppStoreData {
   drafts: ContentDraft[];
   brandPresets: BrandVoicePreset[];
   visualTemplates: VisualTemplate[];
+  layoutPacks: UserLayoutPack[];
   bufferConnection: BufferConnection;
   mockQueue: ScheduledPost[];
 }

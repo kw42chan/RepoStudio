@@ -666,6 +666,25 @@ export function resetSlideGraphicsStyle(
   );
 }
 
+/** Restyle every existing slide to the selected pack. Step 2 uses this when the pack changes. */
+export function applyLayoutPackToCarousel(
+  carousel: CarouselContent,
+  layoutPackId: string,
+  userPacks: UserLayoutPack[] = []
+): CarouselContent {
+  const packId = layoutPackId.trim() || "default";
+  const slides = carousel.slides.map((slide, slideIndex) =>
+    resetSlideGraphicsStyle(slide, {
+      platform: carousel.platform,
+      totalSlides: carousel.slides.length,
+      slideIndex,
+      layoutPackId: packId,
+      userPacks,
+    })
+  );
+  return { ...carousel, slides, layoutPackId: packId };
+}
+
 export function applyTemplateLayoutToSlide(
   slide: CarouselSlide,
   templateId: string

@@ -347,6 +347,11 @@ export interface PickTemplateContext {
   userPacks?: UserLayoutPack[];
 }
 
+function isInstagramDefaultPack(context: PickTemplateContext): boolean {
+  return context.platform === "instagram" &&
+    (!context.layoutPackId?.trim() || context.layoutPackId.trim() === "default");
+}
+
 function ideaSuggestsToolGrid(idea: RepurposeIdea | undefined): boolean {
   if (!idea) return false;
   const angle = idea.angleType.toLowerCase();
@@ -607,12 +612,15 @@ function positionalSlideRole(
 
 /**
  * Pack default for one index, ignoring the slide's current style, role, and grid.
- * The Default pack has no explicit sequence: cover, narrative body, close.
+ * Instagram Default uses the cover style for every slide.
  */
 export function defaultTemplateForPackIndex(context: PickTemplateContext): {
   templateId: string;
   role: CarouselSlide["role"];
 } {
+  if (isInstagramDefaultPack(context)) {
+    return { templateId: "hook-scroll-cover", role: "cover" };
+  }
   const packId = context.layoutPackId?.trim() || "default";
   const pack = getLayoutPack(packId, context.userPacks);
   const role =
@@ -723,12 +731,15 @@ export function normalizeCarouselSlideTemplates(
   const totalSlides = carousel.slides.length;
   const warnings: string[] = [];
   const slides = carousel.slides.map((slide, slideIndex) => {
-    const roleFromPack = pack?.slideRoles?.[slideIndex];
+    const defaultCover = isInstagramDefaultPack({
+      platform: carousel.platform, totalSlides, slideIndex, layoutPackId,
+    });
+    const roleFromPack = defaultCover ? "cover" : pack?.slideRoles?.[slideIndex];
     const baseSlide =
       roleFromPack && roleFromPack !== slide.role
         ? { ...slide, role: roleFromPack }
         : slide;
-    const picked = pickTemplateForSlide(baseSlide, {
+    const picked = defaultCover ? "hook-scroll-cover" : pickTemplateForSlide(baseSlide, {
       platform: carousel.platform,
       idea,
       totalSlides,

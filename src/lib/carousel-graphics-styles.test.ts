@@ -9,6 +9,7 @@ import {
   resetSlideGraphicsStyle,
 } from "./carousel-templates";
 import type { CarouselContent, CarouselSlide } from "./types";
+import { resolveSlideColors } from "./carousel-slide-theme";
 
 function slide(
   overrides: Partial<CarouselSlide> & Pick<CarouselSlide, "role" | "slideNumber">
@@ -156,12 +157,34 @@ describe("resetSlideGraphicsStyle", () => {
       layoutPackId: "default",
     });
 
-    expect(reset.templateId).toBe("body-narrative-default");
-    expect(reset.role).toBe("body");
+    expect(reset.templateId).toBe("hook-scroll-cover");
+    expect(reset.role).toBe("cover");
     expect(reset.layout).toBeUndefined();
     expect(reset.gridCells).toBeUndefined();
     expect(reset.surface).toEqual({ kind: "inherit" });
     expect(reset.accentOverride).toBeUndefined();
+    const visual = { accentColor: "#2563eb", surfaceColor: "#ffffff" };
+    const cover = slide({ role: "cover", slideNumber: 1, templateId: "hook-scroll-cover" });
+    expect(resolveSlideColors(reset, visual, "#2563eb", "#ffffff", 7)).toEqual(
+      resolveSlideColors(cover, visual, "#2563eb", "#ffffff", 7)
+    );
+  });
+
+  it("resets every Instagram Default slide to the light cover style", () => {
+    const visual = { accentColor: "#2563eb", surfaceColor: "#ffffff" };
+    const first = slide({ role: "cover", slideNumber: 1, templateId: "hook-scroll-cover" });
+    const expectedColors = resolveSlideColors(first, visual, "#2563eb", "#ffffff", 7);
+    for (let index = 0; index < 7; index++) {
+      const original = slide({ role: index === 6 ? "cta" : "body", slideNumber: index + 1, surface: { kind: "solid", color: "#112233" } });
+      const reset = resetSlideGraphicsStyle(original, {
+        platform: "instagram", totalSlides: 7, slideIndex: index, layoutPackId: "default",
+      });
+      expect(reset.templateId).toBe("hook-scroll-cover");
+      expect(reset.role).toBe("cover");
+      expect(reset.headline).toBe(original.headline);
+      expect(reset.body).toBe(original.body);
+      expect(resolveSlideColors(reset, visual, "#2563eb", "#ffffff", 7)).toEqual(expectedColors);
+    }
   });
 });
 
@@ -196,11 +219,11 @@ describe("applyLayoutPackToCarousel", () => {
     const slide2 = restored.slides[1];
 
     expect(restored.layoutPackId).toBe("default");
-    expect(slide2?.templateId).toBe("body-narrative-default");
-    expect(slide2?.role).toBe("body");
+    expect(slide2?.templateId).toBe("hook-scroll-cover");
+    expect(slide2?.role).toBe("cover");
     expect(slide2?.surface).toEqual({ kind: "inherit" });
     expect(slide2?.headline).toBe("Headline");
     expect(restored.slides[0]?.templateId).toBe("hook-scroll-cover");
-    expect(restored.slides[6]?.templateId).toBe("cta-action-close");
+    expect(restored.slides.every((item) => item.templateId === "hook-scroll-cover" && item.role === "cover")).toBe(true);
   });
 });

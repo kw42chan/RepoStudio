@@ -61,8 +61,9 @@ export function slideGround(
   total: number,
   role: "cover" | "body" | "cta"
 ): SlideGround {
+  if (role === "cover") return "light";
   if (role === "cta" || index === total - 1) return "gradient";
-  if (role === "cover" || index === 0) return "light";
+  if (index === 0) return "light";
   return index % 2 === 1 ? "dark" : "light";
 }
 

@@ -163,7 +163,7 @@ describe("normalizeCarouselSlideTemplates", () => {
 
     const normalized = normalizeCarouselSlideTemplates(carousel, mockIdea);
     expect(normalized.slides[0].templateId).toBe("hook-scroll-cover");
-    expect(normalized.slides[1].templateId).toBe("body-narrative-default");
-    expect(normalized.slides[2].templateId).toBe("cta-action-close");
+    expect(normalized.slides[1].templateId).toBe("hook-scroll-cover");
+    expect(normalized.slides[2].templateId).toBe("hook-scroll-cover");
   });
 });

@@ -110,7 +110,7 @@
         "instagram",
         "linkedin"
       ],
-      "description": "Automatic template picker. LinkedIn keeps the listicle grid fallback on slide 4 when missing.",
+      "description": "Instagram uses the light cover style for every slide. LinkedIn uses automatic layouts with a listicle grid fallback on slide 4.",
       "forceLinkedInGrid": true
     },
     {

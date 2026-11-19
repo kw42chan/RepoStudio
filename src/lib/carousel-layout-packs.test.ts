@@ -75,7 +75,7 @@ describe("carousel layout packs", () => {
     expect(slide4?.gridCells).toHaveLength(6);
   });
 
-  it("keeps default heuristics when packs unset", () => {
+  it("uses the cover style on every Instagram Default slide", () => {
     const result = applyCarouselLayoutPipeline(
       sevenSlideCarousel("instagram"),
       "instagram",
@@ -84,5 +84,8 @@ describe("carousel layout packs", () => {
     );
     expect(result.layoutPackId).toBe("default");
     expect(result.slides[0]?.templateId).toBe("hook-scroll-cover");
+    expect(result.slides[1]?.templateId).toBe("hook-scroll-cover");
+    expect(result.slides[1]?.role).toBe("cover");
+    expect(result.slides.every((item) => item.templateId === "hook-scroll-cover" && item.role === "cover")).toBe(true);
   });
 });

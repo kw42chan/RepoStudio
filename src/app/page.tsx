@@ -1128,6 +1128,7 @@ export default function RepurposeWorkspacePage() {
                     onOpenSchedule={(text) => openSchedule("ig_carousel", text)}
                     userLayoutPacks={userLayoutPacks}
                     onLayoutPackSaved={rememberLayoutPack}
+                    layoutPackId={layoutPackIds.instagram ?? "default"}
                   />
                 )}
               </TabsContent>
@@ -1149,6 +1150,7 @@ export default function RepurposeWorkspacePage() {
                     onOpenSchedule={(text) => openSchedule("li_carousel", text)}
                     userLayoutPacks={userLayoutPacks}
                     onLayoutPackSaved={rememberLayoutPack}
+                    layoutPackId={layoutPackIds.linkedin ?? "default"}
                   />
                 )}
               </TabsContent>

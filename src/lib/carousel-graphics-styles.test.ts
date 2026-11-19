@@ -121,9 +121,45 @@ describe("resetSlideGraphicsStyle", () => {
       layoutPackId: "instagram-edwardai-ref",
     });
     expect(reset.templateId).toBe("ref-edwardai-body-tip-lock-three");
+    expect(reset.role).toBe("body");
     expect(reset.listItems).toHaveLength(3);
+    expect(reset.surface).toEqual({ kind: "inherit" });
     expect(graphicsStyleCaption(3, "ref-edwardai-body-scene-compare")).toBe(
       "Slide 3 · Scene compare (Edward)"
     );
+  });
+
+  it("restores Instagram Default slide 2 after a grid restyle", () => {
+    const overridden = applyGraphicsStyleToSlide(
+      slide({
+        role: "cover",
+        slideNumber: 2,
+        surface: { kind: "solid", color: "#112233" },
+        accentOverride: "#ff00aa",
+      }),
+      "body-tool-grid-2x3"
+    );
+    const withGrid = {
+      ...overridden,
+      gridCells: Array.from({ length: 6 }, (_, i) => ({
+        number: i + 1,
+        title: "Tool",
+        toolIds: ["notion"],
+        description: "Desc",
+      })),
+    };
+    const reset = resetSlideGraphicsStyle(withGrid, {
+      platform: "instagram",
+      totalSlides: 7,
+      slideIndex: 1,
+      layoutPackId: "default",
+    });
+
+    expect(reset.templateId).toBe("body-narrative-default");
+    expect(reset.role).toBe("body");
+    expect(reset.layout).toBeUndefined();
+    expect(reset.gridCells).toBeUndefined();
+    expect(reset.surface).toEqual({ kind: "inherit" });
+    expect(reset.accentOverride).toBeUndefined();
   });
 });

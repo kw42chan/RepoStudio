@@ -53,6 +53,8 @@ interface CarouselEditorProps {
   onOpenSchedule: (text: string) => void;
   userLayoutPacks?: UserLayoutPack[];
   onLayoutPackSaved?: (pack: UserLayoutPack) => void;
+  /** Step 2 selection. Reset uses this pack, not only the id stamped at generate time. */
+  layoutPackId?: string;
 }
 
 export function CarouselEditor({
@@ -68,6 +70,7 @@ export function CarouselEditor({
   onOpenSchedule,
   userLayoutPacks,
   onLayoutPackSaved,
+  layoutPackId,
 }: CarouselEditorProps) {
   const [activeSlideIdx, setActiveSlideIdx] = useState(0);
   const [exporting, setExporting] = useState<"png" | "pdf" | null>(null);
@@ -461,7 +464,7 @@ export function CarouselEditor({
                   slide={activeSlide}
                   slideIndex={activeSlideIdx}
                   totalSlides={carousel.slides.length}
-                  layoutPackId={carousel.layoutPackId}
+                  layoutPackId={layoutPackId ?? carousel.layoutPackId}
                   userPacks={userLayoutPacks}
                   onApply={(next) =>
                     onChange({

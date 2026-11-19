@@ -596,13 +596,73 @@ export function applyGraphicsStyleToSlide(
   });
 }
 
+function positionalSlideRole(
+  slideIndex: number,
+  totalSlides: number
+): CarouselSlide["role"] {
+  if (slideIndex <= 0) return "cover";
+  if (slideIndex >= totalSlides - 1) return "cta";
+  return "body";
+}
+
+/**
+ * Pack default for one index, ignoring the slide's current style, role, and grid.
+ * The Default pack has no explicit sequence: cover, narrative body, close.
+ */
+export function defaultTemplateForPackIndex(context: PickTemplateContext): {
+  templateId: string;
+  role: CarouselSlide["role"];
+} {
+  const packId = context.layoutPackId?.trim() || "default";
+  const pack = getLayoutPack(packId, context.userPacks);
+  const role =
+    pack?.slideRoles?.[context.slideIndex] ??
+    positionalSlideRole(context.slideIndex, context.totalSlides);
+  const packed = pack?.slideTemplateIds?.[context.slideIndex];
+  if (packed) {
+    return { templateId: resolveGraphicsStyleId(packed).templateId, role };
+  }
+  if (
+    context.platform === "linkedin" &&
+    layoutPackForcesLinkedInGrid(packId) &&
+    context.slideIndex === 3
+  ) {
+    return { templateId: "body-tool-grid-2x3", role: "body" };
+  }
+  const clean: CarouselSlide = {
+    id: "pack-default",
+    slideNumber: context.slideIndex + 1,
+    role,
+    headline: "",
+    body: "",
+    visualDirection: "",
+  };
+  return {
+    templateId: pickTemplateForSlide(clean, { ...context, layoutPackId: packId }),
+    role,
+  };
+}
+
 export function resetSlideGraphicsStyle(
   slide: CarouselSlide,
   context: PickTemplateContext
 ): CarouselSlide {
+  const { templateId, role } = defaultTemplateForPackIndex(context);
+  const keepGrid =
+    templateId === "body-tool-grid-2x3" ? slide.gridCells : undefined;
   return applyGraphicsStyleToSlide(
-    slide,
-    pickTemplateForSlide(slide, context)
+    {
+      ...slide,
+      role,
+      layout: undefined,
+      gridCells: keepGrid,
+      listItems: undefined,
+      metricCells: undefined,
+      cheatsheetRows: undefined,
+      surface: { kind: "inherit" },
+      accentOverride: undefined,
+    },
+    templateId
   );
 }
 

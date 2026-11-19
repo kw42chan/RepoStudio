@@ -67,6 +67,7 @@ import {
 } from "@/lib/language";
 import { TEXT_MODEL } from "@/lib/models";
 import {
+  applyLayoutPackToCarousel,
   listLayoutPacksForPlatform,
   userLayoutPackSelectId,
 } from "@/lib/carousel-templates";
@@ -869,6 +870,11 @@ export default function RepurposeWorkspacePage() {
                           ...prev,
                           instagram: v,
                         }));
+                        setIgCarousel((prev) =>
+                          prev
+                            ? applyLayoutPackToCarousel(prev, v, userLayoutPacks)
+                            : prev
+                        );
                       }}
                     >
                       <SelectTrigger>
@@ -935,6 +941,11 @@ export default function RepurposeWorkspacePage() {
                           ...prev,
                           linkedin: v,
                         }));
+                        setLiCarousel((prev) =>
+                          prev
+                            ? applyLayoutPackToCarousel(prev, v, userLayoutPacks)
+                            : prev
+                        );
                       }}
                     >
                       <SelectTrigger>

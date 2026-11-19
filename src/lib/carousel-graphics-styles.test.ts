@@ -1,13 +1,14 @@
 import { describe, expect, it } from "vitest";
 import {
   applyGraphicsStyleToSlide,
+  applyLayoutPackToCarousel,
   formatGraphicsStyleLabel,
   graphicsStyleCaption,
   listGraphicsStylesForPlatform,
   previewCarouselTemplateId,
   resetSlideGraphicsStyle,
 } from "./carousel-templates";
-import type { CarouselSlide } from "./types";
+import type { CarouselContent, CarouselSlide } from "./types";
 
 function slide(
   overrides: Partial<CarouselSlide> & Pick<CarouselSlide, "role" | "slideNumber">
@@ -161,5 +162,45 @@ describe("resetSlideGraphicsStyle", () => {
     expect(reset.gridCells).toBeUndefined();
     expect(reset.surface).toEqual({ kind: "inherit" });
     expect(reset.accentOverride).toBeUndefined();
+  });
+});
+
+describe("applyLayoutPackToCarousel", () => {
+  it("restores Instagram Default on existing slides when the pack changes", () => {
+    const slides = [1, 2, 3, 4, 5, 6, 7].map((slideNumber) =>
+      applyGraphicsStyleToSlide(
+        slide({
+          role: slideNumber === 1 ? "cover" : slideNumber === 7 ? "cta" : "body",
+          slideNumber,
+          surface: { kind: "solid", color: "#112233" },
+        }),
+        slideNumber === 2
+          ? "ref-edwardai-body-scene-compare"
+          : "body-narrative-default"
+      )
+    );
+    const carousel = {
+      platform: "instagram",
+      title: "Test",
+      slides,
+      caption: "",
+      hashtags: [],
+      writingStyle: { styleId: "educational" },
+      visualTemplateId: "minimal-light",
+      aspectRatio: "4:5",
+      brandHandle: "@brand",
+      layoutPackId: "instagram-edwardai-ref",
+    } as CarouselContent;
+
+    const restored = applyLayoutPackToCarousel(carousel, "default");
+    const slide2 = restored.slides[1];
+
+    expect(restored.layoutPackId).toBe("default");
+    expect(slide2?.templateId).toBe("body-narrative-default");
+    expect(slide2?.role).toBe("body");
+    expect(slide2?.surface).toEqual({ kind: "inherit" });
+    expect(slide2?.headline).toBe("Headline");
+    expect(restored.slides[0]?.templateId).toBe("hook-scroll-cover");
+    expect(restored.slides[6]?.templateId).toBe("cta-action-close");
   });
 });

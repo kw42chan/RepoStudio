@@ -1,5 +1,8 @@
 # Carousel Phase 3 — Per-slide control (A, B, C)
 
+> [!note]
+> Phase 3 is substantially implemented. The preparation and delivery plan for brand typography, additional graphic patterns, slide reordering, image slots, and LLM pattern selection is in [[Projects/RepoStudio/docs/carousel-next-phase-development-plan|Carousel next-phase development plan]].
+
 Plan for RepoStudio carousel: **explorable graphics styles per slide (A)**, **per-slide color/gradient (B)**, and **user-defined layout packs (C)**.
 
 Repo context: manifest `src/lib/carousel-templates/manifest.v1.json`, renderers `src/components/studio/carousel-preview.tsx` + `src/components/studio/edwardai-slide-layouts.tsx`, editor `src/components/studio/carousel-editor.tsx`.

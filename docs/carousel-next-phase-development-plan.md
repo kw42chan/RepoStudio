@@ -1,13 +1,13 @@
 ---
 type: project-plan
 date: 2026-11-20
-status: active
+status: complete
 tags: [repostudio, carousel-design, development-plan]
 ---
 
 ## Outcome
 
-Prepare RepoStudio’s next carousel phase so a user can generate a coherent deck from a prompt or uploaded reference, apply a saved brand system, choose or let the LLM choose suitable graphic patterns, rearrange the narrative, and place photos only in layouts designed to accept them.
+RepoStudio now supports local carousel creation from a brief or source post, saved brand typography, validated automatic layout choices, safe slide arrangement, declared image slots and crops, reviewed reference styles, and measured content-fit checks before PNG/PDF export. Development Phases 4.0–4.6 are finished; hosted deployment and live-provider checks remain separate release work.
 
 This phase builds on the completed Phase 3 capabilities: per-slide graphics styles, per-slide surfaces, user layout packs, add/delete slide controls, and pack-default reset. It implements the design contract in [[Projects/RepoStudio/DESIGN|RepoStudio Carousel System]] and the pattern families in [[Projects/RepoStudio/docs/isaac-editorial-carousel-patterns|Editorial Signal]] and [[Projects/RepoStudio/docs/structured-editorial-carousel-patterns|Structured Editorial Patterns]].
 
@@ -22,25 +22,25 @@ This phase builds on the completed Phase 3 capabilities: per-slide graphics styl
 7. Overflow validation either adapts within allowed bounds or offers a less dense compatible pattern; it never silently shrinks text below the design-system minimum.
 8. PNG and PDF exports match the editor at 1080 × 1350.
 
-## Architecture direction
+## Implemented module interfaces
 
-Create five deep modules at stable seams. Callers should not understand manifest internals, typography fallback rules, crop math, or LLM scoring.
+The implementation uses shared modules so the editor, generation path, preview and export consume the same contracts. Content fitting adds a measured browser check before capture.
 
 | Module | Small interface | Complexity hidden behind the interface |
 | --- | --- | --- |
 | Brand system | `resolveBrandTheme(preset, visualTemplate): ResolvedBrandTheme` | Font availability, CJK fallbacks, weights, size scales, palette derivation, legacy preset defaults |
 | Pattern registry | `listPatterns(context)` and `applyPattern(slide, patternId)` | Manifest parsing, required fields, content limits, image-slot declarations, renderer mapping, fallbacks |
 | Deck operations | `applyDeckCommand(carousel, command): CarouselContent` | Add, delete, reorder, duplicate, renumber, cover/CTA invariants, active-slide remapping |
-| Slide media | `resolveSlideMedia(slide, pattern): ResolvedMediaSlot[]` | Upload metadata, slot compatibility, focal points, crop/contain behavior, optional-slot empty states |
-| Pattern selection | `selectPattern(slideIntent, registry, context): SelectionResult` | LLM candidates, deterministic validation, scoring, deck rhythm, warnings, fallback selection |
+| Slide media | `resolveSlideMedia(slide, assets)` | Upload metadata, slot compatibility, focal points, crop/contain behavior, optional-slot empty states |
+| Pattern selection | `selectPattern(slide, context)` | LLM candidates, deterministic validation, scoring, deck rhythm, warnings, fallback selection |
 
 The preview and export paths must consume the same resolved theme, pattern, and media results. Avoid separate “editor” and “export” design logic.
 
-## Proposed data contracts
+## Current contract notes
 
 ### Brand typography
 
-Extend `BrandVoicePreset` with a versioned optional design block so old presets continue to load:
+`BrandVoicePreset.design` and `CarouselContent.design` use the optional versioned design block below. Legacy records receive compatible defaults:
 
 ```ts
 interface BrandDesignSettingsV1 {
@@ -62,34 +62,9 @@ Use stable `fontId` values rather than storing CSS stacks. A font registry owns 
 
 ### Pattern declaration
 
-Evolve the current template manifest without creating a parallel catalog:
+The existing manifest remains the catalog. New definitions carry a typed `pattern` block, validated with Zod at load time; `templateId` remains the persisted identifier. Nine first-release variants are rendered and six deferred variants remain reference-only with production fallbacks.
 
-```ts
-interface CarouselPatternDefinition {
-  id: string;
-  familyId: string;
-  intentTags: SlideIntent[];
-  requiredSlots: ContentSlotDefinition[];
-  optionalSlots: ContentSlotDefinition[];
-  imageSlots: ImageSlotDefinition[];
-  contentLimits: ContentLimits;
-  density: "light" | "balanced" | "dense";
-  supportedModes: Array<"light" | "dark">;
-  rendererVariant: string;
-  selectionGuidance: string;
-}
-
-interface ImageSlotDefinition {
-  id: string;
-  purpose: "photo" | "screenshot" | "illustration" | "icon";
-  aspectRatio: number;
-  fit: "cover" | "contain";
-  required: boolean;
-  defaultFocalPoint: { x: number; y: number };
-}
-```
-
-Keep `templateId` as the persisted pattern identifier during this phase to avoid a risky full migration. Rename it only in a future schema version if the terminology remains confusing.
+The block declares family, intent tags, required/optional content fields, image slots, copy limits (including field-specific limits), density, supported modes, a known renderer variant, and selection guidance. The authoritative types are in `src/lib/carousel-templates/schema.ts`; the current field matrix is [[Projects/RepoStudio/docs/carousel-phase-4-0|the pattern field matrix]].
 
 ### Slide media
 
@@ -116,10 +91,10 @@ The LLM returns semantic content and intent, not raw JSX or arbitrary geometry:
 ```ts
 interface GeneratedSlideDraft {
   role: "cover" | "body" | "cta";
-  intent: SlideIntent;
+  intent?: SlideIntent;
   headline: string;
-  body?: string;
-  structuredContent?: Record<string, unknown>;
+  body: string;
+  patternContent?: CarouselSlide["patternContent"];
   preferredPatternIds?: string[];
 }
 ```
@@ -134,9 +109,9 @@ Phase 4.0 prepared the foundation. Phase 4.1 now lets users save separate headin
 
 The preparation defines how much text each layout accepts, how many items it supports, and where images belong. Chinese, English, mixed-language, long-heading, and missing-image examples give development concrete cases to check. Each first-release layout also has a visual reference, so its appearance has a clear target.
 
-The intended workflow after the remaining phases is: **choose a brand style → generate content → receive suitable layouts → arrange slides → add images → export consistently**.
+The local creation workflow is now: **choose a brand style → generate content → receive suitable layouts → arrange slides → add images → export consistently**.
 
-| Phase | Change the user will experience when delivered |
+| Phase | Available user-facing behavior |
 | --- | --- |
 | 4.0 — Finished | Preparation only: agreed layout rules, test examples, and visual references. |
 | 4.1 — Finished | Set separate heading and body fonts, weights, and sizes; save them with a brand. |
@@ -144,13 +119,13 @@ The intended workflow after the remaining phases is: **choose a brand style → 
 | 4.3 — Finished | Choose from the nine new layout types in the editor. |
 | 4.4 — Finished | Add images to supported positions and adjust their crops. |
 | 4.5 — Finished | Get layouts selected for the content and use an uploaded sample to guide a reusable style. |
-| 4.6 — Planned | Get clearer content-fit warnings and more consistent preview, PNG, and PDF output. |
+| 4.6 — Finished | Get clearer content-fit warnings and more consistent preview, PNG, and PDF output. |
 
 For each future phase, record its user-visible result and verification when marking it finished. A useful release note states what the user can now do and any remaining limits.
 
 ### Implementation status — 2026-11-20
 
-Phase 4.0 is finished as of 2026-11-20 in commit `c6e8a63` on `feature/carousel-phase-4-0`: load-time manifest validation, contracts for all 15 documented patterns, nine first-release selections, seven fixture decks, and nine 1080 × 1350 PNG/SVG design references. See [[Projects/RepoStudio/docs/carousel-phase-4-0|Phase 4.0 field matrix and verification]]. Nine first-release patterns are now rendered; six deferred patterns remain reference-only. Phase 4.0 references remain design targets and `e2e/goldens/` holds actual renderer captures.
+Development Phases 4.0–4.6 are finished locally on `feature/carousel-phase-4-0`. Each row records its implementation commit. The branch remains for review; no hosted deployment or merge was performed. [[Projects/RepoStudio/docs/carousel-release-verification|Release verification]] records the current checks and remaining limits.
 
 | Phase | Status |
 | --- | --- |
@@ -160,9 +135,11 @@ Phase 4.0 is finished as of 2026-11-20 in commit `c6e8a63` on `feature/carousel-
 | 4.3 — Pattern registry and production renderers | Finished — 2026-11-20, `f4f0f75` |
 | 4.4 — Image assets and declared slot controls | Finished — 2026-11-20, `f4f0f75` |
 | 4.5 — LLM pattern routing and reference-style ingestion | Finished — 2026-11-20, `a78d51b` |
-| 4.6 — Content fit, export parity, and release hardening | In progress |
+| 4.6 — Content fit, export parity, and release hardening | Finished — 2026-11-20, `6c4c827` |
 
-Validation: 36 focused tests pass; TypeScript and changed-file ESLint pass. The full suite has 53 passes and the existing Windows read-only-directory store test failure (`chmod(0555)` does not prevent the write). Phase 4.1 typography is finished; Phase 4.2 deck operations is finished; Phases 4.3 and 4.4 are finished; Phase 4.5 routing and reference analysis is finished; Phase 4.6 release hardening is in progress.
+Current validation: **70 unit/contract tests and 16 browser tests pass**, TypeScript and changed-file ESLint have no errors, and the production build succeeds. Twenty-seven actual golden captures were reviewed. Legacy and Chinese PNG/PDF downloads were checked; all 14 PDF page images exactly match their corresponding PNG exports. Preview/PNG comparisons allow a small documented rasterization tolerance.
+
+Remaining release work: verify live text/vision providers and persistent hosted image storage, review the branch, and resolve the existing Instagram/Threads/YouTube source-loading gaps recorded in [[Projects/RepoStudio/docs/standard-manual-test|the source checklist]]. These are not marked as verified by local development.
 
 ### Phase 4.0 — Development preparation and golden fixtures
 
@@ -273,25 +250,31 @@ Exit gate: **Met for the implemented contracts and local workflow** — the same
 
 ### Phase 4.6 — Content fit, export parity, and release hardening
 
+Status: **Finished** — 2026-11-20. Implementation commit: `6c4c827`; final emphasis/font-weight polish: `92b3208`.
+
+Users see measured clipping/overlap warnings, bounded fitting adjustments, compatible simpler-layout suggestions, and Chinese punctuation/orphan-line guidance. Exports wait for fonts/images and stop when text still does not fit. Body text in new patterns stays at least 32 px. Existing preset/draft/layout-pack migrations preserve unrelated data.
+
+Verification: 70 unit/contract tests, 16 browser tests, TypeScript, changed-file ESLint, and the production build pass. Golden coverage includes default/light/dark modes, maximum CJK and English copy, mixed text, missing media, and large brand scales. Actual five-page legacy and nine-page Chinese PDF exports were rasterized and their displayed images compared against PNG downloads. See [[Projects/RepoStudio/docs/carousel-release-verification|the release verification report]] for numerical results and credential/deployment limits.
+
 Purpose: prevent a larger style library from producing fragile output.
 
-- Add a content-fit evaluator using measured rendered bounds, not character count alone.
-- Apply bounded adaptations in order: permitted line wrapping → small spacing adjustment → allowed size-scale reduction → compatible lower-density pattern suggestion.
-- Add Traditional Chinese punctuation and orphan-line checks.
-- Verify preview/export parity with fixed fonts loaded before capture.
-- Add visual regression coverage for light/dark mode, long copy, missing optional media, maximum items, and mixed CJK/Latin text.
-- Add store migration tests for old drafts, old presets, and old layout packs.
+- [x] Add a content-fit evaluator using measured rendered bounds, not character count alone.
+- [x] Apply bounded adaptations in order: permitted line wrapping → small spacing adjustment → allowed size-scale reduction → compatible lower-density pattern suggestion.
+- [x] Add Traditional Chinese punctuation and orphan-line checks.
+- [x] Verify preview/export parity with fixed fonts loaded before capture.
+- [x] Add visual regression coverage for light/dark mode, long copy, missing optional media, maximum items, and mixed CJK/Latin text.
+- [x] Add store migration tests for old drafts, old presets, and old layout packs.
 
-Exit gate: no first-release golden fixture clips, overlaps, or exports with a missing font; existing saved drafts still open.
+Exit gate: **Met for local portrait rendering** — no first-release golden fixture clips, overlaps, or exports with a missing font; existing saved drafts still open.
 
-## File-level preparation map
+## Implementation map
 
 | Area | Primary files |
 | --- | --- |
 | Contracts | `src/lib/types.ts`, `src/lib/ai.ts`, `src/lib/carousel-templates/index.ts`, `src/lib/carousel-templates/manifest.v1.json` |
-| Brand theme | `src/lib/presets.ts`, `src/lib/store.ts`, new `src/lib/carousel-fonts.ts`, new `src/lib/carousel-brand-theme.ts` |
-| Deck commands | new `src/lib/carousel-deck-operations.ts`, `src/components/studio/carousel-editor.tsx` |
-| Pattern rendering | `src/components/studio/carousel-preview.tsx`, `src/components/studio/edwardai-slide-layouts.tsx`, new `src/components/studio/carousel-patterns/` |
+| Brand theme | `src/lib/presets.ts`, `src/lib/store.ts`, `src/lib/carousel-fonts.ts`, `src/lib/carousel-brand-theme.ts` |
+| Deck commands | `src/lib/carousel-deck-operations.ts`, `src/components/studio/carousel-editor.tsx` |
+| Pattern rendering | `src/components/studio/carousel-preview.tsx`, `src/components/studio/edwardai-slide-layouts.tsx`, `src/components/studio/carousel-patterns/` |
 | Image assets | new image upload route, store migration, new slide-media resolver and controls |
 | Generation | `src/lib/ai.ts`, `src/app/api/generate/route.ts`, style-extraction route or a new reference-analysis route |
 | Verification | Vitest suites beside each module, golden fixtures under a dedicated test fixture directory, manual export checklist |
@@ -308,20 +291,20 @@ Test through each module’s public interface.
 - Render tests: maximum-content fixtures at 1080 × 1350, then PNG/PDF parity checks.
 - Regression tests: the Instagram Default pack continues making every slide use the slide-1 cover layout and light appearance while retaining each slide’s content.
 
-## Recommended implementation slices
+## Delivered implementation slices
 
-Keep pull requests independently reviewable:
+The work was delivered in these implementation slices; their commits are recorded in the phase table.
 
-1. Pattern schema, manifest validator, and fixtures.
-2. Font registry plus brand typography persistence.
-3. Shared brand-theme resolver wired into existing renderers.
-4. Deck command module plus reorder controls.
-5. Shared pattern primitives and four text-only patterns.
-6. Image asset persistence and slot controls.
-7. Four image-capable patterns.
-8. LLM intent and deterministic pattern selection.
-9. Reference-style analysis and confirmation flow.
-10. Content-fit evaluator, golden review, and migration hardening.
+1. [x] Pattern schema, manifest validator, and fixtures.
+2. [x] Font registry plus brand typography persistence.
+3. [x] Shared brand-theme resolver wired into existing renderers.
+4. [x] Deck command module plus reorder controls.
+5. [x] Shared pattern primitives and four text-only patterns.
+6. [x] Image asset persistence and slot controls.
+7. [x] Four image-capable patterns.
+8. [x] LLM intent and deterministic pattern selection.
+9. [x] Reference-style analysis and confirmation flow.
+10. [x] Content-fit evaluator, golden review, and migration hardening.
 
 ## Risks and controls
 
@@ -335,18 +318,8 @@ Keep pull requests independently reviewable:
 | More patterns multiply overflow bugs | Require limits, maximum-content fixtures, and golden review before a pattern becomes selectable. |
 | Imported samples copy another creator | Extract abstract traits only and require confirmation before saving; remove identity and copied content. |
 
-## Development-ready definition
+## Development completion and release handoff
 
-Implementation may begin when all of the following are agreed or recorded:
+All planned local development phases are finished. The first release contains nine selectable patterns, eight curated fonts, a 3–12 editable-slide range, 10 MB PNG/JPEG/WebP uploads, reference confirmation, deterministic routing, and measured portrait export checks. The authoritative behavior and limits are recorded in the implementation and [[Projects/RepoStudio/docs/carousel-release-verification|verification report]].
 
-- First-release pattern subset and stable identifiers.
-- Curated font list with confirmed loading method and licensing.
-- Editable slide-count range; recommendation is 3–12 while generated output remains 5–10 initially.
-- Image upload size/type limits and storage retention policy.
-- Golden fixtures for Traditional Chinese, English, and mixed-language decks.
-- Migration defaults for existing brand presets and carousel drafts.
-- The Phase 4.0 manifest validator and fixtures land before new production patterns.
-
-## Recommended starting point
-
-Begin with Phase 4.0 and Phase 4.1. The manifest contract prevents renderer drift, while the brand-theme resolver removes hard-coded typography before new patterns multiply it. Slide reordering can follow in parallel only after the deck command interface and invariants are fixed.
+The next work is review and deployment verification: configure and exercise live model providers, provide persistent storage for image files, and resolve the source-fetch gaps. Square-format decks remain available with fit warnings; the new library's primary verified geometry is 1080 × 1350. Do not interpret finished development as a completed hosted rollout.

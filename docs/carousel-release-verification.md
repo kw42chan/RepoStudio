@@ -11,7 +11,7 @@ The workflow in [[Projects/RepoStudio/docs/carousel-next-phase-development-plan|
 
 | Check | Result |
 | --- | --- |
-| Vitest | 69 tests pass across 16 files. Includes manifest contracts, selection, deck commands, media, typography, migration defaults, storage fallback, and transcript generation. |
+| Vitest | 70 tests pass across 16 files. Includes manifest contracts, selection, deck commands, media, typography, migration defaults, storage fallback, and transcript generation. |
 | Browser suite | 16 tests pass: brand save/reload, keyboard arrangement, image upload/crop/retention, pattern captures, maximum CJK/English and mixed content, missing images, reference confirmation, brief creation, overflow blocking, and export. |
 | Golden captures | 27 actual 1080 × 1350 browser captures: nine default, nine light, and nine dark. Contact sheets were visually reviewed. The earlier Phase 4.0 SVG/PNG references remain design targets. |
 | Large typography | Maximum-content slides fit after bounded adaptation; measured body text stays at least 32 px. |
@@ -29,7 +29,9 @@ The editor and export measure rendered text boxes for clipping and overlap. New 
 
 Fonts and images finish loading before capture. Export embeds actual computed font families and only Unicode subsets needed by the slide, including Traditional Chinese. Both file formats use the same full-resolution DOM and crop resolver.
 
-Old presets and drafts receive versioned typography defaults; serif drafts retain a serif heading choice. Source content, slide IDs/media, and old layout-pack sequences remain intact. The former Windows permissions test now uses a blocked directory path rather than platform-dependent `chmod`, while still verifying the actual storage fallback. Transcript content is normalized before generation so timestamp markers do not enter beats or carousel copy.
+Old presets and drafts receive versioned typography defaults; serif drafts retain a serif heading choice. Source content, slide IDs/media, and old layout-pack sequences remain intact. Editorial headings support safe `**phrase**` highlighting; source markup is escaped. Font settings normalize unsupported weights before saving.
+
+The former Windows permissions test now uses a blocked directory path rather than platform-dependent `chmod`, while still verifying the actual storage fallback. Transcript content is normalized before generation so timestamp markers do not enter beats or carousel copy.
 
 ## Remaining release checks
 

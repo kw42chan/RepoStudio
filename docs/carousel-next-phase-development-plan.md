@@ -130,7 +130,7 @@ The deterministic pattern-selection module validates the candidates against actu
 
 ### What this means for users
 
-Phase 4.0 prepared the foundation. Phase 4.1 now lets users save separate heading and body typography with a brand, apply it to carousels, and carry the same settings into exports. The nine new layout types remain design references until their production renderers arrive in Phase 4.3.
+Phase 4.0 prepared the foundation. Phase 4.1 now lets users save separate heading and body typography with a brand, apply it to carousels, and carry the same settings into exports. The nine new layouts are now selectable, with editable structured content and image slots.
 
 The preparation defines how much text each layout accepts, how many items it supports, and where images belong. Chinese, English, mixed-language, long-heading, and missing-image examples give development concrete cases to check. Each first-release layout also has a visual reference, so its appearance has a clear target.
 
@@ -141,8 +141,8 @@ The intended workflow after the remaining phases is: **choose a brand style → 
 | 4.0 — Finished | Preparation only: agreed layout rules, test examples, and visual references. |
 | 4.1 — Finished | Set separate heading and body fonts, weights, and sizes; save them with a brand. |
 | 4.2 — Finished | Move, duplicate, add, and delete slides while keeping the deck organized. |
-| 4.3 — Planned | Choose from the nine new layout types in the editor. |
-| 4.4 — Planned | Add images to supported positions and adjust their crops. |
+| 4.3 — Finished | Choose from the nine new layout types in the editor. |
+| 4.4 — Finished | Add images to supported positions and adjust their crops. |
 | 4.5 — Planned | Get layouts selected for the content and use an uploaded sample to guide a reusable style. |
 | 4.6 — Planned | Get clearer content-fit warnings and more consistent preview, PNG, and PDF output. |
 
@@ -150,19 +150,19 @@ For each future phase, record its user-visible result and verification when mark
 
 ### Implementation status — 2026-11-20
 
-Phase 4.0 is finished as of 2026-11-20 in commit `c6e8a63` on `feature/carousel-phase-4-0`: load-time manifest validation, contracts for all 15 documented patterns, nine first-release selections, seven fixture decks, and nine 1080 × 1350 PNG/SVG design references. See [[Projects/RepoStudio/docs/carousel-phase-4-0|Phase 4.0 field matrix and verification]]. New patterns remain reference-only; their production renderers are scheduled for Phase 4.3. References establish design targets rather than preview/export parity.
+Phase 4.0 is finished as of 2026-11-20 in commit `c6e8a63` on `feature/carousel-phase-4-0`: load-time manifest validation, contracts for all 15 documented patterns, nine first-release selections, seven fixture decks, and nine 1080 × 1350 PNG/SVG design references. See [[Projects/RepoStudio/docs/carousel-phase-4-0|Phase 4.0 field matrix and verification]]. Nine first-release patterns are now rendered; six deferred patterns remain reference-only. Phase 4.0 references remain design targets and `e2e/goldens/` holds actual renderer captures.
 
 | Phase | Status |
 | --- | --- |
 | 4.0 — Development preparation and golden fixtures | Finished — 2026-11-20, `c6e8a63` |
 | 4.1 — Brand typography and built-in font library | Finished — 2026-11-20, `8b39a58` |
 | 4.2 — Deck operations and narrative arrangement | Finished — 2026-11-20, `ccb759e` |
-| 4.3 — Pattern registry and production renderers | In progress |
-| 4.4 — Image assets and declared slot controls | Not started |
-| 4.5 — LLM pattern routing and reference-style ingestion | Not started |
+| 4.3 — Pattern registry and production renderers | Finished — 2026-11-20, `f4f0f75` |
+| 4.4 — Image assets and declared slot controls | Finished — 2026-11-20, `f4f0f75` |
+| 4.5 — LLM pattern routing and reference-style ingestion | In progress |
 | 4.6 — Content fit, export parity, and release hardening | Not started |
 
-Validation: 36 focused tests pass; TypeScript and changed-file ESLint pass. The full suite has 53 passes and the existing Windows read-only-directory store test failure (`chmod(0555)` does not prevent the write). Phase 4.1 typography is finished; Phase 4.2 deck operations is finished; Phase 4.3 renderers is in progress.
+Validation: 36 focused tests pass; TypeScript and changed-file ESLint pass. The full suite has 53 passes and the existing Windows read-only-directory store test failure (`chmod(0555)` does not prevent the write). Phase 4.1 typography is finished; Phase 4.2 deck operations is finished; Phases 4.3 and 4.4 are finished; Phase 4.5 routing and reference analysis is in progress.
 
 ### Phase 4.0 — Development preparation and golden fixtures
 
@@ -218,30 +218,38 @@ Exit gate: **Met** — unit tests cover every command and invariant; keyboard us
 
 ### Phase 4.3 — Pattern registry and production renderers
 
+Status: **Finished** — 2026-11-20. Implementation commit: `f4f0f75`.
+
+Users can select all nine first-release graphics styles and edit their structured points and evidence fields. The manifest registry drives the picker and rendering; six deferred layouts remain unavailable. Verification: 37 related contract/render/picker/pack tests pass; all nine maximum-content CJK portrait fixtures fit measured bounds; nine real browser golden captures were reviewed. Copy limits for collage, comparison, and metric layouts were tightened after overflow was observed.
+
 Purpose: turn the documented families into selectable, testable renderers.
 
-- Extend `manifest.v1.json` and its TypeScript types with the declared pattern contract.
-- Implement renderer variants in small family files under `src/components/studio/carousel-patterns/`; keep the dispatcher shallow.
-- Build shared primitives for slide chrome, highlighted text, evidence frame, numbered node, connector, and image frame.
-- Implement the first-release subset in increasing complexity: statement → numbered list → vertical timeline → horizontal timeline → A/B comparison → metric evidence → collage cover → prompt-to-outcome.
-- Use the same pattern registry for the graphics-style picker, pack reset, generation validation, preview, and export.
-- Mark non-rendered patterns as reference-only so the LLM and picker cannot select them prematurely.
+- [x] Extend `manifest.v1.json` and its TypeScript types with the declared pattern contract.
+- [x] Implement renderer variants in small family files under `src/components/studio/carousel-patterns/`; keep the dispatcher shallow.
+- [x] Build shared primitives for slide chrome, highlighted text, evidence frame, numbered node, connector, and image frame.
+- [x] Implement the first-release subset in increasing complexity: statement → numbered list → vertical timeline → horizontal timeline → A/B comparison → metric evidence → collage cover → prompt-to-outcome.
+- [x] Use the same pattern registry for the graphics-style picker, pack reset, generation validation, preview, and export.
+- [x] Mark non-rendered patterns as reference-only so the LLM and picker cannot select them prematurely.
 
-Exit gate: all first-release patterns render at 1080 × 1350 with their maximum permitted content and pass golden-image review.
+Exit gate: **Met** — all first-release patterns render at 1080 × 1350 with their maximum permitted content and pass golden-image review.
 
 ### Phase 4.4 — Image assets and declared slot controls
 
+Status: **Finished** — 2026-11-20. Implementation commit: `f4f0f75`.
+
+Users can upload, reuse, replace, crop, zoom, describe, and remove images in declared slots. Required missing images block export; optional empty slots disappear. Files are stored separately from slide JSON and shared saved assets cannot be deleted accidentally. Verification: browser upload, invalid-image, crop, reload, required-slot blocking, and shared-asset retention checks pass, alongside resolver tests. Persistent local storage is required for deployment; automatic orphan cleanup is deferred. See [[Projects/RepoStudio/docs/carousel-image-assets|Image storage and retention]].
+
 Purpose: support photos and screenshots without allowing arbitrary, fragile placement.
 
-- Add an image upload endpoint or generalize the current upload adapter with MIME-specific limits for PNG, JPEG, and WebP.
-- Create asset metadata persistence and deletion rules; do not store base64 images inside carousel JSON.
-- Add `media` to `CarouselSlide` and implement the slide-media resolver.
-- Show slot controls only for the active pattern’s `imageSlots`.
-- Add upload, replace, remove, focal-point, and zoom controls with immediate crop preview.
-- Keep optional slots visually absent when empty. A required empty slot blocks export or offers a text-safe pattern fallback.
-- Start with screenshot `contain` and photo `cover`; postpone freeform masking and background removal.
+- [x] Add an image upload endpoint or generalize the current upload adapter with MIME-specific limits for PNG, JPEG, and WebP.
+- [x] Create asset metadata persistence and deletion rules; do not store base64 images inside carousel JSON.
+- [x] Add `media` to `CarouselSlide` and implement the slide-media resolver.
+- [x] Show slot controls only for the active pattern’s `imageSlots`.
+- [x] Add upload, replace, remove, focal-point, and zoom controls with immediate crop preview.
+- [x] Keep optional slots visually absent when empty. A required empty slot blocks export or offers a text-safe pattern fallback.
+- [x] Start with screenshot `contain` and photo `cover`; postpone freeform masking and background removal.
 
-Exit gate: supported patterns preserve crops across reload and export; unsupported patterns show no upload control; deleting a slide does not accidentally delete an asset used elsewhere.
+Exit gate: **Met** — supported patterns preserve crops across reload and export; unsupported patterns show no upload control; deleting a slide does not accidentally delete an asset used elsewhere.
 
 ### Phase 4.5 — LLM pattern routing and reference-style ingestion
 

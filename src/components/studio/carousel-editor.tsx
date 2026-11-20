@@ -520,6 +520,7 @@ export function CarouselEditor({
 
                 <div className="space-y-1">
                   <SlideMediaControls slide={activeSlide} assets={assets} onChange={next => updateSlide(activeSlide.id,next)} onAsset={asset => setAssets(current => [...current,asset])}/>
+                  {activeSlide.selectionReason && <p className="text-xs text-muted-foreground">{activeSlide.selectionReason}</p>}
                   <PatternContentControls slide={activeSlide} onChange={next => updateSlide(activeSlide.id, next)} />
                   <Label htmlFor={`${carousel.platform}-headline`} className="text-xs">Headline</Label>
                   <Input

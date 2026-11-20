@@ -1,4 +1,6 @@
 import type { BrandDesignSettingsV1 } from "./carousel-fonts";
+import type { SlideIntent } from "./carousel-pattern-selection";
+import type { StyleAnalysisDraft } from "./carousel-reference-style";
 export type { BrandDesignSettingsV1, BuiltInFontId } from "./carousel-fonts";
 export type ContentFormat = "reel" | "ig_carousel" | "li_carousel";
 
@@ -28,6 +30,7 @@ export type VisualLayoutMood =
   | "card";
 
 export interface VisualTemplate {
+  referenceStyle?: StyleAnalysisDraft;
   id: string;
   name: string;
   description: string;
@@ -139,6 +142,9 @@ export type SlideSurface =
     };
 
 export interface CarouselSlide {
+  intent?: SlideIntent;
+  preferredPatternIds?: string[];
+  selectionReason?: string;
   media?: SlideMediaPlacement[];
   patternContent?: {
     items?: Array<{ title: string; body: string }>;
@@ -166,6 +172,7 @@ export interface CarouselSlide {
 }
 
 export type CarouselLayoutPackId =
+  | "auto-patterns"
   | "default"
   | "instagram-edwardai-ref"
   | "linkedin-pm-grid"

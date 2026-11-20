@@ -1,4 +1,5 @@
 "use client";
+import { CarouselAgentChat } from "@/components/studio/carousel-agent-chat";
 import { normalizeBrandDesign } from "@/lib/carousel-fonts";
 
 
@@ -559,6 +560,7 @@ export default function RepurposeWorkspacePage() {
         </div>
       </div>
 
+      <CarouselAgentChat context={{brandVoice,audience:targetAudience,cta:ctaPreference,handle:brandHandle,primaryColor,secondaryColor,design:brandDesign,visualTemplateId:defaultTemplateId,aspectRatio:defaultAspectRatio}} onTemplate={template => {setTemplates(current=>[...current.filter(t=>t.id!==template.id),template]);setDefaultTemplateId(template.id);}} onGenerated={result=>{setSourcePost(result.sourcePost);setSelectedIdea(result.idea);setGeneratedIdeaId(result.idea.id);setIgCarousel(result.igCarousel);setLiCarousel(result.liCarousel);setLayoutPackIds({instagram:"auto-patterns",linkedin:"auto-patterns"});setDraftId(undefined);setActiveTab("ig_carousel");}}/>
       {/* Step 1: Source Inspiration */}
       <Card>
         <CardHeader>

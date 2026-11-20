@@ -29,7 +29,7 @@ export const SLIDE_SURFACE_PRESETS = [
 
 export type SlideSurfacePresetId = (typeof SLIDE_SURFACE_PRESETS)[number]["id"];
 
-type ThemeTemplate = Pick<VisualTemplate, "accentColor" | "surfaceColor">;
+type ThemeTemplate = Pick<VisualTemplate, "accentColor" | "surfaceColor"> & Partial<Pick<VisualTemplate, "referenceStyle">>;
 
 function toHex(rgb: [number, number, number]): string {
   return `#${rgb.map((channel) => channel.toString(16).padStart(2, "0")).join("")}`;
@@ -105,6 +105,12 @@ export function resolveSlideColors(
   const override = normalizeSlideHex(slide.accentOverride);
   const kind = surfaceKind(slide);
   const edward = Boolean(getCarouselTemplateRenderVariant(slide.templateId));
+
+  const reference = visualTemplate.referenceStyle;
+  if (reference && kind === "inherit" && slide.templateId !== "hook-scroll-cover") {
+    const isLight = readsLight(reference.palette.background);
+    return { background: reference.palette.background, ink: reference.palette.ink, muted: reference.palette.muted, accent: override ?? normalizeSlideHex(primaryColor) ?? reference.palette.accent, isLight, ground: isLight ? "light" : "dark" };
+  }
 
   if (kind === "inherit" && edward) {
     const brandMint =

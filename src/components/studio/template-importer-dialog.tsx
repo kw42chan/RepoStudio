@@ -20,7 +20,6 @@ import {
   SelectTrigger,
   SelectValue,
 } from "@/components/ui/select";
-import { Switch } from "@/components/ui/switch";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { VisualFontStyle, VisualLayoutMood, VisualTemplate } from "@/lib/types";
 
@@ -41,7 +40,6 @@ export function TemplateImporterDialog({
   const [imageDataUrl, setImageDataUrl] = useState<string>("");
   const [customStyleNotes, setCustomStyleNotes] = useState("");
   const [customToneNotes, setCustomToneNotes] = useState("");
-  const [useAsBackdrop, setUseAsBackdrop] = useState(false);
 
   const [extracting, setExtracting] = useState(false);
   const [saving, setSaving] = useState(false);
@@ -53,13 +51,13 @@ export function TemplateImporterDialog({
   function handleFileChange(e: React.ChangeEvent<HTMLInputElement>) {
     const file = e.target.files?.[0];
     if (!file) return;
+    if (file.size > 10*1024*1024 || !["image/png","image/jpeg","image/webp"].includes(file.type)) { setError("Choose a PNG, JPEG or WebP within 10 MB."); return; }
+    setDraftTemplate(null);
     const reader = new FileReader();
     reader.onload = () => {
       if (typeof reader.result === "string") {
         setImageDataUrl(reader.result);
-        if (!name) {
-          setName(file.name.replace(/\.[^/.]+$/, ""));
-        }
+
       }
     };
     reader.readAsDataURL(file);
@@ -78,7 +76,7 @@ export function TemplateImporterDialog({
           templateUrl: sourceTab === "url" ? templateUrl : undefined,
           customStyleNotes,
           customToneNotes,
-          useAsBackdrop,
+
         }),
       });
       const data = await res.json();
@@ -101,7 +99,7 @@ export function TemplateImporterDialog({
       const res = await fetch("/api/templates", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ template: draftTemplate }),
+        body: JSON.stringify({ template: draftTemplate, confirmReference: true }),
       });
       const data = await res.json();
       if (!res.ok) {
@@ -212,18 +210,7 @@ export function TemplateImporterDialog({
             </div>
           </div>
 
-          <div className="flex items-center justify-between rounded-lg border px-3 py-2">
-            <div>
-              <p className="text-sm font-medium">Use image as subtle backdrop</p>
-              <p className="text-xs text-muted-foreground">
-                Blends the imported image behind slide text at low opacity
-              </p>
-            </div>
-            <Switch
-              checked={useAsBackdrop}
-              onCheckedChange={setUseAsBackdrop}
-            />
-          </div>
+          <p className="text-xs text-muted-foreground">Only palette and layout traits are saved. The source image, creator identity, logos, and wording are excluded.</p>
 
           <Button
             type="button"
@@ -253,13 +240,15 @@ export function TemplateImporterDialog({
             <div className="space-y-3 rounded-lg border p-4 bg-muted/20">
               <div className="flex items-center justify-between">
                 <p className="text-sm font-semibold">
-                  Extracted Style Preview (Editable)
+                  Reference traits ? review before saving
                 </p>
                 <span className="text-xs text-muted-foreground">
                   {draftTemplate.description}
                 </span>
               </div>
 
+              {draftTemplate.referenceStyle?.warnings.map(warning => <p key={warning} className="text-xs text-amber-800">{warning}</p>)}
+              <p className="text-xs text-muted-foreground">Layout candidates: {draftTemplate.referenceStyle?.patternCandidates.join(", ")}</p>
               <div className="grid grid-cols-5 gap-2">
                 {(
                   [
@@ -347,7 +336,7 @@ export function TemplateImporterDialog({
                 ) : (
                   <Save className="h-4 w-4" />
                 )}
-                {saving ? "Saving..." : "Save as New Template"}
+                {saving ? "Saving..." : "Confirm & save reference style"}
               </Button>
             </div>
           )}

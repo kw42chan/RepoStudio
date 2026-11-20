@@ -1,4 +1,5 @@
-import { generateObject } from "ai";
+import { generateText, Output } from "ai";
+import { selectDeckPatterns, patternPromptSummary, SLIDE_INTENTS } from "./carousel-pattern-selection";
 import { z } from "zod";
 import { sameLanguageRule } from "./language";
 import { completeOpenRouterJson, getLlmModels } from "./llm";
@@ -121,6 +122,9 @@ export const carouselSlideSchema = z.object({
   headline: z.string(),
   body: z.string(),
   visualDirection: z.string(),
+  intent: z.enum(SLIDE_INTENTS).optional(),
+  preferredPatternIds: z.array(z.string()).max(5).optional(),
+  patternContent: z.object({ items: z.array(z.object({title:z.string(),body:z.string()})).max(6).optional(), metric:z.string().optional(), unit:z.string().optional(), action:z.string().optional(), prompt:z.string().optional(), outcome:z.string().optional(), recommendation:z.string().optional(), badge:z.string().optional(), takeaway:z.string().optional() }).optional(),
   templateId: z.string().optional(),
   layout: z.enum(["default", "grid-2x3"]).optional(),
   gridCells: z.array(gridCellSchema).optional(),
@@ -273,12 +277,12 @@ The angles must be specific to this post's actual claim, not generic marketing a
     const object = process.env.OPENROUTER_API_KEY
       ? await completeOpenRouterJson(ideationSchema, prompt)
       : (
-          await generateObject({
+          await generateText({
             model: llm.textModel,
-            schema: ideationSchema,
+            output: Output.object({ schema: ideationSchema }),
             prompt,
           })
-        ).object;
+        ).output;
 
     return {
       ...object,
@@ -449,6 +453,7 @@ export function applyCarouselLayoutPipeline(
   userLayoutPacks?: UserLayoutPack[]
 ): CarouselContent {
   const packId = effectiveLayoutPackId(platform, layoutPackIds, userLayoutPacks);
+  if (packId === "auto-patterns") return selectDeckPatterns(carousel);
   let next: CarouselContent = { ...carousel, layoutPackId: packId };
   if (platform === "linkedin" && layoutPackForcesLinkedInGrid(packId)) {
     next = ensureLinkedInGridSlide(next, sourcePost, idea);
@@ -612,12 +617,12 @@ async function generateTextObject<T>(
   if (!llm) {
     throw new Error("No language model configured.");
   }
-  const { object } = await generateObject({
+  const { output } = await generateText({
     model: llm.textModel,
-    schema,
+    output: Output.object({ schema }),
     prompt,
   });
-  return object;
+  return output;
 }
 
 export async function generateContentForFormats(params: {
@@ -649,6 +654,7 @@ export async function generateContentForFormats(params: {
   } = params;
 
   const styleDescription = describeWritingStyle(writingStyle);
+  const patternInstructions = `Return semantic intent and optional patternContent (items with title/body, metric/unit, prompt, action) and preferredPatternIds for each slide. Never invent measurements, screenshots, commands, or evidence. Return content only, without JSX or geometry. Pattern catalog: ${JSON.stringify(patternPromptSummary())}`;
   const llm = getLlmModels();
 
   if (!llm) {
@@ -756,6 +762,7 @@ Then a problem, the shift, what the reader gets, one concrete detail from the so
 The last slide is role "cta": one action under 12 words.
 Each eyebrow is 1 to 3 words. Each headline is under 12 words. Each body is under 24 words and uses the source post.
 ${CAROUSEL_GRID_PROMPT}${edwardPackExtra}
+${patternInstructions}
 Return JSON with title, slides (id, slideNumber, role, eyebrow, headline, body, visualDirection, optional layout, gridCells, listItems, metricCells, cheatsheetRows), caption, and hashtags.`
           );
           results.igCarousel = {
@@ -786,6 +793,7 @@ Slide 1 is role "cover". Middle slides are role "body": the problem, the shift, 
 The last slide is role "cta", one action under 12 words.
 Each eyebrow is 1 to 3 words. Each headline is under 12 words. Each body is under 24 words. The caption can be the longer LinkedIn post.
 ${CAROUSEL_GRID_PROMPT}
+${patternInstructions}
 Prefer the grid-2x3 slide for LinkedIn listicles and tool roundups when the angle fits. Return JSON with title, slides (id, slideNumber, role, eyebrow, headline, body, visualDirection, optional layout and gridCells), caption, and hashtags.`
           );
           results.liCarousel = {

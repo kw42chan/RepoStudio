@@ -13,6 +13,9 @@ export function PatternSlide({ slide, totalSlides, theme, template, primaryColor
   const definition = getPattern(slide.templateId)?.pattern;
   if (!definition) return null;
   const dims = getExportDimensions(aspectRatio); const scale = fullResolution ? 1 : .34;
+  const spacing = template.referenceStyle?.spacing;
+  const padding = spacing === "generous" ? 72 : spacing === "compact" ? 56 : 64;
+  const gap = spacing === "compact" ? 24 : 32;
   const colors = resolveSlideColors(slide, template, primaryColor, secondaryColor, totalSlides);
   const hero = slide.templateId === "signal-statement" || slide.templateId === "signal-cta";
   const props = { slide, theme, ink: colors.ink, muted: colors.muted, accent: colors.accent, panel: colors.isLight ? "rgba(0,0,0,.05)" : "rgba(255,255,255,.08)" };
@@ -21,7 +24,7 @@ export function PatternSlide({ slide, totalSlides, theme, template, primaryColor
   const image = (id: string) => { const slot = media.find(m => m.slot.id === id); return slot ? <ImageFrame key={id} media={slot}/> : null; };
 
   return <div style={{ width: dims.width*scale, height: dims.height*scale, overflow: "hidden", borderRadius: fullResolution ? 0 : 12 }}>
-    <article data-platform={platform} data-carousel-template={slide.templateId} data-layout="pattern" style={{ width: dims.width, height: dims.height, transform: `scale(${scale})`, transformOrigin: "top left", background: colors.background, color: colors.ink, padding: 64, boxSizing: "border-box", display: "flex", flexDirection: "column", gap: 32, ...bodyStyle(theme) }}>
+    <article data-platform={platform} data-carousel-template={slide.templateId} data-layout="pattern" style={{ width: dims.width, height: dims.height, transform: `scale(${scale})`, transformOrigin: "top left", background: colors.background, color: colors.ink, padding, boxSizing: "border-box", display: "flex", flexDirection: "column", gap, ...bodyStyle(theme) }}>
       <header style={{ display: "flex", justifyContent: "space-between", fontSize: 28, borderBottom: `2px solid ${colors.accent}`, paddingBottom: 24 }}><span>{brandHandle}</span><span>{slide.slideNumber} / {totalSlides}</span></header>
       {!hero && <h2 data-content-text style={headingStyle(theme)}>{slide.headline}</h2>}
       {!hero && definition.optionalSlots.includes("body") && slide.body && <p data-content-text style={{ ...bodyStyle(theme), color: colors.muted }}>{slide.body}</p>}

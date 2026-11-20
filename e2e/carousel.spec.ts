@@ -1,5 +1,6 @@
 import { test, expect } from "@playwright/test";
 import { fixtureCarousel } from "../src/lib/carousel-fixture-decks";
+import { readFileSync } from "node:fs";
 
 test("brand heading and body typography persist independently", async ({ page, request }) => {
   const id = `typography-check-${Date.now()}`;
@@ -104,4 +105,26 @@ test("maximum permitted CJK content fits all nine portrait patterns", async ({ p
     expect(bounds.height,bounds.id ?? "").toBeLessThanOrEqual(1350);
     expect(bounds.width,bounds.id ?? "").toBeLessThanOrEqual(1080);
   }
+});
+
+test("reference traits require review before saving and exclude the source image", async ({ request }) => {
+  let templateId="";
+  try {
+    const response=await request.post("/api/style-extract",{data:{imageDataUrl:`data:image/png;base64,${readFileSync("public/fixtures/carousel-proof.png").toString("base64")}`,name:"@creator Reference check",useAsBackdrop:true}});
+    expect(response.ok()).toBe(true);const {template,analysis,requiresConfirmation}=await response.json();
+    expect(requiresConfirmation).toBe(true);expect(template.backdropImageUrl).toBeUndefined();expect(template.name).not.toContain("@creator");
+    expect(Object.keys(analysis)).not.toContain("creator");
+    expect((await request.post("/api/templates",{data:{template}})).status()).toBe(409);
+    const saved=await request.post("/api/templates",{data:{template,confirmReference:true}});expect(saved.ok()).toBe(true);templateId=(await saved.json()).template.id;
+  }finally{if(templateId)await request.delete(`/api/templates?id=${templateId}`);}
+});
+
+test("Agent Chat creates both carousel formats from a brief", async ({ page }) => {
+  await page.goto("/");
+  await page.getByText("Agent Chat — create carousels from a brief",{exact:true}).click();
+  await page.getByLabel("Carousel brief",{exact:true}).fill("Explain three ways to make a project brief clearer: define the audience, state the outcome, and show evidence. Use only these facts.");
+  await page.getByRole("button",{name:"Create carousels from brief",exact:true}).click();
+  await expect(page.getByRole("tab",{name:"Instagram Carousel",exact:true})).toBeVisible({timeout:60000});
+  await expect(page.getByRole("tab",{name:"LinkedIn Carousel",exact:true})).toBeVisible();
+  await expect(page.getByRole("status").filter({hasText:/Created/})).toBeVisible();
 });

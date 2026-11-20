@@ -1,4 +1,5 @@
 import { NextRequest, NextResponse } from "next/server";
+import { selectDeckPatterns } from "@/lib/carousel-pattern-selection";
 import { z } from "zod";
 import { generateContentForFormats } from "@/lib/ai";
 import { rejectNonJson } from "@/lib/json-body";
@@ -78,6 +79,11 @@ export async function POST(req: NextRequest) {
       ...parsed.data,
       userLayoutPacks: store.layoutPacks,
     });
+    const reference = store.visualTemplates.find(t => t.id === parsed.data.visualTemplateId)?.referenceStyle;
+    for (const key of ["igCarousel","liCarousel"] as const) {
+      const carousel = generated[key];
+      if (carousel?.layoutPackId === "auto-patterns") generated[key] = selectDeckPatterns({ ...carousel, slides: carousel.slides.map(s => ({ ...s, preferredPatternIds: s.preferredPatternIds ?? reference?.patternCandidates })) },store.imageAssets ?? []);
+    }
     return NextResponse.json(generated);
   } catch (err) {
     console.error("Generation error:", err);

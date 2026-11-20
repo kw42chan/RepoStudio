@@ -114,6 +114,15 @@
       "forceLinkedInGrid": true
     },
     {
+      "id": "auto-patterns",
+      "label": "Automatic patterns",
+      "platforms": [
+        "instagram",
+        "linkedin"
+      ],
+      "description": "Choose layouts from the slide intent, content limits and available image slots."
+    },
+    {
       "id": "instagram-edwardai-ref",
       "label": "Edward AI reference",
       "platforms": [

@@ -184,7 +184,10 @@
       {
         "id": "hooks",
         "label": "Hooks",
-        "categories": ["hook-cover", "hook-hero"]
+        "categories": [
+          "hook-cover",
+          "hook-hero"
+        ]
       },
       {
         "id": "body",
@@ -201,100 +204,175 @@
       {
         "id": "close",
         "label": "Close",
-        "categories": ["cta-close"]
+        "categories": [
+          "cta-close"
+        ]
       }
     ],
     "styles": [
       {
         "templateId": "hook-scroll-cover",
         "label": "Scroll cover",
-        "tags": ["cover", "light"],
+        "tags": [
+          "cover",
+          "light"
+        ],
         "experimental": false,
-        "platforms": ["instagram", "linkedin"]
+        "platforms": [
+          "instagram",
+          "linkedin"
+        ]
       },
       {
         "templateId": "body-narrative-default",
         "label": "Narrative",
-        "tags": ["text", "explain"],
+        "tags": [
+          "text",
+          "explain"
+        ],
         "experimental": false,
-        "platforms": ["instagram", "linkedin"]
+        "platforms": [
+          "instagram",
+          "linkedin"
+        ]
       },
       {
         "templateId": "body-tool-grid-2x3",
         "label": "Tool grid (2×3)",
-        "tags": ["grid", "list"],
+        "tags": [
+          "grid",
+          "list"
+        ],
         "experimental": false,
-        "platforms": ["instagram", "linkedin"]
+        "platforms": [
+          "instagram",
+          "linkedin"
+        ]
       },
       {
         "templateId": "cta-action-close",
         "label": "Action close",
-        "tags": ["cta", "gradient"],
+        "tags": [
+          "cta",
+          "gradient"
+        ],
         "experimental": false,
-        "platforms": ["instagram", "linkedin"]
+        "platforms": [
+          "instagram",
+          "linkedin"
+        ]
       },
       {
         "templateId": "ref-edwardai-hook-hero-showcase",
         "label": "Hero showcase (dark stage)",
-        "tags": ["edwardai", "dark", "hero"],
+        "tags": [
+          "edwardai",
+          "dark",
+          "hero"
+        ],
         "experimental": false,
-        "platforms": ["instagram"]
+        "platforms": [
+          "instagram"
+        ]
       },
       {
         "templateId": "ref-edwardai-body-scene-compare",
         "label": "Scene compare (Edward)",
-        "tags": ["edwardai", "dark", "proof"],
+        "tags": [
+          "edwardai",
+          "dark",
+          "proof"
+        ],
         "experimental": false,
-        "platforms": ["instagram"]
+        "platforms": [
+          "instagram"
+        ]
       },
       {
         "templateId": "ref-edwardai-body-tip-lock-three",
         "label": "Three-rule tip list",
-        "tags": ["edwardai", "list"],
+        "tags": [
+          "edwardai",
+          "list"
+        ],
         "experimental": false,
-        "platforms": ["instagram"]
+        "platforms": [
+          "instagram"
+        ]
       },
       {
         "templateId": "ref-edwardai-hook-photo-agent-cta",
         "label": "Photo agent hook",
-        "tags": ["edwardai", "photo", "hero"],
+        "tags": [
+          "edwardai",
+          "photo",
+          "hero"
+        ],
         "experimental": false,
-        "platforms": ["instagram"]
+        "platforms": [
+          "instagram"
+        ]
       },
       {
         "templateId": "ref-edwardai-body-agent-profile-card",
         "label": "Agent profile card",
-        "tags": ["edwardai", "profile"],
+        "tags": [
+          "edwardai",
+          "profile"
+        ],
         "experimental": false,
-        "platforms": ["instagram"]
+        "platforms": [
+          "instagram"
+        ]
       },
       {
         "templateId": "ref-edwardai-body-cheatsheet-3way",
         "label": "Three-way cheatsheet",
-        "tags": ["edwardai", "list"],
+        "tags": [
+          "edwardai",
+          "list"
+        ],
         "experimental": false,
-        "platforms": ["instagram"]
+        "platforms": [
+          "instagram"
+        ]
       },
       {
         "templateId": "ref-edwardai-hook-hero-centered-stat",
         "label": "Centered stat hero",
-        "tags": ["edwardai", "dark", "hero"],
+        "tags": [
+          "edwardai",
+          "dark",
+          "hero"
+        ],
         "experimental": false,
-        "platforms": ["instagram"]
+        "platforms": [
+          "instagram"
+        ]
       },
       {
         "templateId": "ref-edwardai-body-numbered-switches",
         "label": "Numbered switches",
-        "tags": ["edwardai", "list"],
+        "tags": [
+          "edwardai",
+          "list"
+        ],
         "experimental": false,
-        "platforms": ["instagram"]
+        "platforms": [
+          "instagram"
+        ]
       },
       {
         "templateId": "ref-edwardai-body-stats-metrics-row",
         "label": "Metrics row",
-        "tags": ["edwardai", "stats"],
+        "tags": [
+          "edwardai",
+          "stats"
+        ],
         "experimental": false,
-        "platforms": ["instagram"]
+        "platforms": [
+          "instagram"
+        ]
       }
     ]
   },
@@ -822,6 +900,1059 @@
         "thumbnailKey": "ref-edwardai-body-stats-metrics-row",
         "thumbnailPath": "/carousel-templates/refs/placeholder.svg",
         "description": "Large-metric proof row."
+      }
+    },
+    {
+      "id": "signal-statement",
+      "version": 1,
+      "category": "body-narrative",
+      "intent": "explain",
+      "layout": "default",
+      "implementationStatus": "reference-only",
+      "showInStylePicker": false,
+      "roles": [
+        "body"
+      ],
+      "slots": {
+        "required": [
+          "headline"
+        ],
+        "optional": [
+          "body"
+        ]
+      },
+      "productionFallbackId": "body-narrative-default",
+      "preview": {
+        "thumbnailKey": "signal-statement",
+        "description": "A memorable claim or transition; use when structured data is absent."
+      },
+      "pattern": {
+        "familyId": "editorial-signal",
+        "release": "first",
+        "intentTags": [
+          "claim"
+        ],
+        "requiredSlots": [
+          "headline"
+        ],
+        "optionalSlots": [
+          "body"
+        ],
+        "imageSlots": [],
+        "contentLimits": {
+          "headlineMax": 46,
+          "bodyMax": 38,
+          "minItems": 0,
+          "maxItems": 0,
+          "itemTitleMax": 9,
+          "itemBodyMax": 15
+        },
+        "density": "light",
+        "supportedModes": [
+          "light",
+          "dark"
+        ],
+        "rendererVariant": "signal-statement",
+        "selectionGuidance": "A memorable claim or transition; use when structured data is absent."
+      }
+    },
+    {
+      "id": "signal-numbered-list",
+      "version": 1,
+      "category": "body-narrative",
+      "intent": "explain",
+      "layout": "default",
+      "implementationStatus": "reference-only",
+      "showInStylePicker": false,
+      "roles": [
+        "body"
+      ],
+      "slots": {
+        "required": [
+          "headline",
+          "items"
+        ],
+        "optional": [
+          "body"
+        ]
+      },
+      "productionFallbackId": "body-narrative-default",
+      "preview": {
+        "thumbnailKey": "signal-numbered-list",
+        "description": "Exactly three parallel rules; do not imply a sequence."
+      },
+      "pattern": {
+        "familyId": "editorial-signal",
+        "release": "first",
+        "intentTags": [
+          "parallel-list"
+        ],
+        "requiredSlots": [
+          "headline",
+          "items"
+        ],
+        "optionalSlots": [
+          "body"
+        ],
+        "imageSlots": [],
+        "contentLimits": {
+          "headlineMax": 42,
+          "bodyMax": 34,
+          "minItems": 3,
+          "maxItems": 3,
+          "itemTitleMax": 9,
+          "itemBodyMax": 15
+        },
+        "density": "dense",
+        "supportedModes": [
+          "light",
+          "dark"
+        ],
+        "rendererVariant": "signal-numbered-list",
+        "selectionGuidance": "Exactly three parallel rules; do not imply a sequence."
+      }
+    },
+    {
+      "id": "signal-vertical-timeline",
+      "version": 1,
+      "category": "body-narrative",
+      "intent": "explain",
+      "layout": "default",
+      "implementationStatus": "reference-only",
+      "showInStylePicker": false,
+      "roles": [
+        "body"
+      ],
+      "slots": {
+        "required": [
+          "headline",
+          "items"
+        ],
+        "optional": [
+          "body"
+        ]
+      },
+      "productionFallbackId": "body-narrative-default",
+      "preview": {
+        "thumbnailKey": "signal-vertical-timeline",
+        "description": "Two to six ordered steps; use for denser instructions."
+      },
+      "pattern": {
+        "familyId": "editorial-signal",
+        "release": "first",
+        "intentTags": [
+          "sequence"
+        ],
+        "requiredSlots": [
+          "headline",
+          "items"
+        ],
+        "optionalSlots": [
+          "body"
+        ],
+        "imageSlots": [],
+        "contentLimits": {
+          "headlineMax": 42,
+          "bodyMax": 34,
+          "minItems": 2,
+          "maxItems": 6,
+          "itemTitleMax": 21,
+          "itemBodyMax": 21
+        },
+        "density": "balanced",
+        "supportedModes": [
+          "light",
+          "dark"
+        ],
+        "rendererVariant": "signal-vertical-timeline",
+        "selectionGuidance": "Two to six ordered steps; use for denser instructions."
+      }
+    },
+    {
+      "id": "signal-horizontal-timeline",
+      "version": 1,
+      "category": "body-narrative",
+      "intent": "explain",
+      "layout": "default",
+      "implementationStatus": "reference-only",
+      "showInStylePicker": false,
+      "roles": [
+        "body"
+      ],
+      "slots": {
+        "required": [
+          "headline",
+          "items"
+        ],
+        "optional": [
+          "body",
+          "outcome"
+        ]
+      },
+      "productionFallbackId": "body-narrative-default",
+      "preview": {
+        "thumbnailKey": "signal-horizontal-timeline",
+        "description": "Three to five concise ordered steps; otherwise choose the vertical timeline."
+      },
+      "pattern": {
+        "familyId": "editorial-signal",
+        "release": "first",
+        "intentTags": [
+          "sequence-summary"
+        ],
+        "requiredSlots": [
+          "headline",
+          "items"
+        ],
+        "optionalSlots": [
+          "body",
+          "outcome"
+        ],
+        "imageSlots": [
+          {
+            "id": "timeline-1",
+            "purpose": "icon",
+            "aspectRatio": 1,
+            "fit": "cover",
+            "required": false,
+            "defaultFocalPoint": {
+              "x": 0.5,
+              "y": 0.5
+            }
+          },
+          {
+            "id": "timeline-2",
+            "purpose": "icon",
+            "aspectRatio": 1,
+            "fit": "cover",
+            "required": false,
+            "defaultFocalPoint": {
+              "x": 0.5,
+              "y": 0.5
+            }
+          },
+          {
+            "id": "timeline-3",
+            "purpose": "icon",
+            "aspectRatio": 1,
+            "fit": "cover",
+            "required": false,
+            "defaultFocalPoint": {
+              "x": 0.5,
+              "y": 0.5
+            }
+          },
+          {
+            "id": "timeline-4",
+            "purpose": "icon",
+            "aspectRatio": 1,
+            "fit": "cover",
+            "required": false,
+            "defaultFocalPoint": {
+              "x": 0.5,
+              "y": 0.5
+            }
+          },
+          {
+            "id": "timeline-5",
+            "purpose": "icon",
+            "aspectRatio": 1,
+            "fit": "cover",
+            "required": false,
+            "defaultFocalPoint": {
+              "x": 0.5,
+              "y": 0.5
+            }
+          }
+        ],
+        "contentLimits": {
+          "headlineMax": 42,
+          "bodyMax": 34,
+          "minItems": 3,
+          "maxItems": 5,
+          "itemTitleMax": 7,
+          "itemBodyMax": 13
+        },
+        "density": "balanced",
+        "supportedModes": [
+          "light",
+          "dark"
+        ],
+        "rendererVariant": "signal-horizontal-timeline",
+        "selectionGuidance": "Three to five concise ordered steps; otherwise choose the vertical timeline."
+      }
+    },
+    {
+      "id": "spec-ab-comparison",
+      "version": 1,
+      "category": "body-narrative",
+      "intent": "explain",
+      "layout": "default",
+      "implementationStatus": "reference-only",
+      "showInStylePicker": false,
+      "roles": [
+        "body"
+      ],
+      "slots": {
+        "required": [
+          "headline",
+          "items"
+        ],
+        "optional": [
+          "body",
+          "recommendation"
+        ]
+      },
+      "productionFallbackId": "body-narrative-default",
+      "preview": {
+        "thumbnailKey": "spec-ab-comparison",
+        "description": "Two evidenced alternatives; text panels remain valid without images."
+      },
+      "pattern": {
+        "familyId": "specification-editorial",
+        "release": "first",
+        "intentTags": [
+          "comparison"
+        ],
+        "requiredSlots": [
+          "headline",
+          "items"
+        ],
+        "optionalSlots": [
+          "body",
+          "recommendation"
+        ],
+        "imageSlots": [
+          {
+            "id": "example-a",
+            "purpose": "screenshot",
+            "aspectRatio": 1.33,
+            "fit": "contain",
+            "required": false,
+            "defaultFocalPoint": {
+              "x": 0.5,
+              "y": 0.5
+            }
+          },
+          {
+            "id": "example-b",
+            "purpose": "screenshot",
+            "aspectRatio": 1.33,
+            "fit": "contain",
+            "required": false,
+            "defaultFocalPoint": {
+              "x": 0.5,
+              "y": 0.5
+            }
+          }
+        ],
+        "contentLimits": {
+          "headlineMax": 42,
+          "bodyMax": 38,
+          "minItems": 2,
+          "maxItems": 2,
+          "itemTitleMax": 18,
+          "itemBodyMax": 60
+        },
+        "density": "balanced",
+        "supportedModes": [
+          "light",
+          "dark"
+        ],
+        "rendererVariant": "spec-ab-comparison",
+        "selectionGuidance": "Two evidenced alternatives; text panels remain valid without images."
+      }
+    },
+    {
+      "id": "signal-metric-evidence",
+      "version": 1,
+      "category": "body-narrative",
+      "intent": "explain",
+      "layout": "default",
+      "implementationStatus": "reference-only",
+      "showInStylePicker": false,
+      "roles": [
+        "body"
+      ],
+      "slots": {
+        "required": [
+          "headline",
+          "metric",
+          "items"
+        ],
+        "optional": [
+          "body",
+          "unit"
+        ]
+      },
+      "productionFallbackId": "body-narrative-default",
+      "preview": {
+        "thumbnailKey": "signal-metric-evidence",
+        "description": "A sourced numeric metric with an assigned evidence image; never invent evidence."
+      },
+      "pattern": {
+        "familyId": "editorial-signal",
+        "release": "first",
+        "intentTags": [
+          "metric"
+        ],
+        "requiredSlots": [
+          "headline",
+          "metric",
+          "items"
+        ],
+        "optionalSlots": [
+          "body",
+          "unit"
+        ],
+        "imageSlots": [
+          {
+            "id": "evidence-left",
+            "purpose": "screenshot",
+            "aspectRatio": 1,
+            "fit": "contain",
+            "required": true,
+            "defaultFocalPoint": {
+              "x": 0.5,
+              "y": 0.5
+            }
+          }
+        ],
+        "contentLimits": {
+          "headlineMax": 42,
+          "bodyMax": 38,
+          "minItems": 2,
+          "maxItems": 4,
+          "itemTitleMax": 18,
+          "itemBodyMax": 30
+        },
+        "density": "dense",
+        "supportedModes": [
+          "light",
+          "dark"
+        ],
+        "rendererVariant": "signal-metric-evidence",
+        "selectionGuidance": "A sourced numeric metric with an assigned evidence image; never invent evidence."
+      }
+    },
+    {
+      "id": "signal-collage-cover",
+      "version": 1,
+      "category": "hook-cover",
+      "intent": "hook",
+      "layout": "default",
+      "implementationStatus": "reference-only",
+      "showInStylePicker": false,
+      "roles": [
+        "cover"
+      ],
+      "slots": {
+        "required": [
+          "headline",
+          "items"
+        ],
+        "optional": [
+          "body",
+          "badge"
+        ]
+      },
+      "productionFallbackId": "hook-scroll-cover",
+      "preview": {
+        "thumbnailKey": "signal-collage-cover",
+        "description": "Cover only, once per deck; needs product proof imagery."
+      },
+      "pattern": {
+        "familyId": "editorial-signal",
+        "release": "first",
+        "intentTags": [
+          "cover"
+        ],
+        "requiredSlots": [
+          "headline",
+          "items"
+        ],
+        "optionalSlots": [
+          "body",
+          "badge"
+        ],
+        "imageSlots": [
+          {
+            "id": "hero-right",
+            "purpose": "screenshot",
+            "aspectRatio": 0.8,
+            "fit": "contain",
+            "required": true,
+            "defaultFocalPoint": {
+              "x": 0.5,
+              "y": 0.5
+            }
+          },
+          {
+            "id": "support-bottom-center",
+            "purpose": "screenshot",
+            "aspectRatio": 1.33,
+            "fit": "contain",
+            "required": false,
+            "defaultFocalPoint": {
+              "x": 0.5,
+              "y": 0.5
+            }
+          },
+          {
+            "id": "support-bottom-right",
+            "purpose": "screenshot",
+            "aspectRatio": 1.33,
+            "fit": "contain",
+            "required": false,
+            "defaultFocalPoint": {
+              "x": 0.5,
+              "y": 0.5
+            }
+          }
+        ],
+        "contentLimits": {
+          "headlineMax": 42,
+          "bodyMax": 34,
+          "minItems": 2,
+          "maxItems": 4,
+          "itemTitleMax": 18,
+          "itemBodyMax": 30
+        },
+        "density": "dense",
+        "supportedModes": [
+          "light",
+          "dark"
+        ],
+        "rendererVariant": "signal-collage-cover",
+        "selectionGuidance": "Cover only, once per deck; needs product proof imagery."
+      }
+    },
+    {
+      "id": "story-prompt-outcome",
+      "version": 1,
+      "category": "body-narrative",
+      "intent": "explain",
+      "layout": "default",
+      "implementationStatus": "reference-only",
+      "showInStylePicker": false,
+      "roles": [
+        "body"
+      ],
+      "slots": {
+        "required": [
+          "headline",
+          "prompt",
+          "items"
+        ],
+        "optional": [
+          "body",
+          "takeaway"
+        ]
+      },
+      "productionFallbackId": "body-narrative-default",
+      "preview": {
+        "thumbnailKey": "story-prompt-outcome",
+        "description": "A request becoming a tangible result; needs a result preview."
+      },
+      "pattern": {
+        "familyId": "warm-storyboard",
+        "release": "first",
+        "intentTags": [
+          "transformation"
+        ],
+        "requiredSlots": [
+          "headline",
+          "prompt",
+          "items"
+        ],
+        "optionalSlots": [
+          "body",
+          "takeaway"
+        ],
+        "imageSlots": [
+          {
+            "id": "result-preview",
+            "purpose": "screenshot",
+            "aspectRatio": 1.6,
+            "fit": "contain",
+            "required": true,
+            "defaultFocalPoint": {
+              "x": 0.5,
+              "y": 0.5
+            }
+          }
+        ],
+        "contentLimits": {
+          "headlineMax": 42,
+          "bodyMax": 38,
+          "minItems": 4,
+          "maxItems": 4,
+          "itemTitleMax": 12,
+          "itemBodyMax": 26
+        },
+        "density": "dense",
+        "supportedModes": [
+          "light",
+          "dark"
+        ],
+        "rendererVariant": "story-prompt-outcome",
+        "selectionGuidance": "A request becoming a tangible result; needs a result preview."
+      }
+    },
+    {
+      "id": "signal-cta",
+      "version": 1,
+      "category": "cta-close",
+      "intent": "cta",
+      "layout": "default",
+      "implementationStatus": "reference-only",
+      "showInStylePicker": false,
+      "roles": [
+        "cta"
+      ],
+      "slots": {
+        "required": [
+          "headline",
+          "action"
+        ],
+        "optional": []
+      },
+      "productionFallbackId": "cta-action-close",
+      "preview": {
+        "thumbnailKey": "signal-cta",
+        "description": "One final action with no supporting paragraph."
+      },
+      "pattern": {
+        "familyId": "editorial-signal",
+        "release": "first",
+        "intentTags": [
+          "cta"
+        ],
+        "requiredSlots": [
+          "headline",
+          "action"
+        ],
+        "optionalSlots": [],
+        "imageSlots": [],
+        "contentLimits": {
+          "headlineMax": 32,
+          "bodyMax": 1,
+          "minItems": 0,
+          "maxItems": 0,
+          "itemTitleMax": 12,
+          "itemBodyMax": 20
+        },
+        "density": "light",
+        "supportedModes": [
+          "light",
+          "dark"
+        ],
+        "rendererVariant": "signal-cta",
+        "selectionGuidance": "One final action with no supporting paragraph."
+      }
+    },
+    {
+      "id": "signal-three-node-flow",
+      "version": 1,
+      "category": "body-narrative",
+      "intent": "explain",
+      "layout": "default",
+      "implementationStatus": "reference-only",
+      "showInStylePicker": false,
+      "roles": [
+        "body"
+      ],
+      "slots": {
+        "required": [
+          "headline",
+          "items"
+        ],
+        "optional": [
+          "body"
+        ]
+      },
+      "productionFallbackId": "body-narrative-default",
+      "preview": {
+        "thumbnailKey": "signal-three-node-flow",
+        "description": "Three causally connected concepts, not a checklist."
+      },
+      "pattern": {
+        "familyId": "editorial-signal",
+        "release": "deferred",
+        "intentTags": [
+          "flow"
+        ],
+        "requiredSlots": [
+          "headline",
+          "items"
+        ],
+        "optionalSlots": [
+          "body"
+        ],
+        "imageSlots": [],
+        "contentLimits": {
+          "headlineMax": 42,
+          "bodyMax": 38,
+          "minItems": 3,
+          "maxItems": 3,
+          "itemTitleMax": 12,
+          "itemBodyMax": 26
+        },
+        "density": "balanced",
+        "supportedModes": [
+          "light",
+          "dark"
+        ],
+        "rendererVariant": "signal-three-node-flow",
+        "selectionGuidance": "Three causally connected concepts, not a checklist."
+      }
+    },
+    {
+      "id": "spec-audit-checklist",
+      "version": 1,
+      "category": "body-narrative",
+      "intent": "explain",
+      "layout": "default",
+      "implementationStatus": "reference-only",
+      "showInStylePicker": false,
+      "roles": [
+        "body"
+      ],
+      "slots": {
+        "required": [
+          "headline",
+          "items"
+        ],
+        "optional": [
+          "body",
+          "question"
+        ]
+      },
+      "productionFallbackId": "body-narrative-default",
+      "preview": {
+        "thumbnailKey": "spec-audit-checklist",
+        "description": "Falsifiable diagnostic criteria with optional measurements."
+      },
+      "pattern": {
+        "familyId": "specification-editorial",
+        "release": "deferred",
+        "intentTags": [
+          "audit"
+        ],
+        "requiredSlots": [
+          "headline",
+          "items"
+        ],
+        "optionalSlots": [
+          "body",
+          "question"
+        ],
+        "imageSlots": [],
+        "contentLimits": {
+          "headlineMax": 42,
+          "bodyMax": 38,
+          "minItems": 3,
+          "maxItems": 6,
+          "itemTitleMax": 22,
+          "itemBodyMax": 30
+        },
+        "density": "dense",
+        "supportedModes": [
+          "light",
+          "dark"
+        ],
+        "rendererVariant": "spec-audit-checklist",
+        "selectionGuidance": "Falsifiable diagnostic criteria with optional measurements."
+      }
+    },
+    {
+      "id": "spec-design-panel",
+      "version": 1,
+      "category": "body-narrative",
+      "intent": "explain",
+      "layout": "default",
+      "implementationStatus": "reference-only",
+      "showInStylePicker": false,
+      "roles": [
+        "body"
+      ],
+      "slots": {
+        "required": [
+          "headline",
+          "items"
+        ],
+        "optional": [
+          "body",
+          "question"
+        ]
+      },
+      "productionFallbackId": "body-narrative-default",
+      "preview": {
+        "thumbnailKey": "spec-design-panel",
+        "description": "Technical constraints paired with their plain-language meaning."
+      },
+      "pattern": {
+        "familyId": "specification-editorial",
+        "release": "deferred",
+        "intentTags": [
+          "specification"
+        ],
+        "requiredSlots": [
+          "headline",
+          "items"
+        ],
+        "optionalSlots": [
+          "body",
+          "question"
+        ],
+        "imageSlots": [],
+        "contentLimits": {
+          "headlineMax": 42,
+          "bodyMax": 38,
+          "minItems": 3,
+          "maxItems": 5,
+          "itemTitleMax": 30,
+          "itemBodyMax": 45
+        },
+        "density": "dense",
+        "supportedModes": [
+          "light",
+          "dark"
+        ],
+        "rendererVariant": "spec-design-panel",
+        "selectionGuidance": "Technical constraints paired with their plain-language meaning."
+      }
+    },
+    {
+      "id": "spec-command-playbook",
+      "version": 1,
+      "category": "body-narrative",
+      "intent": "explain",
+      "layout": "default",
+      "implementationStatus": "reference-only",
+      "showInStylePicker": false,
+      "roles": [
+        "body"
+      ],
+      "slots": {
+        "required": [
+          "headline",
+          "command",
+          "items"
+        ],
+        "optional": [
+          "body",
+          "question"
+        ]
+      },
+      "productionFallbackId": "body-narrative-default",
+      "preview": {
+        "thumbnailKey": "spec-command-playbook",
+        "description": "Exact installation commands and ordered actions."
+      },
+      "pattern": {
+        "familyId": "specification-editorial",
+        "release": "deferred",
+        "intentTags": [
+          "command"
+        ],
+        "requiredSlots": [
+          "headline",
+          "command",
+          "items"
+        ],
+        "optionalSlots": [
+          "body",
+          "question"
+        ],
+        "imageSlots": [],
+        "contentLimits": {
+          "headlineMax": 42,
+          "bodyMax": 38,
+          "minItems": 2,
+          "maxItems": 5,
+          "itemTitleMax": 18,
+          "itemBodyMax": 45
+        },
+        "density": "dense",
+        "supportedModes": [
+          "light",
+          "dark"
+        ],
+        "rendererVariant": "spec-command-playbook",
+        "selectionGuidance": "Exact installation commands and ordered actions."
+      }
+    },
+    {
+      "id": "story-value-chain",
+      "version": 1,
+      "category": "body-narrative",
+      "intent": "explain",
+      "layout": "default",
+      "implementationStatus": "reference-only",
+      "showInStylePicker": false,
+      "roles": [
+        "body"
+      ],
+      "slots": {
+        "required": [
+          "headline",
+          "items"
+        ],
+        "optional": [
+          "body",
+          "question"
+        ]
+      },
+      "productionFallbackId": "body-narrative-default",
+      "preview": {
+        "thumbnailKey": "story-value-chain",
+        "description": "Three dependent business stages with assigned illustrations."
+      },
+      "pattern": {
+        "familyId": "warm-storyboard",
+        "release": "deferred",
+        "intentTags": [
+          "flow"
+        ],
+        "requiredSlots": [
+          "headline",
+          "items"
+        ],
+        "optionalSlots": [
+          "body",
+          "question"
+        ],
+        "imageSlots": [
+          {
+            "id": "stage-1",
+            "purpose": "illustration",
+            "aspectRatio": 1,
+            "fit": "cover",
+            "required": true,
+            "defaultFocalPoint": {
+              "x": 0.5,
+              "y": 0.5
+            }
+          },
+          {
+            "id": "stage-2",
+            "purpose": "illustration",
+            "aspectRatio": 1,
+            "fit": "cover",
+            "required": true,
+            "defaultFocalPoint": {
+              "x": 0.5,
+              "y": 0.5
+            }
+          },
+          {
+            "id": "stage-3",
+            "purpose": "illustration",
+            "aspectRatio": 1,
+            "fit": "cover",
+            "required": true,
+            "defaultFocalPoint": {
+              "x": 0.5,
+              "y": 0.5
+            }
+          }
+        ],
+        "contentLimits": {
+          "headlineMax": 42,
+          "bodyMax": 38,
+          "minItems": 3,
+          "maxItems": 3,
+          "itemTitleMax": 18,
+          "itemBodyMax": 40
+        },
+        "density": "balanced",
+        "supportedModes": [
+          "light",
+          "dark"
+        ],
+        "rendererVariant": "story-value-chain",
+        "selectionGuidance": "Three dependent business stages with assigned illustrations."
+      }
+    },
+    {
+      "id": "midnight-dual-system",
+      "version": 1,
+      "category": "body-narrative",
+      "intent": "explain",
+      "layout": "default",
+      "implementationStatus": "reference-only",
+      "showInStylePicker": false,
+      "roles": [
+        "body"
+      ],
+      "slots": {
+        "required": [
+          "headline",
+          "items"
+        ],
+        "optional": [
+          "body",
+          "quote"
+        ]
+      },
+      "productionFallbackId": "body-narrative-default",
+      "preview": {
+        "thumbnailKey": "midnight-dual-system",
+        "description": "Two actors or modes, represented as structured text by default."
+      },
+      "pattern": {
+        "familyId": "midnight-contrast",
+        "release": "deferred",
+        "intentTags": [
+          "comparison"
+        ],
+        "requiredSlots": [
+          "headline",
+          "items"
+        ],
+        "optionalSlots": [
+          "body",
+          "quote"
+        ],
+        "imageSlots": [
+          {
+            "id": "left-panel",
+            "purpose": "screenshot",
+            "aspectRatio": 1.33,
+            "fit": "contain",
+            "required": false,
+            "defaultFocalPoint": {
+              "x": 0.5,
+              "y": 0.5
+            }
+          },
+          {
+            "id": "right-panel",
+            "purpose": "screenshot",
+            "aspectRatio": 1.33,
+            "fit": "contain",
+            "required": false,
+            "defaultFocalPoint": {
+              "x": 0.5,
+              "y": 0.5
+            }
+          }
+        ],
+        "contentLimits": {
+          "headlineMax": 42,
+          "bodyMax": 38,
+          "minItems": 2,
+          "maxItems": 2,
+          "itemTitleMax": 18,
+          "itemBodyMax": 60
+        },
+        "density": "balanced",
+        "supportedModes": [
+          "dark"
+        ],
+        "rendererVariant": "midnight-dual-system",
+        "selectionGuidance": "Two actors or modes, represented as structured text by default."
       }
     }
   ]

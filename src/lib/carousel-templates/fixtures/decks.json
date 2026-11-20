@@ -1,0 +1,1787 @@
+[
+  {
+    "id": "zh-Hant",
+    "expected": "valid",
+    "slides": [
+      {
+        "templateId": "signal-collage-cover",
+        "headline": "讓每一步都有清晰成果",
+        "items": [
+          {
+            "title": "定義成果",
+            "body": "整理重點"
+          },
+          {
+            "title": "定義成果",
+            "body": "整理重點"
+          },
+          {
+            "title": "定義成果",
+            "body": "整理重點"
+          },
+          {
+            "title": "定義成果",
+            "body": "整理重點"
+          }
+        ],
+        "body": "先整理重點，再選擇合適版式。",
+        "badge": "字字字",
+        "images": [
+          {
+            "slotId": "hero-right",
+            "assetId": "fixture-proof",
+            "focalPoint": {
+              "x": 0.5,
+              "y": 0.5
+            }
+          },
+          {
+            "slotId": "support-bottom-center",
+            "assetId": "fixture-proof",
+            "focalPoint": {
+              "x": 0.5,
+              "y": 0.5
+            }
+          },
+          {
+            "slotId": "support-bottom-right",
+            "assetId": "fixture-proof",
+            "focalPoint": {
+              "x": 0.5,
+              "y": 0.5
+            }
+          }
+        ]
+      },
+      {
+        "templateId": "signal-statement",
+        "headline": "讓每一步都有清晰成果",
+        "body": "先整理重點，再選擇合適版式。",
+        "images": []
+      },
+      {
+        "templateId": "signal-numbered-list",
+        "headline": "讓每一步都有清晰成果",
+        "items": [
+          {
+            "title": "定義成果",
+            "body": "整理重點"
+          },
+          {
+            "title": "定義成果",
+            "body": "整理重點"
+          },
+          {
+            "title": "定義成果",
+            "body": "整理重點"
+          }
+        ],
+        "body": "先整理重點，再選擇合適版式。",
+        "images": []
+      },
+      {
+        "templateId": "signal-vertical-timeline",
+        "headline": "讓每一步都有清晰成果",
+        "items": [
+          {
+            "title": "定義成果",
+            "body": "整理重點"
+          },
+          {
+            "title": "定義成果",
+            "body": "整理重點"
+          },
+          {
+            "title": "定義成果",
+            "body": "整理重點"
+          },
+          {
+            "title": "定義成果",
+            "body": "整理重點"
+          },
+          {
+            "title": "定義成果",
+            "body": "整理重點"
+          },
+          {
+            "title": "定義成果",
+            "body": "整理重點"
+          }
+        ],
+        "body": "先整理重點，再選擇合適版式。",
+        "images": []
+      },
+      {
+        "templateId": "signal-horizontal-timeline",
+        "headline": "讓每一步都有清晰成果",
+        "items": [
+          {
+            "title": "定義成果",
+            "body": "整理重點"
+          },
+          {
+            "title": "定義成果",
+            "body": "整理重點"
+          },
+          {
+            "title": "定義成果",
+            "body": "整理重點"
+          },
+          {
+            "title": "定義成果",
+            "body": "整理重點"
+          },
+          {
+            "title": "定義成果",
+            "body": "整理重點"
+          }
+        ],
+        "body": "先整理重點，再選擇合適版式。",
+        "outcome": "字字字",
+        "images": [
+          {
+            "slotId": "timeline-1",
+            "assetId": "fixture-proof",
+            "focalPoint": {
+              "x": 0.5,
+              "y": 0.5
+            }
+          },
+          {
+            "slotId": "timeline-2",
+            "assetId": "fixture-proof",
+            "focalPoint": {
+              "x": 0.5,
+              "y": 0.5
+            }
+          },
+          {
+            "slotId": "timeline-3",
+            "assetId": "fixture-proof",
+            "focalPoint": {
+              "x": 0.5,
+              "y": 0.5
+            }
+          },
+          {
+            "slotId": "timeline-4",
+            "assetId": "fixture-proof",
+            "focalPoint": {
+              "x": 0.5,
+              "y": 0.5
+            }
+          },
+          {
+            "slotId": "timeline-5",
+            "assetId": "fixture-proof",
+            "focalPoint": {
+              "x": 0.5,
+              "y": 0.5
+            }
+          }
+        ]
+      },
+      {
+        "templateId": "spec-ab-comparison",
+        "headline": "讓每一步都有清晰成果",
+        "items": [
+          {
+            "title": "定義成果",
+            "body": "整理重點"
+          },
+          {
+            "title": "定義成果",
+            "body": "整理重點"
+          }
+        ],
+        "body": "先整理重點，再選擇合適版式。",
+        "recommendation": "字字字",
+        "images": [
+          {
+            "slotId": "example-a",
+            "assetId": "fixture-proof",
+            "focalPoint": {
+              "x": 0.5,
+              "y": 0.5
+            }
+          },
+          {
+            "slotId": "example-b",
+            "assetId": "fixture-proof",
+            "focalPoint": {
+              "x": 0.5,
+              "y": 0.5
+            }
+          }
+        ]
+      },
+      {
+        "templateId": "signal-metric-evidence",
+        "headline": "讓每一步都有清晰成果",
+        "metric": "42%",
+        "items": [
+          {
+            "title": "定義成果",
+            "body": "整理重點"
+          },
+          {
+            "title": "定義成果",
+            "body": "整理重點"
+          },
+          {
+            "title": "定義成果",
+            "body": "整理重點"
+          },
+          {
+            "title": "定義成果",
+            "body": "整理重點"
+          }
+        ],
+        "body": "先整理重點，再選擇合適版式。",
+        "unit": "字字字",
+        "images": [
+          {
+            "slotId": "evidence-left",
+            "assetId": "fixture-proof",
+            "focalPoint": {
+              "x": 0.5,
+              "y": 0.5
+            }
+          }
+        ]
+      },
+      {
+        "templateId": "story-prompt-outcome",
+        "headline": "讓每一步都有清晰成果",
+        "prompt": "字字字",
+        "items": [
+          {
+            "title": "定義成果",
+            "body": "整理重點"
+          },
+          {
+            "title": "定義成果",
+            "body": "整理重點"
+          },
+          {
+            "title": "定義成果",
+            "body": "整理重點"
+          },
+          {
+            "title": "定義成果",
+            "body": "整理重點"
+          }
+        ],
+        "body": "先整理重點，再選擇合適版式。",
+        "takeaway": "字字字",
+        "images": [
+          {
+            "slotId": "result-preview",
+            "assetId": "fixture-proof",
+            "focalPoint": {
+              "x": 0.5,
+              "y": 0.5
+            }
+          }
+        ]
+      },
+      {
+        "templateId": "signal-cta",
+        "headline": "讓每一步都有清晰成果",
+        "action": "字字字",
+        "images": []
+      }
+    ]
+  },
+  {
+    "id": "en",
+    "expected": "valid",
+    "slides": [
+      {
+        "templateId": "signal-collage-cover",
+        "headline": "Make every step count",
+        "items": [
+          {
+            "title": "Define",
+            "body": "Plan"
+          },
+          {
+            "title": "Define",
+            "body": "Plan"
+          },
+          {
+            "title": "Define",
+            "body": "Plan"
+          },
+          {
+            "title": "Define",
+            "body": "Plan"
+          }
+        ],
+        "body": "Start with one useful idea.",
+        "badge": "Next",
+        "images": [
+          {
+            "slotId": "hero-right",
+            "assetId": "fixture-proof",
+            "focalPoint": {
+              "x": 0.5,
+              "y": 0.5
+            }
+          },
+          {
+            "slotId": "support-bottom-center",
+            "assetId": "fixture-proof",
+            "focalPoint": {
+              "x": 0.5,
+              "y": 0.5
+            }
+          },
+          {
+            "slotId": "support-bottom-right",
+            "assetId": "fixture-proof",
+            "focalPoint": {
+              "x": 0.5,
+              "y": 0.5
+            }
+          }
+        ]
+      },
+      {
+        "templateId": "signal-statement",
+        "headline": "Make every step count",
+        "body": "Start with one useful idea.",
+        "images": []
+      },
+      {
+        "templateId": "signal-numbered-list",
+        "headline": "Make every step count",
+        "items": [
+          {
+            "title": "Define",
+            "body": "Plan"
+          },
+          {
+            "title": "Define",
+            "body": "Plan"
+          },
+          {
+            "title": "Define",
+            "body": "Plan"
+          }
+        ],
+        "body": "Start with one useful idea.",
+        "images": []
+      },
+      {
+        "templateId": "signal-vertical-timeline",
+        "headline": "Make every step count",
+        "items": [
+          {
+            "title": "Define",
+            "body": "Plan"
+          },
+          {
+            "title": "Define",
+            "body": "Plan"
+          },
+          {
+            "title": "Define",
+            "body": "Plan"
+          },
+          {
+            "title": "Define",
+            "body": "Plan"
+          },
+          {
+            "title": "Define",
+            "body": "Plan"
+          },
+          {
+            "title": "Define",
+            "body": "Plan"
+          }
+        ],
+        "body": "Start with one useful idea.",
+        "images": []
+      },
+      {
+        "templateId": "signal-horizontal-timeline",
+        "headline": "Make every step count",
+        "items": [
+          {
+            "title": "Define",
+            "body": "Plan"
+          },
+          {
+            "title": "Define",
+            "body": "Plan"
+          },
+          {
+            "title": "Define",
+            "body": "Plan"
+          },
+          {
+            "title": "Define",
+            "body": "Plan"
+          },
+          {
+            "title": "Define",
+            "body": "Plan"
+          }
+        ],
+        "body": "Start with one useful idea.",
+        "outcome": "Next",
+        "images": [
+          {
+            "slotId": "timeline-1",
+            "assetId": "fixture-proof",
+            "focalPoint": {
+              "x": 0.5,
+              "y": 0.5
+            }
+          },
+          {
+            "slotId": "timeline-2",
+            "assetId": "fixture-proof",
+            "focalPoint": {
+              "x": 0.5,
+              "y": 0.5
+            }
+          },
+          {
+            "slotId": "timeline-3",
+            "assetId": "fixture-proof",
+            "focalPoint": {
+              "x": 0.5,
+              "y": 0.5
+            }
+          },
+          {
+            "slotId": "timeline-4",
+            "assetId": "fixture-proof",
+            "focalPoint": {
+              "x": 0.5,
+              "y": 0.5
+            }
+          },
+          {
+            "slotId": "timeline-5",
+            "assetId": "fixture-proof",
+            "focalPoint": {
+              "x": 0.5,
+              "y": 0.5
+            }
+          }
+        ]
+      },
+      {
+        "templateId": "spec-ab-comparison",
+        "headline": "Make every step count",
+        "items": [
+          {
+            "title": "Define",
+            "body": "Plan"
+          },
+          {
+            "title": "Define",
+            "body": "Plan"
+          }
+        ],
+        "body": "Start with one useful idea.",
+        "recommendation": "Next",
+        "images": [
+          {
+            "slotId": "example-a",
+            "assetId": "fixture-proof",
+            "focalPoint": {
+              "x": 0.5,
+              "y": 0.5
+            }
+          },
+          {
+            "slotId": "example-b",
+            "assetId": "fixture-proof",
+            "focalPoint": {
+              "x": 0.5,
+              "y": 0.5
+            }
+          }
+        ]
+      },
+      {
+        "templateId": "signal-metric-evidence",
+        "headline": "Make every step count",
+        "metric": "42%",
+        "items": [
+          {
+            "title": "Define",
+            "body": "Plan"
+          },
+          {
+            "title": "Define",
+            "body": "Plan"
+          },
+          {
+            "title": "Define",
+            "body": "Plan"
+          },
+          {
+            "title": "Define",
+            "body": "Plan"
+          }
+        ],
+        "body": "Start with one useful idea.",
+        "unit": "Next",
+        "images": [
+          {
+            "slotId": "evidence-left",
+            "assetId": "fixture-proof",
+            "focalPoint": {
+              "x": 0.5,
+              "y": 0.5
+            }
+          }
+        ]
+      },
+      {
+        "templateId": "story-prompt-outcome",
+        "headline": "Make every step count",
+        "prompt": "Next",
+        "items": [
+          {
+            "title": "Define",
+            "body": "Plan"
+          },
+          {
+            "title": "Define",
+            "body": "Plan"
+          },
+          {
+            "title": "Define",
+            "body": "Plan"
+          },
+          {
+            "title": "Define",
+            "body": "Plan"
+          }
+        ],
+        "body": "Start with one useful idea.",
+        "takeaway": "Next",
+        "images": [
+          {
+            "slotId": "result-preview",
+            "assetId": "fixture-proof",
+            "focalPoint": {
+              "x": 0.5,
+              "y": 0.5
+            }
+          }
+        ]
+      },
+      {
+        "templateId": "signal-cta",
+        "headline": "Make every step count",
+        "action": "Next",
+        "images": []
+      }
+    ]
+  },
+  {
+    "id": "mixed",
+    "expected": "valid",
+    "slides": [
+      {
+        "templateId": "signal-collage-cover",
+        "headline": "用 AI 設計更清晰的 workflow",
+        "items": [
+          {
+            "title": "Define",
+            "body": "Plan"
+          },
+          {
+            "title": "Define",
+            "body": "Plan"
+          },
+          {
+            "title": "Define",
+            "body": "Plan"
+          },
+          {
+            "title": "Define",
+            "body": "Plan"
+          }
+        ],
+        "body": "Start with one useful idea.",
+        "badge": "Next",
+        "images": [
+          {
+            "slotId": "hero-right",
+            "assetId": "fixture-proof",
+            "focalPoint": {
+              "x": 0.5,
+              "y": 0.5
+            }
+          },
+          {
+            "slotId": "support-bottom-center",
+            "assetId": "fixture-proof",
+            "focalPoint": {
+              "x": 0.5,
+              "y": 0.5
+            }
+          },
+          {
+            "slotId": "support-bottom-right",
+            "assetId": "fixture-proof",
+            "focalPoint": {
+              "x": 0.5,
+              "y": 0.5
+            }
+          }
+        ]
+      },
+      {
+        "templateId": "signal-statement",
+        "headline": "用 AI 設計更清晰的 workflow",
+        "body": "Start with one useful idea.",
+        "images": []
+      },
+      {
+        "templateId": "signal-numbered-list",
+        "headline": "用 AI 設計更清晰的 workflow",
+        "items": [
+          {
+            "title": "Define",
+            "body": "Plan"
+          },
+          {
+            "title": "Define",
+            "body": "Plan"
+          },
+          {
+            "title": "Define",
+            "body": "Plan"
+          }
+        ],
+        "body": "Start with one useful idea.",
+        "images": []
+      },
+      {
+        "templateId": "signal-vertical-timeline",
+        "headline": "用 AI 設計更清晰的 workflow",
+        "items": [
+          {
+            "title": "Define",
+            "body": "Plan"
+          },
+          {
+            "title": "Define",
+            "body": "Plan"
+          },
+          {
+            "title": "Define",
+            "body": "Plan"
+          },
+          {
+            "title": "Define",
+            "body": "Plan"
+          },
+          {
+            "title": "Define",
+            "body": "Plan"
+          },
+          {
+            "title": "Define",
+            "body": "Plan"
+          }
+        ],
+        "body": "Start with one useful idea.",
+        "images": []
+      },
+      {
+        "templateId": "signal-horizontal-timeline",
+        "headline": "用 AI 設計更清晰的 workflow",
+        "items": [
+          {
+            "title": "Define",
+            "body": "Plan"
+          },
+          {
+            "title": "Define",
+            "body": "Plan"
+          },
+          {
+            "title": "Define",
+            "body": "Plan"
+          },
+          {
+            "title": "Define",
+            "body": "Plan"
+          },
+          {
+            "title": "Define",
+            "body": "Plan"
+          }
+        ],
+        "body": "Start with one useful idea.",
+        "outcome": "Next",
+        "images": [
+          {
+            "slotId": "timeline-1",
+            "assetId": "fixture-proof",
+            "focalPoint": {
+              "x": 0.5,
+              "y": 0.5
+            }
+          },
+          {
+            "slotId": "timeline-2",
+            "assetId": "fixture-proof",
+            "focalPoint": {
+              "x": 0.5,
+              "y": 0.5
+            }
+          },
+          {
+            "slotId": "timeline-3",
+            "assetId": "fixture-proof",
+            "focalPoint": {
+              "x": 0.5,
+              "y": 0.5
+            }
+          },
+          {
+            "slotId": "timeline-4",
+            "assetId": "fixture-proof",
+            "focalPoint": {
+              "x": 0.5,
+              "y": 0.5
+            }
+          },
+          {
+            "slotId": "timeline-5",
+            "assetId": "fixture-proof",
+            "focalPoint": {
+              "x": 0.5,
+              "y": 0.5
+            }
+          }
+        ]
+      },
+      {
+        "templateId": "spec-ab-comparison",
+        "headline": "用 AI 設計更清晰的 workflow",
+        "items": [
+          {
+            "title": "Define",
+            "body": "Plan"
+          },
+          {
+            "title": "Define",
+            "body": "Plan"
+          }
+        ],
+        "body": "Start with one useful idea.",
+        "recommendation": "Next",
+        "images": [
+          {
+            "slotId": "example-a",
+            "assetId": "fixture-proof",
+            "focalPoint": {
+              "x": 0.5,
+              "y": 0.5
+            }
+          },
+          {
+            "slotId": "example-b",
+            "assetId": "fixture-proof",
+            "focalPoint": {
+              "x": 0.5,
+              "y": 0.5
+            }
+          }
+        ]
+      },
+      {
+        "templateId": "signal-metric-evidence",
+        "headline": "用 AI 設計更清晰的 workflow",
+        "metric": "42%",
+        "items": [
+          {
+            "title": "Define",
+            "body": "Plan"
+          },
+          {
+            "title": "Define",
+            "body": "Plan"
+          },
+          {
+            "title": "Define",
+            "body": "Plan"
+          },
+          {
+            "title": "Define",
+            "body": "Plan"
+          }
+        ],
+        "body": "Start with one useful idea.",
+        "unit": "Next",
+        "images": [
+          {
+            "slotId": "evidence-left",
+            "assetId": "fixture-proof",
+            "focalPoint": {
+              "x": 0.5,
+              "y": 0.5
+            }
+          }
+        ]
+      },
+      {
+        "templateId": "story-prompt-outcome",
+        "headline": "用 AI 設計更清晰的 workflow",
+        "prompt": "Next",
+        "items": [
+          {
+            "title": "Define",
+            "body": "Plan"
+          },
+          {
+            "title": "Define",
+            "body": "Plan"
+          },
+          {
+            "title": "Define",
+            "body": "Plan"
+          },
+          {
+            "title": "Define",
+            "body": "Plan"
+          }
+        ],
+        "body": "Start with one useful idea.",
+        "takeaway": "Next",
+        "images": [
+          {
+            "slotId": "result-preview",
+            "assetId": "fixture-proof",
+            "focalPoint": {
+              "x": 0.5,
+              "y": 0.5
+            }
+          }
+        ]
+      },
+      {
+        "templateId": "signal-cta",
+        "headline": "用 AI 設計更清晰的 workflow",
+        "action": "Next",
+        "images": []
+      }
+    ]
+  },
+  {
+    "id": "maximum-content",
+    "expected": "valid",
+    "slides": [
+      {
+        "templateId": "signal-collage-cover",
+        "headline": "清清清清清清清清清清清清清清清清清清清清清清清清清清清清清清清清清清清清清清清清清清",
+        "items": [
+          {
+            "title": "清清清清清清清清清清清清清清清清清清",
+            "body": "明明明明明明明明明明明明明明明明明明明明明明明明明明明明明明"
+          },
+          {
+            "title": "清清清清清清清清清清清清清清清清清清",
+            "body": "明明明明明明明明明明明明明明明明明明明明明明明明明明明明明明"
+          },
+          {
+            "title": "清清清清清清清清清清清清清清清清清清",
+            "body": "明明明明明明明明明明明明明明明明明明明明明明明明明明明明明明"
+          },
+          {
+            "title": "清清清清清清清清清清清清清清清清清清",
+            "body": "明明明明明明明明明明明明明明明明明明明明明明明明明明明明明明"
+          }
+        ],
+        "body": "字字字字字字字字字字字字字字字字字字字字字字字字字字字字字字字字字字",
+        "badge": "字字字",
+        "images": [
+          {
+            "slotId": "hero-right",
+            "assetId": "fixture-proof",
+            "focalPoint": {
+              "x": 0.5,
+              "y": 0.5
+            }
+          },
+          {
+            "slotId": "support-bottom-center",
+            "assetId": "fixture-proof",
+            "focalPoint": {
+              "x": 0.5,
+              "y": 0.5
+            }
+          },
+          {
+            "slotId": "support-bottom-right",
+            "assetId": "fixture-proof",
+            "focalPoint": {
+              "x": 0.5,
+              "y": 0.5
+            }
+          }
+        ]
+      },
+      {
+        "templateId": "signal-statement",
+        "headline": "清清清清清清清清清清清清清清清清清清清清清清清清清清清清清清清清清清清清清清清清清清清清清清",
+        "body": "字字字字字字字字字字字字字字字字字字字字字字字字字字字字字字字字字字字字字字",
+        "images": []
+      },
+      {
+        "templateId": "signal-numbered-list",
+        "headline": "清清清清清清清清清清清清清清清清清清清清清清清清清清清清清清清清清清清清清清清清清清",
+        "items": [
+          {
+            "title": "清清清清清清清清清",
+            "body": "明明明明明明明明明明明明明明明"
+          },
+          {
+            "title": "清清清清清清清清清",
+            "body": "明明明明明明明明明明明明明明明"
+          },
+          {
+            "title": "清清清清清清清清清",
+            "body": "明明明明明明明明明明明明明明明"
+          }
+        ],
+        "body": "字字字字字字字字字字字字字字字字字字字字字字字字字字字字字字字字字字",
+        "images": []
+      },
+      {
+        "templateId": "signal-vertical-timeline",
+        "headline": "清清清清清清清清清清清清清清清清清清清清清清清清清清清清清清清清清清清清清清清清清清",
+        "items": [
+          {
+            "title": "清清清清清清清清清清清清清清清清清清清清清",
+            "body": "明明明明明明明明明明明明明明明明明明明明明"
+          },
+          {
+            "title": "清清清清清清清清清清清清清清清清清清清清清",
+            "body": "明明明明明明明明明明明明明明明明明明明明明"
+          },
+          {
+            "title": "清清清清清清清清清清清清清清清清清清清清清",
+            "body": "明明明明明明明明明明明明明明明明明明明明明"
+          },
+          {
+            "title": "清清清清清清清清清清清清清清清清清清清清清",
+            "body": "明明明明明明明明明明明明明明明明明明明明明"
+          },
+          {
+            "title": "清清清清清清清清清清清清清清清清清清清清清",
+            "body": "明明明明明明明明明明明明明明明明明明明明明"
+          },
+          {
+            "title": "清清清清清清清清清清清清清清清清清清清清清",
+            "body": "明明明明明明明明明明明明明明明明明明明明明"
+          }
+        ],
+        "body": "字字字字字字字字字字字字字字字字字字字字字字字字字字字字字字字字字字",
+        "images": []
+      },
+      {
+        "templateId": "signal-horizontal-timeline",
+        "headline": "清清清清清清清清清清清清清清清清清清清清清清清清清清清清清清清清清清清清清清清清清清",
+        "items": [
+          {
+            "title": "清清清清清清清",
+            "body": "明明明明明明明明明明明明明"
+          },
+          {
+            "title": "清清清清清清清",
+            "body": "明明明明明明明明明明明明明"
+          },
+          {
+            "title": "清清清清清清清",
+            "body": "明明明明明明明明明明明明明"
+          },
+          {
+            "title": "清清清清清清清",
+            "body": "明明明明明明明明明明明明明"
+          },
+          {
+            "title": "清清清清清清清",
+            "body": "明明明明明明明明明明明明明"
+          }
+        ],
+        "body": "字字字字字字字字字字字字字字字字字字字字字字字字字字字字字字字字字字",
+        "outcome": "字字字",
+        "images": [
+          {
+            "slotId": "timeline-1",
+            "assetId": "fixture-proof",
+            "focalPoint": {
+              "x": 0.5,
+              "y": 0.5
+            }
+          },
+          {
+            "slotId": "timeline-2",
+            "assetId": "fixture-proof",
+            "focalPoint": {
+              "x": 0.5,
+              "y": 0.5
+            }
+          },
+          {
+            "slotId": "timeline-3",
+            "assetId": "fixture-proof",
+            "focalPoint": {
+              "x": 0.5,
+              "y": 0.5
+            }
+          },
+          {
+            "slotId": "timeline-4",
+            "assetId": "fixture-proof",
+            "focalPoint": {
+              "x": 0.5,
+              "y": 0.5
+            }
+          },
+          {
+            "slotId": "timeline-5",
+            "assetId": "fixture-proof",
+            "focalPoint": {
+              "x": 0.5,
+              "y": 0.5
+            }
+          }
+        ]
+      },
+      {
+        "templateId": "spec-ab-comparison",
+        "headline": "清清清清清清清清清清清清清清清清清清清清清清清清清清清清清清清清清清清清清清清清清清",
+        "items": [
+          {
+            "title": "清清清清清清清清清清清清清清清清清清",
+            "body": "明明明明明明明明明明明明明明明明明明明明明明明明明明明明明明明明明明明明明明明明明明明明明明明明明明明明明明明明明明明明"
+          },
+          {
+            "title": "清清清清清清清清清清清清清清清清清清",
+            "body": "明明明明明明明明明明明明明明明明明明明明明明明明明明明明明明明明明明明明明明明明明明明明明明明明明明明明明明明明明明明明"
+          }
+        ],
+        "body": "字字字字字字字字字字字字字字字字字字字字字字字字字字字字字字字字字字字字字字",
+        "recommendation": "字字字",
+        "images": [
+          {
+            "slotId": "example-a",
+            "assetId": "fixture-proof",
+            "focalPoint": {
+              "x": 0.5,
+              "y": 0.5
+            }
+          },
+          {
+            "slotId": "example-b",
+            "assetId": "fixture-proof",
+            "focalPoint": {
+              "x": 0.5,
+              "y": 0.5
+            }
+          }
+        ]
+      },
+      {
+        "templateId": "signal-metric-evidence",
+        "headline": "清清清清清清清清清清清清清清清清清清清清清清清清清清清清清清清清清清清清清清清清清清",
+        "metric": "42%",
+        "items": [
+          {
+            "title": "清清清清清清清清清清清清清清清清清清",
+            "body": "明明明明明明明明明明明明明明明明明明明明明明明明明明明明明明"
+          },
+          {
+            "title": "清清清清清清清清清清清清清清清清清清",
+            "body": "明明明明明明明明明明明明明明明明明明明明明明明明明明明明明明"
+          },
+          {
+            "title": "清清清清清清清清清清清清清清清清清清",
+            "body": "明明明明明明明明明明明明明明明明明明明明明明明明明明明明明明"
+          },
+          {
+            "title": "清清清清清清清清清清清清清清清清清清",
+            "body": "明明明明明明明明明明明明明明明明明明明明明明明明明明明明明明"
+          }
+        ],
+        "body": "字字字字字字字字字字字字字字字字字字字字字字字字字字字字字字字字字字字字字字",
+        "unit": "字字字",
+        "images": [
+          {
+            "slotId": "evidence-left",
+            "assetId": "fixture-proof",
+            "focalPoint": {
+              "x": 0.5,
+              "y": 0.5
+            }
+          }
+        ]
+      },
+      {
+        "templateId": "story-prompt-outcome",
+        "headline": "清清清清清清清清清清清清清清清清清清清清清清清清清清清清清清清清清清清清清清清清清清",
+        "prompt": "字字字",
+        "items": [
+          {
+            "title": "清清清清清清清清清清清清",
+            "body": "明明明明明明明明明明明明明明明明明明明明明明明明明明"
+          },
+          {
+            "title": "清清清清清清清清清清清清",
+            "body": "明明明明明明明明明明明明明明明明明明明明明明明明明明"
+          },
+          {
+            "title": "清清清清清清清清清清清清",
+            "body": "明明明明明明明明明明明明明明明明明明明明明明明明明明"
+          },
+          {
+            "title": "清清清清清清清清清清清清",
+            "body": "明明明明明明明明明明明明明明明明明明明明明明明明明明"
+          }
+        ],
+        "body": "字字字字字字字字字字字字字字字字字字字字字字字字字字字字字字字字字字字字字字",
+        "takeaway": "字字字",
+        "images": [
+          {
+            "slotId": "result-preview",
+            "assetId": "fixture-proof",
+            "focalPoint": {
+              "x": 0.5,
+              "y": 0.5
+            }
+          }
+        ]
+      },
+      {
+        "templateId": "signal-cta",
+        "headline": "清清清清清清清清清清清清清清清清清清清清清清清清清清清清清清清清",
+        "action": "字字字",
+        "images": []
+      }
+    ]
+  },
+  {
+    "id": "missing-images",
+    "expected": "missing-required-images",
+    "slides": [
+      {
+        "templateId": "signal-collage-cover",
+        "headline": "Make every step count",
+        "items": [
+          {
+            "title": "Define",
+            "body": "Plan"
+          },
+          {
+            "title": "Define",
+            "body": "Plan"
+          },
+          {
+            "title": "Define",
+            "body": "Plan"
+          },
+          {
+            "title": "Define",
+            "body": "Plan"
+          }
+        ],
+        "body": "Start with one useful idea.",
+        "badge": "Next",
+        "images": []
+      },
+      {
+        "templateId": "signal-statement",
+        "headline": "Make every step count",
+        "body": "Start with one useful idea.",
+        "images": []
+      },
+      {
+        "templateId": "signal-numbered-list",
+        "headline": "Make every step count",
+        "items": [
+          {
+            "title": "Define",
+            "body": "Plan"
+          },
+          {
+            "title": "Define",
+            "body": "Plan"
+          },
+          {
+            "title": "Define",
+            "body": "Plan"
+          }
+        ],
+        "body": "Start with one useful idea.",
+        "images": []
+      },
+      {
+        "templateId": "signal-vertical-timeline",
+        "headline": "Make every step count",
+        "items": [
+          {
+            "title": "Define",
+            "body": "Plan"
+          },
+          {
+            "title": "Define",
+            "body": "Plan"
+          },
+          {
+            "title": "Define",
+            "body": "Plan"
+          },
+          {
+            "title": "Define",
+            "body": "Plan"
+          },
+          {
+            "title": "Define",
+            "body": "Plan"
+          },
+          {
+            "title": "Define",
+            "body": "Plan"
+          }
+        ],
+        "body": "Start with one useful idea.",
+        "images": []
+      },
+      {
+        "templateId": "signal-horizontal-timeline",
+        "headline": "Make every step count",
+        "items": [
+          {
+            "title": "Define",
+            "body": "Plan"
+          },
+          {
+            "title": "Define",
+            "body": "Plan"
+          },
+          {
+            "title": "Define",
+            "body": "Plan"
+          },
+          {
+            "title": "Define",
+            "body": "Plan"
+          },
+          {
+            "title": "Define",
+            "body": "Plan"
+          }
+        ],
+        "body": "Start with one useful idea.",
+        "outcome": "Next",
+        "images": []
+      },
+      {
+        "templateId": "spec-ab-comparison",
+        "headline": "Make every step count",
+        "items": [
+          {
+            "title": "Define",
+            "body": "Plan"
+          },
+          {
+            "title": "Define",
+            "body": "Plan"
+          }
+        ],
+        "body": "Start with one useful idea.",
+        "recommendation": "Next",
+        "images": []
+      },
+      {
+        "templateId": "signal-metric-evidence",
+        "headline": "Make every step count",
+        "metric": "42%",
+        "items": [
+          {
+            "title": "Define",
+            "body": "Plan"
+          },
+          {
+            "title": "Define",
+            "body": "Plan"
+          },
+          {
+            "title": "Define",
+            "body": "Plan"
+          },
+          {
+            "title": "Define",
+            "body": "Plan"
+          }
+        ],
+        "body": "Start with one useful idea.",
+        "unit": "Next",
+        "images": []
+      },
+      {
+        "templateId": "story-prompt-outcome",
+        "headline": "Make every step count",
+        "prompt": "Next",
+        "items": [
+          {
+            "title": "Define",
+            "body": "Plan"
+          },
+          {
+            "title": "Define",
+            "body": "Plan"
+          },
+          {
+            "title": "Define",
+            "body": "Plan"
+          },
+          {
+            "title": "Define",
+            "body": "Plan"
+          }
+        ],
+        "body": "Start with one useful idea.",
+        "takeaway": "Next",
+        "images": []
+      },
+      {
+        "templateId": "signal-cta",
+        "headline": "Make every step count",
+        "action": "Next",
+        "images": []
+      }
+    ]
+  },
+  {
+    "id": "long-headings",
+    "expected": "over-limit",
+    "slides": [
+      {
+        "templateId": "signal-collage-cover",
+        "headline": "WWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWW",
+        "items": [
+          {
+            "title": "Define",
+            "body": "Plan"
+          },
+          {
+            "title": "Define",
+            "body": "Plan"
+          },
+          {
+            "title": "Define",
+            "body": "Plan"
+          },
+          {
+            "title": "Define",
+            "body": "Plan"
+          }
+        ],
+        "body": "Start with one useful idea.",
+        "badge": "Next",
+        "images": [
+          {
+            "slotId": "hero-right",
+            "assetId": "fixture-proof",
+            "focalPoint": {
+              "x": 0.5,
+              "y": 0.5
+            }
+          },
+          {
+            "slotId": "support-bottom-center",
+            "assetId": "fixture-proof",
+            "focalPoint": {
+              "x": 0.5,
+              "y": 0.5
+            }
+          },
+          {
+            "slotId": "support-bottom-right",
+            "assetId": "fixture-proof",
+            "focalPoint": {
+              "x": 0.5,
+              "y": 0.5
+            }
+          }
+        ]
+      },
+      {
+        "templateId": "signal-statement",
+        "headline": "WWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWW",
+        "body": "Start with one useful idea.",
+        "images": []
+      },
+      {
+        "templateId": "signal-numbered-list",
+        "headline": "WWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWW",
+        "items": [
+          {
+            "title": "Define",
+            "body": "Plan"
+          },
+          {
+            "title": "Define",
+            "body": "Plan"
+          },
+          {
+            "title": "Define",
+            "body": "Plan"
+          }
+        ],
+        "body": "Start with one useful idea.",
+        "images": []
+      },
+      {
+        "templateId": "signal-vertical-timeline",
+        "headline": "WWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWW",
+        "items": [
+          {
+            "title": "Define",
+            "body": "Plan"
+          },
+          {
+            "title": "Define",
+            "body": "Plan"
+          },
+          {
+            "title": "Define",
+            "body": "Plan"
+          },
+          {
+            "title": "Define",
+            "body": "Plan"
+          },
+          {
+            "title": "Define",
+            "body": "Plan"
+          },
+          {
+            "title": "Define",
+            "body": "Plan"
+          }
+        ],
+        "body": "Start with one useful idea.",
+        "images": []
+      },
+      {
+        "templateId": "signal-horizontal-timeline",
+        "headline": "WWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWW",
+        "items": [
+          {
+            "title": "Define",
+            "body": "Plan"
+          },
+          {
+            "title": "Define",
+            "body": "Plan"
+          },
+          {
+            "title": "Define",
+            "body": "Plan"
+          },
+          {
+            "title": "Define",
+            "body": "Plan"
+          },
+          {
+            "title": "Define",
+            "body": "Plan"
+          }
+        ],
+        "body": "Start with one useful idea.",
+        "outcome": "Next",
+        "images": [
+          {
+            "slotId": "timeline-1",
+            "assetId": "fixture-proof",
+            "focalPoint": {
+              "x": 0.5,
+              "y": 0.5
+            }
+          },
+          {
+            "slotId": "timeline-2",
+            "assetId": "fixture-proof",
+            "focalPoint": {
+              "x": 0.5,
+              "y": 0.5
+            }
+          },
+          {
+            "slotId": "timeline-3",
+            "assetId": "fixture-proof",
+            "focalPoint": {
+              "x": 0.5,
+              "y": 0.5
+            }
+          },
+          {
+            "slotId": "timeline-4",
+            "assetId": "fixture-proof",
+            "focalPoint": {
+              "x": 0.5,
+              "y": 0.5
+            }
+          },
+          {
+            "slotId": "timeline-5",
+            "assetId": "fixture-proof",
+            "focalPoint": {
+              "x": 0.5,
+              "y": 0.5
+            }
+          }
+        ]
+      },
+      {
+        "templateId": "spec-ab-comparison",
+        "headline": "WWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWW",
+        "items": [
+          {
+            "title": "Define",
+            "body": "Plan"
+          },
+          {
+            "title": "Define",
+            "body": "Plan"
+          }
+        ],
+        "body": "Start with one useful idea.",
+        "recommendation": "Next",
+        "images": [
+          {
+            "slotId": "example-a",
+            "assetId": "fixture-proof",
+            "focalPoint": {
+              "x": 0.5,
+              "y": 0.5
+            }
+          },
+          {
+            "slotId": "example-b",
+            "assetId": "fixture-proof",
+            "focalPoint": {
+              "x": 0.5,
+              "y": 0.5
+            }
+          }
+        ]
+      },
+      {
+        "templateId": "signal-metric-evidence",
+        "headline": "WWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWW",
+        "metric": "42%",
+        "items": [
+          {
+            "title": "Define",
+            "body": "Plan"
+          },
+          {
+            "title": "Define",
+            "body": "Plan"
+          },
+          {
+            "title": "Define",
+            "body": "Plan"
+          },
+          {
+            "title": "Define",
+            "body": "Plan"
+          }
+        ],
+        "body": "Start with one useful idea.",
+        "unit": "Next",
+        "images": [
+          {
+            "slotId": "evidence-left",
+            "assetId": "fixture-proof",
+            "focalPoint": {
+              "x": 0.5,
+              "y": 0.5
+            }
+          }
+        ]
+      },
+      {
+        "templateId": "story-prompt-outcome",
+        "headline": "WWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWW",
+        "prompt": "Next",
+        "items": [
+          {
+            "title": "Define",
+            "body": "Plan"
+          },
+          {
+            "title": "Define",
+            "body": "Plan"
+          },
+          {
+            "title": "Define",
+            "body": "Plan"
+          },
+          {
+            "title": "Define",
+            "body": "Plan"
+          }
+        ],
+        "body": "Start with one useful idea.",
+        "takeaway": "Next",
+        "images": [
+          {
+            "slotId": "result-preview",
+            "assetId": "fixture-proof",
+            "focalPoint": {
+              "x": 0.5,
+              "y": 0.5
+            }
+          }
+        ]
+      },
+      {
+        "templateId": "signal-cta",
+        "headline": "WWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWW",
+        "action": "Next",
+        "images": []
+      }
+    ]
+  },
+  {
+    "id": "maximum-slide-count",
+    "expected": "valid",
+    "slides": [
+      {
+        "templateId": "signal-collage-cover",
+        "headline": "Make every step count",
+        "items": [
+          {
+            "title": "Define",
+            "body": "Plan"
+          },
+          {
+            "title": "Define",
+            "body": "Plan"
+          },
+          {
+            "title": "Define",
+            "body": "Plan"
+          },
+          {
+            "title": "Define",
+            "body": "Plan"
+          }
+        ],
+        "body": "Start with one useful idea.",
+        "badge": "Next",
+        "images": [
+          {
+            "slotId": "hero-right",
+            "assetId": "fixture-proof",
+            "focalPoint": {
+              "x": 0.5,
+              "y": 0.5
+            }
+          },
+          {
+            "slotId": "support-bottom-center",
+            "assetId": "fixture-proof",
+            "focalPoint": {
+              "x": 0.5,
+              "y": 0.5
+            }
+          },
+          {
+            "slotId": "support-bottom-right",
+            "assetId": "fixture-proof",
+            "focalPoint": {
+              "x": 0.5,
+              "y": 0.5
+            }
+          }
+        ]
+      },
+      {
+        "templateId": "signal-statement",
+        "headline": "用 AI 設計更清晰的 workflow",
+        "body": "Start with one useful idea.",
+        "images": []
+      },
+      {
+        "templateId": "signal-statement",
+        "headline": "用 AI 設計更清晰的 workflow",
+        "body": "Start with one useful idea.",
+        "images": []
+      },
+      {
+        "templateId": "signal-statement",
+        "headline": "用 AI 設計更清晰的 workflow",
+        "body": "Start with one useful idea.",
+        "images": []
+      },
+      {
+        "templateId": "signal-statement",
+        "headline": "用 AI 設計更清晰的 workflow",
+        "body": "Start with one useful idea.",
+        "images": []
+      },
+      {
+        "templateId": "signal-statement",
+        "headline": "用 AI 設計更清晰的 workflow",
+        "body": "Start with one useful idea.",
+        "images": []
+      },
+      {
+        "templateId": "signal-statement",
+        "headline": "用 AI 設計更清晰的 workflow",
+        "body": "Start with one useful idea.",
+        "images": []
+      },
+      {
+        "templateId": "signal-statement",
+        "headline": "用 AI 設計更清晰的 workflow",
+        "body": "Start with one useful idea.",
+        "images": []
+      },
+      {
+        "templateId": "signal-statement",
+        "headline": "用 AI 設計更清晰的 workflow",
+        "body": "Start with one useful idea.",
+        "images": []
+      },
+      {
+        "templateId": "signal-statement",
+        "headline": "用 AI 設計更清晰的 workflow",
+        "body": "Start with one useful idea.",
+        "images": []
+      },
+      {
+        "templateId": "signal-statement",
+        "headline": "用 AI 設計更清晰的 workflow",
+        "body": "Start with one useful idea.",
+        "images": []
+      },
+      {
+        "templateId": "signal-cta",
+        "headline": "Make every step count",
+        "action": "Next",
+        "images": []
+      }
+    ]
+  }
+]

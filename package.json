@@ -7,7 +7,8 @@
     "build": "next build && node scripts/migrate.mjs",
     "start": "next start",
     "lint": "eslint",
-    "test": "vitest run"
+    "test": "vitest run",
+    "carousel:references": "node scripts/carousel-references.mjs"
   },
   "dependencies": {
     "@ai-sdk/openai": "^4.0.118",
@@ -35,6 +36,7 @@
     "@types/react-dom": "^19",
     "eslint": "^9",
     "eslint-config-next": "16.4.6",
+    "sharp": "^0.35.5",
     "tailwindcss": "4.3.3",
     "typescript": "^5",
     "vitest": "^3.2.4"

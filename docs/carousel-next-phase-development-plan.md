@@ -1,7 +1,7 @@
 ---
 type: project-plan
 date: 2026-11-20
-status: proposed
+status: active
 tags: [repostudio, carousel-design, development-plan]
 ---
 
@@ -127,6 +127,12 @@ interface GeneratedSlideDraft {
 The deterministic pattern-selection module validates the candidates against actual fields, images, content limits, platform, and adjacent-slide rhythm. Invalid LLM choices produce warnings and a compatible fallback.
 
 ## Delivery phases
+
+### Implementation status — 2026-11-20
+
+Phase 4.0 is implemented on `feature/carousel-phase-4-0`: load-time manifest validation, contracts for all 15 documented patterns, nine first-release selections, seven fixture decks, and nine 1080 × 1350 PNG/SVG design references. See [[Projects/RepoStudio/docs/carousel-phase-4-0|Phase 4.0 field matrix and verification]]. New patterns remain reference-only; their production renderers are scheduled for Phase 4.3. References establish design targets rather than preview/export parity.
+
+Validation: 36 focused tests pass; TypeScript and changed-file ESLint pass. The full suite has 53 passes and the existing Windows read-only-directory store test failure (`chmod(0555)` does not prevent the write). Phase 4.1 typography is the next implementation slice.
 
 ### Phase 4.0 — Development preparation and golden fixtures
 

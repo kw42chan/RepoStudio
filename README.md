@@ -16,6 +16,8 @@ RepoStudio turns copied social media posts into fresh repurposing angles and pro
 
 ## Running Locally
 
+Carousel enhancement progress: [[Projects/RepoStudio/docs/carousel-next-phase-development-plan|Phase 4 development plan]] and [[Projects/RepoStudio/docs/carousel-phase-4-0|Phase 4.0 contracts, fixtures, and reference images]]. Regenerate the nine design references with `npm run carousel:references`.
+
 ```bash
 npm install
 cp .env.example .env.local # optional: add OPENROUTER_API_KEY (or OPENAI_API_KEY) and Buffer OAuth credentials

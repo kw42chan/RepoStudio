@@ -1,4 +1,5 @@
 import manifest from "./manifest.v1.json";
+import { parseCarouselTemplateManifest, type CarouselPatternContract } from "./schema";
 import { hydrateSlideStructuredSlots } from "../carousel-slide-slots";
 import type {
   CarouselContent,
@@ -53,6 +54,7 @@ export interface CarouselTemplateStructure {
 }
 
 export interface CarouselTemplateDefinition {
+  pattern?: CarouselPatternContract;
   id: string;
   version: number;
   category: CarouselTemplateCategoryId;
@@ -159,8 +161,8 @@ export interface CarouselTemplateManifest {
   templates: CarouselTemplateDefinition[];
 }
 
-export const carouselTemplateManifest =
-  manifest as CarouselTemplateManifest;
+export const carouselTemplateManifest: CarouselTemplateManifest =
+  parseCarouselTemplateManifest(manifest);
 
 const layoutPacksById = new Map(
   (carouselTemplateManifest.layoutPacks ?? []).map((pack) => [pack.id, pack])

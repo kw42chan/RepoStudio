@@ -1,0 +1,279 @@
+[
+  {
+    "templateId": "signal-statement",
+    "width": 1080,
+    "height": 1350,
+    "kind": "design-reference",
+    "typography": {
+      "heading": "Arial, Microsoft JhengHei, sans-serif",
+      "headerSize": 48,
+      "displaySizes": [
+        72,
+        76,
+        80
+      ],
+      "headingWeight": 700,
+      "body": "Arial, Microsoft JhengHei, sans-serif",
+      "bodySize": 36,
+      "bodyWeight": 500,
+      "metadataSizes": [
+        24,
+        26,
+        30,
+        32
+      ],
+      "note": "Exact sizes are recorded in each SVG; metric uses 150 px / 800."
+    },
+    "imageBehavior": [
+      "No image controls or frames"
+    ],
+    "productionRenderer": "pending Phase 4.3"
+  },
+  {
+    "templateId": "signal-numbered-list",
+    "width": 1080,
+    "height": 1350,
+    "kind": "design-reference",
+    "typography": {
+      "heading": "Arial, Microsoft JhengHei, sans-serif",
+      "headerSize": 48,
+      "displaySizes": [
+        72,
+        76,
+        80
+      ],
+      "headingWeight": 700,
+      "body": "Arial, Microsoft JhengHei, sans-serif",
+      "bodySize": 36,
+      "bodyWeight": 500,
+      "metadataSizes": [
+        24,
+        26,
+        30,
+        32
+      ],
+      "note": "Exact sizes are recorded in each SVG; metric uses 150 px / 800."
+    },
+    "imageBehavior": [
+      "No image controls or frames"
+    ],
+    "productionRenderer": "pending Phase 4.3"
+  },
+  {
+    "templateId": "signal-vertical-timeline",
+    "width": 1080,
+    "height": 1350,
+    "kind": "design-reference",
+    "typography": {
+      "heading": "Arial, Microsoft JhengHei, sans-serif",
+      "headerSize": 48,
+      "displaySizes": [
+        72,
+        76,
+        80
+      ],
+      "headingWeight": 700,
+      "body": "Arial, Microsoft JhengHei, sans-serif",
+      "bodySize": 36,
+      "bodyWeight": 500,
+      "metadataSizes": [
+        24,
+        26,
+        30,
+        32
+      ],
+      "note": "Exact sizes are recorded in each SVG; metric uses 150 px / 800."
+    },
+    "imageBehavior": [
+      "No image controls or frames"
+    ],
+    "productionRenderer": "pending Phase 4.3"
+  },
+  {
+    "templateId": "signal-horizontal-timeline",
+    "width": 1080,
+    "height": 1350,
+    "kind": "design-reference",
+    "typography": {
+      "heading": "Arial, Microsoft JhengHei, sans-serif",
+      "headerSize": 48,
+      "displaySizes": [
+        72,
+        76,
+        80
+      ],
+      "headingWeight": 700,
+      "body": "Arial, Microsoft JhengHei, sans-serif",
+      "bodySize": 36,
+      "bodyWeight": 500,
+      "metadataSizes": [
+        24,
+        26,
+        30,
+        32
+      ],
+      "note": "Exact sizes are recorded in each SVG; metric uses 150 px / 800."
+    },
+    "imageBehavior": [
+      "timeline-1: cover; optional (absent leaves no frame); focal point 0.5/0.5",
+      "timeline-2: cover; optional (absent leaves no frame); focal point 0.5/0.5",
+      "timeline-3: cover; optional (absent leaves no frame); focal point 0.5/0.5",
+      "timeline-4: cover; optional (absent leaves no frame); focal point 0.5/0.5",
+      "timeline-5: cover; optional (absent leaves no frame); focal point 0.5/0.5"
+    ],
+    "productionRenderer": "pending Phase 4.3"
+  },
+  {
+    "templateId": "spec-ab-comparison",
+    "width": 1080,
+    "height": 1350,
+    "kind": "design-reference",
+    "typography": {
+      "heading": "Georgia, Microsoft JhengHei, serif",
+      "headerSize": 48,
+      "displaySizes": [
+        72,
+        76,
+        80
+      ],
+      "headingWeight": 700,
+      "body": "Arial, Microsoft JhengHei, sans-serif",
+      "bodySize": 36,
+      "bodyWeight": 500,
+      "metadataSizes": [
+        24,
+        26,
+        30,
+        32
+      ],
+      "note": "Exact sizes are recorded in each SVG; metric uses 150 px / 800."
+    },
+    "imageBehavior": [
+      "example-a: contain; optional (absent leaves no frame); focal point 0.5/0.5",
+      "example-b: contain; optional (absent leaves no frame); focal point 0.5/0.5"
+    ],
+    "productionRenderer": "pending Phase 4.3"
+  },
+  {
+    "templateId": "signal-metric-evidence",
+    "width": 1080,
+    "height": 1350,
+    "kind": "design-reference",
+    "typography": {
+      "heading": "Arial, Microsoft JhengHei, sans-serif",
+      "headerSize": 48,
+      "displaySizes": [
+        72,
+        76,
+        80
+      ],
+      "headingWeight": 700,
+      "body": "Arial, Microsoft JhengHei, sans-serif",
+      "bodySize": 36,
+      "bodyWeight": 500,
+      "metadataSizes": [
+        24,
+        26,
+        30,
+        32
+      ],
+      "note": "Exact sizes are recorded in each SVG; metric uses 150 px / 800."
+    },
+    "imageBehavior": [
+      "evidence-left: contain; required (missing blocks production); focal point 0.5/0.5"
+    ],
+    "productionRenderer": "pending Phase 4.3"
+  },
+  {
+    "templateId": "signal-collage-cover",
+    "width": 1080,
+    "height": 1350,
+    "kind": "design-reference",
+    "typography": {
+      "heading": "Arial, Microsoft JhengHei, sans-serif",
+      "headerSize": 48,
+      "displaySizes": [
+        72,
+        76,
+        80
+      ],
+      "headingWeight": 700,
+      "body": "Arial, Microsoft JhengHei, sans-serif",
+      "bodySize": 36,
+      "bodyWeight": 500,
+      "metadataSizes": [
+        24,
+        26,
+        30,
+        32
+      ],
+      "note": "Exact sizes are recorded in each SVG; metric uses 150 px / 800."
+    },
+    "imageBehavior": [
+      "hero-right: contain; required (missing blocks production); focal point 0.5/0.5",
+      "support-bottom-center: contain; optional (absent leaves no frame); focal point 0.5/0.5",
+      "support-bottom-right: contain; optional (absent leaves no frame); focal point 0.5/0.5"
+    ],
+    "productionRenderer": "pending Phase 4.3"
+  },
+  {
+    "templateId": "story-prompt-outcome",
+    "width": 1080,
+    "height": 1350,
+    "kind": "design-reference",
+    "typography": {
+      "heading": "Georgia, Microsoft JhengHei, serif",
+      "headerSize": 48,
+      "displaySizes": [
+        72,
+        76,
+        80
+      ],
+      "headingWeight": 700,
+      "body": "Arial, Microsoft JhengHei, sans-serif",
+      "bodySize": 36,
+      "bodyWeight": 500,
+      "metadataSizes": [
+        24,
+        26,
+        30,
+        32
+      ],
+      "note": "Exact sizes are recorded in each SVG; metric uses 150 px / 800."
+    },
+    "imageBehavior": [
+      "result-preview: contain; required (missing blocks production); focal point 0.5/0.5"
+    ],
+    "productionRenderer": "pending Phase 4.3"
+  },
+  {
+    "templateId": "signal-cta",
+    "width": 1080,
+    "height": 1350,
+    "kind": "design-reference",
+    "typography": {
+      "heading": "Arial, Microsoft JhengHei, sans-serif",
+      "headerSize": 48,
+      "displaySizes": [
+        72,
+        76,
+        80
+      ],
+      "headingWeight": 700,
+      "body": "Arial, Microsoft JhengHei, sans-serif",
+      "bodySize": 36,
+      "bodyWeight": 500,
+      "metadataSizes": [
+        24,
+        26,
+        30,
+        32
+      ],
+      "note": "Exact sizes are recorded in each SVG; metric uses 150 px / 800."
+    },
+    "imageBehavior": [
+      "No image controls or frames"
+    ],
+    "productionRenderer": "pending Phase 4.3"
+  }
+]

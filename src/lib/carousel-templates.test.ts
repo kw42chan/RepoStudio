@@ -53,7 +53,7 @@ describe("carousel template manifest", () => {
   });
 
   it("resolves rendered edward templates to themselves", () => {
-    expect(listReferenceOnlyTemplates()).toHaveLength(0);
+    expect(listReferenceOnlyTemplates().every(t => t.pattern !== undefined)).toBe(true);
     expect(resolveProductionTemplateId("ref-edwardai-hook-hero-showcase")).toBe(
       "ref-edwardai-hook-hero-showcase"
     );

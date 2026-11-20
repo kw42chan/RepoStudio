@@ -1,4 +1,7 @@
 "use client";
+import { resolveBrandTheme, type ResolvedBrandTheme } from "@/lib/carousel-brand-theme";
+import type { BrandDesignSettingsV1 } from "@/lib/carousel-fonts";
+
 
 import React from "react";
 import { ChevronLeft, ChevronRight } from "lucide-react";
@@ -21,6 +24,7 @@ import { AspectRatio, CarouselSlide, VisualTemplate } from "@/lib/types";
 import { getExportDimensions } from "@/lib/export-carousel";
 
 interface SlideCanvasProps {
+  design?: BrandDesignSettingsV1;
   slide: CarouselSlide;
   totalSlides: number;
   template: VisualTemplate;
@@ -137,6 +141,7 @@ function SlideProgressChrome({
 }
 
 interface GridSlideCanvasProps {
+  theme: ResolvedBrandTheme;
   slide: CarouselSlide;
   totalSlides: number;
   template: VisualTemplate;
@@ -153,6 +158,7 @@ interface GridSlideCanvasProps {
 }
 
 function GridSlideCanvas({
+  theme,
   slide,
   totalSlides,
   template,
@@ -201,7 +207,7 @@ function GridSlideCanvas({
           overflow: "hidden",
           background: palette.darkBg,
           color: ink,
-          fontFamily: bodyFont,
+          fontFamily: bodyFont, fontWeight: theme.body.weight,
         }}
       >
         <div
@@ -234,16 +240,16 @@ function GridSlideCanvas({
                 background: palette.brandPrimary,
                 color: "#ffffff",
                 fontFamily: headingFont,
-                fontWeight: 600,
-                fontSize: px(14),
+                fontWeight: theme.heading.weight,
+                fontSize: Math.round(px(14) * theme.heading.sizeScale),
               }}
             >
               {mark.initial}
             </span>
             <span
               style={{
-                fontSize: px(12),
-                fontWeight: 600,
+                fontSize: Math.round(px(12) * theme.body.sizeScale),
+                fontWeight: theme.body.weight,
                 letterSpacing: `${px(0.4)}px`,
               }}
             >
@@ -254,8 +260,8 @@ function GridSlideCanvas({
           {slide.eyebrow && (
             <span
               style={{
-                fontSize: px(10),
-                fontWeight: 600,
+                fontSize: Math.round(px(10) * theme.body.sizeScale),
+                fontWeight: theme.body.weight,
                 letterSpacing: `${px(2)}px`,
                 textTransform: "uppercase",
                 color: accent,
@@ -269,8 +275,8 @@ function GridSlideCanvas({
             style={{
               margin: 0,
               fontFamily: headingFont,
-              fontSize: px(28),
-              fontWeight: template.fontStyle === "bold-display" ? 700 : 600,
+              fontSize: Math.round(px(28) * theme.heading.sizeScale),
+              fontWeight: theme.heading.weight,
               letterSpacing: `${-0.3 * unit}px`,
               lineHeight: 1.1,
               maxWidth: "20ch",
@@ -283,7 +289,7 @@ function GridSlideCanvas({
             <p
               style={{
                 margin: 0,
-                fontSize: px(13),
+                fontSize: Math.round(px(13) * theme.body.sizeScale),
                 lineHeight: 1.45,
                 color: muted,
                 maxWidth: "36ch",
@@ -334,8 +340,8 @@ function GridSlideCanvas({
                       justifyContent: "center",
                       background: accent,
                       color: palette.brandDark,
-                      fontWeight: 700,
-                      fontSize: px(11),
+                      fontWeight: theme.body.weight,
+                      fontSize: Math.round(px(11) * theme.body.sizeScale),
                       flexShrink: 0,
                     }}
                   >
@@ -343,8 +349,8 @@ function GridSlideCanvas({
                   </span>
                   <span
                     style={{
-                      fontWeight: 600,
-                      fontSize: px(12),
+                      fontWeight: theme.body.weight,
+                      fontSize: Math.round(px(12) * theme.body.sizeScale),
                       lineHeight: 1.2,
                       overflow: "hidden",
                       textOverflow: "ellipsis",
@@ -385,7 +391,7 @@ function GridSlideCanvas({
                 <p
                   style={{
                     margin: 0,
-                    fontSize: px(10),
+                    fontSize: Math.round(px(10) * theme.body.sizeScale),
                     lineHeight: 1.35,
                     color: muted,
                     overflow: "hidden",
@@ -417,6 +423,7 @@ function GridSlideCanvas({
 }
 
 export function SlideCanvas({
+  design,
   slide,
   totalSlides,
   template,
@@ -446,21 +453,14 @@ export function SlideCanvas({
   const isLast = slide.slideNumber === totalSlides || slide.role === "cta";
   const showLockup = slide.role === "cover" || slide.role === "cta";
   const mark = brandMark(brandHandle);
-  const headingFont =
-    template.fontStyle === "serif"
-      ? "Georgia, 'Times New Roman', serif"
-      : template.fontStyle === "mono"
-        ? "ui-monospace, SFMono-Regular, Menlo, monospace"
-        : 'var(--font-epilogue), "Epilogue", system-ui, sans-serif';
-  const bodyFont =
-    template.fontStyle === "serif"
-      ? 'var(--font-epilogue), "Epilogue", system-ui, sans-serif'
-      : headingFont;
+  const theme = resolveBrandTheme({ design }, template);
+  const headingFont = theme.heading.fontFamily;
+  const bodyFont = theme.body.fontFamily;
   const ink = colors.ink;
   const muted = colors.muted;
   const tagColor = colors.accent;
   const background = colors.background;
-  const headingSize = px(slide.headline.length > 72 ? 26 : slide.role === "cover" ? 34 : 30);
+  const headingSize = Math.round(px(slide.headline.length > 72 ? 26 : slide.role === "cover" ? 34 : 30) * theme.heading.sizeScale);
   const scale = fullResolution ? 1 : 0.34;
   const carouselTemplateId = previewCarouselTemplateId(slide);
   const carouselTemplateLayout =
@@ -470,6 +470,7 @@ export function SlideCanvas({
   if (edwardVariant) {
     return (
       <EdwardAiStructuredSlide
+        theme={theme}
         slide={slide}
         totalSlides={totalSlides}
         template={template}
@@ -487,6 +488,7 @@ export function SlideCanvas({
   if (slide.layout === "grid-2x3" && (slide.gridCells?.length ?? 0) > 0) {
     return (
       <GridSlideCanvas
+        theme={theme}
         slide={slide}
         totalSlides={totalSlides}
         template={template}
@@ -528,7 +530,7 @@ export function SlideCanvas({
           overflow: "hidden",
           background,
           color: ink,
-          fontFamily: bodyFont,
+          fontFamily: bodyFont, fontWeight: theme.body.weight,
         }}
       >
         {template.backdropImageUrl && isLight && (
@@ -580,8 +582,8 @@ export function SlideCanvas({
                   background: isLight ? palette.brandPrimary : palette.lightBg,
                   color: isLight ? "#ffffff" : palette.brandDark,
                   fontFamily: headingFont,
-                  fontWeight: 600,
-                  fontSize: px(16),
+                  fontWeight: theme.heading.weight,
+                  fontSize: Math.round(px(16) * theme.heading.sizeScale),
                 }}
               >
                 {mark.initial}
@@ -589,8 +591,8 @@ export function SlideCanvas({
               <span
                 style={{
                   fontFamily: bodyFont,
-                  fontSize: px(13),
-                  fontWeight: 600,
+                  fontSize: Math.round(px(13) * theme.body.sizeScale),
+                  fontWeight: theme.body.weight,
                   letterSpacing: `${px(0.5)}px`,
                 }}
               >
@@ -604,8 +606,8 @@ export function SlideCanvas({
               style={{
                 display: "block",
                 fontFamily: bodyFont,
-                fontSize: px(10),
-                fontWeight: 600,
+                fontSize: Math.round(px(10) * theme.body.sizeScale),
+                fontWeight: theme.body.weight,
                 letterSpacing: `${px(2)}px`,
                 textTransform: "uppercase",
                 color: tagColor,
@@ -621,7 +623,7 @@ export function SlideCanvas({
               maxWidth: "16ch",
               fontFamily: headingFont,
               fontSize: headingSize,
-              fontWeight: template.fontStyle === "bold-display" ? 700 : 600,
+              fontWeight: theme.heading.weight,
               letterSpacing: `${-0.4 * unit}px`,
               lineHeight: 1.12,
               color: ink,
@@ -641,8 +643,8 @@ export function SlideCanvas({
                 background: palette.lightBg,
                 color: palette.brandDark,
                 fontFamily: bodyFont,
-                fontWeight: 600,
-                fontSize: px(14),
+                fontWeight: theme.body.weight,
+                fontSize: Math.round(px(14) * theme.body.sizeScale),
                 lineHeight: 1.35,
               }}
             >
@@ -654,8 +656,8 @@ export function SlideCanvas({
                 margin: 0,
                 maxWidth: "28ch",
                 fontFamily: bodyFont,
-                fontSize: px(14),
-                fontWeight: 400,
+                fontSize: Math.round(px(14) * theme.body.sizeScale),
+                fontWeight: theme.body.weight,
                 lineHeight: 1.5,
                 color: muted,
               }}
@@ -681,6 +683,7 @@ export function SlideCanvas({
 }
 
 interface CarouselPreviewProps {
+  design?: BrandDesignSettingsV1;
   slides: CarouselSlide[];
   activeIndex: number;
   onSelectIndex: (index: number) => void;
@@ -694,6 +697,7 @@ interface CarouselPreviewProps {
 }
 
 export function CarouselPreview({
+  design,
   slides,
   activeIndex,
   onSelectIndex,
@@ -722,6 +726,7 @@ export function CarouselPreview({
       </div>
 
       <SlideCanvas
+        design={design}
         slide={currentSlide}
         totalSlides={slides.length}
         template={template}
@@ -794,6 +799,7 @@ export function CarouselPreview({
             }}
           >
             <SlideCanvas
+        design={design}
               slide={slide}
               totalSlides={slides.length}
               template={template}

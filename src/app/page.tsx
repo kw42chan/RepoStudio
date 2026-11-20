@@ -1,4 +1,6 @@
 "use client";
+import { normalizeBrandDesign } from "@/lib/carousel-fonts";
+
 
 import Link from "next/link";
 import { useEffect, useState } from "react";
@@ -102,6 +104,8 @@ export default function RepurposeWorkspacePage() {
     DEFAULT_BRAND_PRESETS[0].secondaryColor
   );
 
+  const [brandDesign, setBrandDesign] = useState(normalizeBrandDesign(undefined));
+
   // Step 2: Ideation
   const [ideating, setIdeating] = useState(false);
   const [ideationError, setIdeationError] = useState<string | null>(null);
@@ -179,6 +183,7 @@ export default function RepurposeWorkspacePage() {
             setPrimaryColor(next[0].primaryColor);
             setSecondaryColor(next[0].secondaryColor);
             setBrandHandle(next[0].handle);
+            setBrandDesign(normalizeBrandDesign(next[0].design));
           }
         }
         if (tRes.ok) {
@@ -222,6 +227,10 @@ export default function RepurposeWorkspacePage() {
     setCtaPreference(found.cta);
     const colors = withBrandColors(found);
     setBrandHandle(colors.handle);
+    const design = normalizeBrandDesign(colors.design);
+    setBrandDesign(design);
+    setIgCarousel(prev => prev ? { ...prev, design } : prev);
+    setLiCarousel(prev => prev ? { ...prev, design } : prev);
     setPrimaryColor(colors.primaryColor);
     setSecondaryColor(colors.secondaryColor);
     setWritingStyle((prev) => ({
@@ -354,6 +363,7 @@ export default function RepurposeWorkspacePage() {
         if (data.igCarousel) {
           setIgCarousel({
             ...data.igCarousel,
+            design: brandDesign,
             primaryColor,
             secondaryColor,
             brandHandle,
@@ -362,6 +372,7 @@ export default function RepurposeWorkspacePage() {
         if (data.liCarousel) {
           setLiCarousel({
             ...data.liCarousel,
+            design: brandDesign,
             primaryColor,
             secondaryColor,
             brandHandle,
@@ -437,6 +448,7 @@ export default function RepurposeWorkspacePage() {
       if (format === "ig_carousel" && data.igCarousel) {
         setIgCarousel({
           ...data.igCarousel,
+            design: brandDesign,
           primaryColor,
           secondaryColor,
           brandHandle,
@@ -445,6 +457,7 @@ export default function RepurposeWorkspacePage() {
       if (format === "li_carousel" && data.liCarousel) {
         setLiCarousel({
           ...data.liCarousel,
+            design: brandDesign,
           primaryColor,
           secondaryColor,
           brandHandle,

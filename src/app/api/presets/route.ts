@@ -3,6 +3,7 @@ import { rejectNonJson } from "@/lib/json-body";
 import { deleteBrandPreset, readStore, upsertBrandPreset } from "@/lib/store";
 import { requireViewer } from "@/lib/viewer";
 import { BrandVoicePreset } from "@/lib/types";
+import { brandDesignSchema } from "@/lib/carousel-fonts";
 
 export async function GET(req: NextRequest) {
   const viewer = await requireViewer(req);
@@ -20,6 +21,9 @@ export async function POST(req: NextRequest) {
     const body = (await req.json()) as { preset?: BrandVoicePreset };
     if (!body.preset || !body.preset.name) {
       return NextResponse.json({ error: "Missing preset" }, { status: 400 });
+    }
+    if (body.preset.design && !brandDesignSchema.safeParse(body.preset.design).success) {
+      return NextResponse.json({ error: "Invalid brand typography settings." }, { status: 400 });
     }
     const saved = await upsertBrandPreset({
       ...body.preset,

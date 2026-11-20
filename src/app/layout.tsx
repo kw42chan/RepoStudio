@@ -1,20 +1,26 @@
 import type { Metadata } from "next";
 import { Suspense } from "react";
-import { Epilogue, JetBrains_Mono } from "next/font/google";
+import { Epilogue, JetBrains_Mono, Inter, Lora, Noto_Sans_TC, Noto_Sans_HK, Noto_Serif_TC, Noto_Serif_HK } from "next/font/google";
 import "./globals.css";
 import { AppNav } from "@/components/app-nav";
 
 const epilogue = Epilogue({
   variable: "--font-epilogue",
   subsets: ["latin"],
-  weight: ["400", "500", "600", "700"],
+  weight: "variable",
 });
 
 const jetbrains = JetBrains_Mono({
-  variable: "--font-jetbrains",
+  variable: "--font-jetbrains-mono",
   subsets: ["latin"],
-  weight: ["400", "500"],
+  weight: "variable",
 });
+const inter = Inter({ variable: "--font-inter", subsets: ["latin"], preload: false });
+const lora = Lora({ variable: "--font-lora", subsets: ["latin"], preload: false });
+const notoSansTC = Noto_Sans_TC({ variable: "--font-noto-sans-tc", preload: false });
+const notoSansHK = Noto_Sans_HK({ variable: "--font-noto-sans-hk", preload: false });
+const notoSerifTC = Noto_Serif_TC({ variable: "--font-noto-serif-tc", preload: false });
+const notoSerifHK = Noto_Serif_HK({ variable: "--font-noto-serif-hk", preload: false });
 
 export const metadata: Metadata = {
   title: "RepoStudio — Turn one post into a Reel and two carousels",
@@ -36,7 +42,7 @@ export default function RootLayout({
       lang="en"
       data-type="software"
       data-radius="soft"
-      className={`${epilogue.variable} ${jetbrains.variable} h-full antialiased`}
+      className={`${epilogue.variable} ${jetbrains.variable} ${inter.variable} ${lora.variable} ${notoSansTC.variable} ${notoSansHK.variable} ${notoSerifTC.variable} ${notoSerifHK.variable} h-full antialiased`}
     >
       <body className="min-h-full flex flex-col bg-background text-foreground">
         <Suspense

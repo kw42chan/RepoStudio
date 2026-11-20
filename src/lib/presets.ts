@@ -1,3 +1,4 @@
+import { normalizeBrandDesign } from "./carousel-fonts";
 import {
   BrandVoicePreset,
   VisualTemplate,
@@ -164,6 +165,7 @@ export function withBrandColors(preset: BrandVoicePreset): BrandVoicePreset {
   const known = DEFAULT_BRAND_PRESETS.find((item) => item.id === preset.id);
   return {
     ...preset,
+    design: normalizeBrandDesign(preset.design),
     primaryColor: preset.primaryColor || known?.primaryColor || "#1D4ED8",
     secondaryColor: preset.secondaryColor || known?.secondaryColor || "#F59E0B",
   };

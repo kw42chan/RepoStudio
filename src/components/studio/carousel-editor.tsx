@@ -570,6 +570,7 @@ export function CarouselEditor({
         <div className="flex flex-col items-center">
           {activeTemplate && (
             <CarouselPreview
+                design={carousel.design}
               slides={carousel.slides}
               activeIndex={activeSlideIdx}
               onSelectIndex={setActiveSlideIdx}

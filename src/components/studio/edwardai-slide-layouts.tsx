@@ -1,4 +1,6 @@
 "use client";
+import type { ResolvedBrandTheme } from "@/lib/carousel-brand-theme";
+
 
 import React from "react";
 import {
@@ -15,6 +17,7 @@ import { getExportDimensions } from "@/lib/export-carousel";
 import type { AspectRatio } from "@/lib/types";
 
 export interface EdwardAiSlideProps {
+  theme: ResolvedBrandTheme;
   slide: CarouselSlide;
   totalSlides: number;
   template: VisualTemplate;
@@ -193,6 +196,7 @@ function HeroStage({
 }
 
 function VariantBody({
+  theme,
   variant,
   slide,
   px,
@@ -204,6 +208,7 @@ function VariantBody({
   variant: CarouselTemplateRenderVariant;
   slide: CarouselSlide;
   px: (n: number) => number;
+  theme: ResolvedBrandTheme;
   headingFont: string;
   bodyFont: string;
   colors: ReturnType<typeof EdwardPalette>;
@@ -231,8 +236,8 @@ function VariantBody({
                 padding: `${px(6)}px ${px(12)}px`,
                 borderRadius: px(20),
                 background: edwardPanel,
-                fontSize: px(10),
-                fontWeight: 600,
+                fontSize: Math.round(px(10) * theme.body.sizeScale),
+                fontWeight: theme.body.weight,
                 color: mint,
               }}
             >
@@ -243,7 +248,7 @@ function VariantBody({
                 padding: `${px(6)}px ${px(10)}px`,
                 borderRadius: px(20),
                 background: edwardPanel,
-                fontSize: px(10),
+                fontSize: Math.round(px(10) * theme.body.sizeScale),
                 color: muted,
               }}
             >
@@ -262,8 +267,8 @@ function VariantBody({
             style={{
               margin: 0,
               fontFamily: headingFont,
-              fontSize: px(30),
-              fontWeight: 600,
+              fontSize: Math.round(px(30) * theme.heading.sizeScale),
+              fontWeight: theme.heading.weight,
               lineHeight: 1.1,
               color: ink,
             }}
@@ -273,8 +278,8 @@ function VariantBody({
           <p
             style={{
               margin: 0,
-              fontFamily: bodyFont,
-              fontSize: px(14),
+              fontFamily: bodyFont, fontWeight: theme.body.weight,
+              fontSize: Math.round(px(14) * theme.body.sizeScale),
               color: mint,
               lineHeight: 1.45,
             }}
@@ -313,8 +318,8 @@ function VariantBody({
                 borderRadius: px(24),
                 background: "rgba(255,255,255,0.92)",
                 color: palette.brandDark,
-                fontWeight: 700,
-                fontSize: px(11),
+                fontWeight: theme.body.weight,
+                fontSize: Math.round(px(11) * theme.body.sizeScale),
               }}
             >
               {slide.eyebrow || "3 agents"}
@@ -323,15 +328,15 @@ function VariantBody({
               style={{
                 margin: 0,
                 fontFamily: headingFont,
-                fontSize: px(32),
-                fontWeight: 700,
+                fontSize: Math.round(px(32) * theme.heading.sizeScale),
+                fontWeight: theme.heading.weight,
                 color: "#fff",
                 maxWidth: "14ch",
               }}
             >
               {slide.headline}
             </h1>
-            <p style={{ margin: 0, fontSize: px(15), color: "#fde68a", maxWidth: "26ch" }}>
+            <p style={{ margin: 0, fontSize: Math.round(px(15) * theme.body.sizeScale), color: "#fde68a", maxWidth: "26ch" }}>
               {slide.body}
             </p>
             <span
@@ -342,8 +347,8 @@ function VariantBody({
                 borderRadius: px(22),
                 background: mint,
                 color: palette.brandDark,
-                fontWeight: 700,
-                fontSize: px(12),
+                fontWeight: theme.body.weight,
+                fontSize: Math.round(px(12) * theme.body.sizeScale),
               }}
             >
               Save the cheat sheet
@@ -374,7 +379,7 @@ function VariantBody({
                   padding: `${px(5)}px ${px(10)}px`,
                   borderRadius: px(14),
                   border: `1px solid ${edwardStroke}`,
-                  fontSize: px(9),
+                  fontSize: Math.round(px(9) * theme.body.sizeScale),
                   color: mint,
                 }}
               >
@@ -393,15 +398,15 @@ function VariantBody({
               marginBottom: px(4),
             }}
           />
-          <p style={{ margin: 0, fontSize: px(12), color: mint, fontStyle: "italic" }}>
+          <p style={{ margin: 0, fontSize: Math.round(px(12) * theme.body.sizeScale), color: mint, fontStyle: "italic" }}>
             {slide.body.split(".")[0]}
           </p>
           <h1
             style={{
               margin: 0,
               fontFamily: headingFont,
-              fontSize: px(28),
-              fontWeight: 600,
+              fontSize: Math.round(px(28) * theme.heading.sizeScale),
+              fontWeight: theme.heading.weight,
               color: ink,
               maxWidth: "16ch",
             }}
@@ -430,8 +435,8 @@ function VariantBody({
               borderRadius: px(16),
               background: edwardPanel,
               color: mint,
-              fontSize: px(10),
-              fontWeight: 600,
+              fontSize: Math.round(px(10) * theme.body.sizeScale),
+              fontWeight: theme.body.weight,
               letterSpacing: px(0.5),
             }}
           >
@@ -448,15 +453,15 @@ function VariantBody({
           <h2
             style={{
               margin: 0,
-              fontFamily: headingFont,
-              fontSize: px(24),
+              fontFamily: headingFont, fontWeight: theme.heading.weight,
+              fontSize: Math.round(px(24) * theme.heading.sizeScale),
               color: ink,
               lineHeight: 1.15,
             }}
           >
             {slide.headline}
           </h2>
-          <p style={{ margin: 0, fontSize: px(14), color: muted, lineHeight: 1.5 }}>
+          <p style={{ margin: 0, fontSize: Math.round(px(14) * theme.body.sizeScale), color: muted, lineHeight: 1.5 }}>
             {slide.body}
           </p>
         </div>
@@ -478,8 +483,8 @@ function VariantBody({
           <h2
             style={{
               margin: 0,
-              fontFamily: headingFont,
-              fontSize: px(26),
+              fontFamily: headingFont, fontWeight: theme.heading.weight,
+              fontSize: Math.round(px(26) * theme.heading.sizeScale),
               color: ink,
               maxWidth: "18ch",
             }}
@@ -507,8 +512,8 @@ function VariantBody({
                   background: edwardPanel,
                   border: `1px solid ${edwardStroke}`,
                   color: mint,
-                  fontWeight: 700,
-                  fontSize: px(14),
+                  fontWeight: theme.body.weight,
+                  fontSize: Math.round(px(14) * theme.body.sizeScale),
                 }}
               >
                 {item.number}
@@ -516,15 +521,15 @@ function VariantBody({
               <div>
                 <div
                   style={{
-                    fontWeight: 600,
-                    fontSize: px(14),
+                    fontWeight: theme.body.weight,
+                    fontSize: Math.round(px(14) * theme.body.sizeScale),
                     color: ink,
                     marginBottom: px(4),
                   }}
                 >
                   {item.title}
                 </div>
-                <div style={{ fontSize: px(12), color: muted, lineHeight: 1.45 }}>
+                <div style={{ fontSize: Math.round(px(12) * theme.body.sizeScale), color: muted, lineHeight: 1.45 }}>
                   {item.description}
                 </div>
               </div>
@@ -553,23 +558,23 @@ function VariantBody({
               borderRadius: px(12),
               background: mint,
               color: palette.brandDark,
-              fontSize: px(10),
-              fontWeight: 700,
+              fontSize: Math.round(px(10) * theme.body.sizeScale),
+              fontWeight: theme.body.weight,
             }}
           >
             {slide.eyebrow || "主力"}
           </span>
-          <h2 style={{ margin: 0, fontSize: px(28), fontFamily: headingFont, color: ink }}>
+          <h2 style={{ margin: 0, fontSize: Math.round(px(28) * theme.heading.sizeScale), fontFamily: headingFont, fontWeight: theme.heading.weight, color: ink }}>
             {slide.headline}
           </h2>
-          <p style={{ margin: 0, fontSize: px(15), color: mint, lineHeight: 1.5 }}>
+          <p style={{ margin: 0, fontSize: Math.round(px(15) * theme.body.sizeScale), color: mint, lineHeight: 1.5 }}>
             {slide.body.split(".")[0]}.
           </p>
           <p
             style={{
               margin: 0,
               marginTop: "auto",
-              fontSize: px(13),
+              fontSize: Math.round(px(13) * theme.body.sizeScale),
               color: muted,
               borderTop: `1px solid ${edwardStroke}`,
               paddingTop: px(16),
@@ -592,7 +597,7 @@ function VariantBody({
             height: "100%",
           }}
         >
-          <h2 style={{ margin: 0, fontSize: px(24), fontFamily: headingFont, color: ink }}>
+          <h2 style={{ margin: 0, fontSize: Math.round(px(24) * theme.heading.sizeScale), fontFamily: headingFont, fontWeight: theme.heading.weight, color: ink }}>
             {slide.headline}
           </h2>
           <div
@@ -600,7 +605,7 @@ function VariantBody({
               borderRadius: px(10),
               border: `1px solid ${edwardStroke}`,
               overflow: "hidden",
-              fontSize: px(11),
+              fontSize: Math.round(px(11) * theme.body.sizeScale),
             }}
           >
             <div
@@ -611,7 +616,7 @@ function VariantBody({
                 padding: `${px(10)}px ${px(12)}px`,
                 background: edwardPanel,
                 color: mint,
-                fontWeight: 700,
+                fontWeight: theme.body.weight,
                 textTransform: "uppercase",
                 letterSpacing: px(0.5),
               }}
@@ -633,12 +638,12 @@ function VariantBody({
                 }}
               >
                 <span>{row.scenario}</span>
-                <span style={{ color: mint, fontWeight: 600 }}>{row.agent}</span>
+                <span style={{ color: mint, fontWeight: theme.body.weight }}>{row.agent}</span>
                 <span>{row.note}</span>
               </div>
             ))}
           </div>
-          <p style={{ margin: 0, fontSize: px(12), color: muted }}>{slide.body}</p>
+          <p style={{ margin: 0, fontSize: Math.round(px(12) * theme.body.sizeScale), color: muted }}>{slide.body}</p>
         </div>
       );
     }
@@ -660,8 +665,8 @@ function VariantBody({
             style={{
               margin: 0,
               textAlign: "center",
-              fontFamily: headingFont,
-              fontSize: px(26),
+              fontFamily: headingFont, fontWeight: theme.heading.weight,
+              fontSize: Math.round(px(26) * theme.heading.sizeScale),
               color: ink,
             }}
           >
@@ -679,21 +684,21 @@ function VariantBody({
               <div key={cell.label} style={{ textAlign: "center", minWidth: px(100) }}>
                 <div
                   style={{
-                    fontSize: px(40),
-                    fontWeight: 700,
+                    fontSize: Math.round(px(40) * theme.body.sizeScale),
+                    fontWeight: theme.body.weight,
                     color: mint,
                     lineHeight: 1,
                   }}
                 >
                   {cell.value}
                 </div>
-                <div style={{ marginTop: px(8), fontSize: px(12), color: muted }}>
+                <div style={{ marginTop: px(8), fontSize: Math.round(px(12) * theme.body.sizeScale), color: muted }}>
                   {cell.label}
                 </div>
               </div>
             ))}
           </div>
-          <p style={{ margin: 0, textAlign: "center", fontSize: px(13), color: muted }}>
+          <p style={{ margin: 0, textAlign: "center", fontSize: Math.round(px(13) * theme.body.sizeScale), color: muted }}>
             {slide.body}
           </p>
         </div>
@@ -730,6 +735,7 @@ function profileGlyph(
 }
 
 export function EdwardAiStructuredSlide({
+  theme,
   slide,
   totalSlides,
   template,
@@ -752,11 +758,8 @@ export function EdwardAiStructuredSlide({
     secondaryColor,
     template
   );
-  const headingFont =
-    template.fontStyle === "serif"
-      ? "Georgia, 'Times New Roman', serif"
-      : 'var(--font-epilogue), "Epilogue", system-ui, sans-serif';
-  const bodyFont = 'var(--font-epilogue), "Epilogue", system-ui, sans-serif';
+  const headingFont = theme.heading.fontFamily;
+  const bodyFont = theme.body.fontFamily;
 
   return (
     <div
@@ -782,10 +785,11 @@ export function EdwardAiStructuredSlide({
           overflow: "hidden",
           background: colors.edwardBg,
           color: colors.ink,
-          fontFamily: bodyFont,
+          fontFamily: bodyFont, fontWeight: theme.body.weight,
         }}
       >
         <VariantBody
+          theme={theme}
           variant={variant}
           slide={slide}
           px={px}

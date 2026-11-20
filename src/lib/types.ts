@@ -1,3 +1,5 @@
+import type { BrandDesignSettingsV1 } from "./carousel-fonts";
+export type { BrandDesignSettingsV1, BuiltInFontId } from "./carousel-fonts";
 export type ContentFormat = "reel" | "ig_carousel" | "li_carousel";
 
 export type WritingStyleId =
@@ -169,6 +171,7 @@ export interface LayoutPackIds {
 }
 
 export interface CarouselContent {
+  design?: BrandDesignSettingsV1;
   platform: "instagram" | "linkedin";
   title: string;
   slides: CarouselSlide[];
@@ -201,6 +204,7 @@ export interface ContentDraft {
 }
 
 export interface BrandVoicePreset {
+  design?: BrandDesignSettingsV1;
   id: string;
   name: string;
   voice: string;

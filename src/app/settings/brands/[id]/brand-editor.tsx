@@ -17,6 +17,7 @@ import { Label } from "@/components/ui/label";
 import { Textarea } from "@/components/ui/textarea";
 import { withBrandColors } from "@/lib/presets";
 import { BrandVoicePreset } from "@/lib/types";
+import { BrandTypographyControls } from "@/components/studio/brand-typography-controls";
 
 export function BrandEditor({ brandId }: { brandId: string }) {
   const router = useRouter();
@@ -190,6 +191,7 @@ export function BrandEditor({ brandId }: { brandId: string }) {
                   />
                 </div>
               </div>
+              <BrandTypographyControls value={preset.design} onChange={design => patch({ design })} />
               <div className="flex flex-wrap items-end gap-2">
                 <label className="space-y-1 text-xs" htmlFor="brand-primary">
                   Primary

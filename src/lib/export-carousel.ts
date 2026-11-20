@@ -20,6 +20,8 @@ export async function exportSlidesAsPng(
 ): Promise<void> {
   const { width, height } = getExportDimensions(aspectRatio);
 
+  await document.fonts.ready;
+
   for (let i = 0; i < slideElements.length; i++) {
     const el = slideElements[i];
     const dataUrl = await toPng(el, {
@@ -44,6 +46,8 @@ export async function exportSlidesAsPdf(
   aspectRatio: AspectRatio
 ): Promise<void> {
   const { width, height } = getExportDimensions(aspectRatio);
+
+  await document.fonts.ready;
 
   const pdf = new jsPDF({
     orientation: "portrait",

@@ -2,6 +2,7 @@ import { promises as fs } from "fs";
 import os from "os";
 import path from "path";
 import { sql } from "./db";
+import { normalizeBrandDesign } from "./carousel-fonts";
 import {
   AppStoreData,
   BrandVoicePreset,
@@ -65,10 +66,13 @@ function createInitialStore(): AppStoreData {
   };
 }
 
-function normalizeStore(parsed: Partial<AppStoreData>): AppStoreData {
+export function normalizeStore(parsed: Partial<AppStoreData>): AppStoreData {
   const initial = createInitialStore();
   return {
-    drafts: parsed.drafts ?? initial.drafts,
+    drafts: (parsed.drafts ?? initial.drafts).map(draft => {
+      const migrate = (carousel: ContentDraft["igCarousel"]) => carousel ? { ...carousel, design: normalizeBrandDesign(carousel.design, [...BUILT_IN_VISUAL_TEMPLATES, ...(parsed.visualTemplates ?? [])].find(t => t.id === carousel.visualTemplateId)?.fontStyle) } : undefined;
+      return { ...draft, igCarousel: migrate(draft.igCarousel), liCarousel: migrate(draft.liCarousel) };
+    }),
     brandPresets: Array.isArray(parsed.brandPresets)
       ? parsed.brandPresets.map(withBrandColors)
       : initial.brandPresets,
@@ -232,6 +236,7 @@ export async function addMockQueuePost(
 export async function upsertBrandPreset(
   preset: BrandVoicePreset
 ): Promise<BrandVoicePreset> {
+  preset = withBrandColors(preset);
   const store = await readStore();
   const idx = store.brandPresets.findIndex((p) => p.id === preset.id);
   if (idx >= 0) {

@@ -139,6 +139,12 @@ export type SlideSurface =
     };
 
 export interface CarouselSlide {
+  media?: SlideMediaPlacement[];
+  patternContent?: {
+    items?: Array<{ title: string; body: string }>;
+    metric?: string; unit?: string; action?: string; prompt?: string;
+    outcome?: string; recommendation?: string; badge?: string; takeaway?: string;
+  };
   id: string;
   slideNumber: number;
   role: "cover" | "body" | "cta";
@@ -266,10 +272,19 @@ export interface ScheduledPost {
 }
 
 export interface AppStoreData {
+  imageAssets?: SlideImageAsset[];
   drafts: ContentDraft[];
   brandPresets: BrandVoicePreset[];
   visualTemplates: VisualTemplate[];
   layoutPacks: UserLayoutPack[];
   bufferConnection: BufferConnection;
   mockQueue: ScheduledPost[];
+}
+
+export interface SlideImageAsset {
+  id: string; url: string; fileName: string; mimeType: "image/png" | "image/jpeg" | "image/webp";
+  width: number; height: number; sizeBytes: number; createdAt: string;
+}
+export interface SlideMediaPlacement {
+  slotId: string; assetId: string; focalPoint: { x: number; y: number }; zoom: number; altText?: string;
 }

@@ -1,0 +1,1 @@
+export const FIRST_RELEASE_PATTERN_IDS = ["signal-statement", "signal-numbered-list", "signal-vertical-timeline", "signal-horizontal-timeline", "spec-ab-comparison", "signal-metric-evidence", "signal-collage-cover", "story-prompt-outcome", "signal-cta"] as const;

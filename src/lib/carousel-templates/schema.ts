@@ -1,4 +1,5 @@
 import { z } from "zod";
+import { FIRST_RELEASE_PATTERN_IDS } from "./pattern-ids";
 
 const id = z.string().min(1);
 const positiveInt = z.number().int().positive();
@@ -65,6 +66,7 @@ export const carouselTemplateManifestSchema = z.object({
   if (templates.size !== value.templates.length) error("Duplicate template identifier");
   const check = (name: string) => { if (!templates.has(name)) error(`Unknown template: ${name}`); };
   for (const t of value.templates) {
+    if (t.pattern && t.implementationStatus === "rendered" && !FIRST_RELEASE_PATTERN_IDS.some(id => id === t.pattern!.rendererVariant)) error(`Unknown production pattern renderer: ${t.id}`);
     if (!value.categories.some(c => c.id === t.category)) error(`Unknown category for ${t.id}`);
     if (t.implementationStatus === "reference-only") {
       if (t.showInStylePicker) error(`Reference-only pattern cannot be selectable: ${t.id}`);

@@ -38,6 +38,7 @@ function storePaths(): { primary: string; fallback: string } {
 
 function createInitialStore(): AppStoreData {
   return {
+    imageAssets: [],
     drafts: [],
     brandPresets: DEFAULT_BRAND_PRESETS,
     visualTemplates: [],
@@ -69,6 +70,7 @@ function createInitialStore(): AppStoreData {
 export function normalizeStore(parsed: Partial<AppStoreData>): AppStoreData {
   const initial = createInitialStore();
   return {
+    imageAssets: parsed.imageAssets ?? [],
     drafts: (parsed.drafts ?? initial.drafts).map(draft => {
       const migrate = (carousel: ContentDraft["igCarousel"]) => carousel ? { ...carousel, design: normalizeBrandDesign(carousel.design, [...BUILT_IN_VISUAL_TEMPLATES, ...(parsed.visualTemplates ?? [])].find(t => t.id === carousel.visualTemplateId)?.fontStyle) } : undefined;
       return { ...draft, igCarousel: migrate(draft.igCarousel), liCarousel: migrate(draft.liCarousel) };

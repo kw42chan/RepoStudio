@@ -21,21 +21,22 @@ describe("Phase 4.0 contracts", () => {
     Object.assign(malformed.templates[index], { pattern: { familyId: "unknown" } });
     expect(() => parseCarouselTemplateManifest(malformed)).toThrow();
     const selectable = structuredClone(raw);
-    selectable.templates[index].showInStylePicker = true;
+    selectable.templates.find(t => t.implementationStatus === "reference-only")!.showInStylePicker = true;
     expect(() => parseCarouselTemplateManifest(selectable)).toThrow(/selectable/);
     const brokenPack = structuredClone(raw);
     brokenPack.layoutPacks[1].slideTemplateIds = ["missing"];
     expect(() => parseCarouselTemplateManifest(brokenPack)).toThrow(/Unknown template/);
   });
 
-  it("keeps every proposed pattern out of production selection with a rendered fallback", () => {
+  it("enables first-release renderers and keeps deferred patterns behind rendered fallbacks", () => {
     expect(patterns).toHaveLength(15);
     expect(selected).toHaveLength(9);
     for (const t of patterns) {
-      expect(resolveGraphicsStyleId(t.id).invalid).toBe(true);
-      expect(resolveProductionTemplateId(t.id)).toBe(t.productionFallbackId);
+      const deferred = t.pattern?.release === "deferred";
+      expect(resolveGraphicsStyleId(t.id).invalid).toBe(deferred);
+      expect(resolveProductionTemplateId(t.id)).toBe(deferred ? t.productionFallbackId : t.id);
       for (const platform of ["instagram", "linkedin"] as const) {
-        expect(listGraphicsStyles({ platform }).some(s => s.templateId === t.id)).toBe(false);
+        expect(listGraphicsStyles({ platform }).some(s => s.templateId === t.id)).toBe(!deferred);
       }
     }
   });

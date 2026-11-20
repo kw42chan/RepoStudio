@@ -140,7 +140,7 @@ The intended workflow after the remaining phases is: **choose a brand style → 
 | --- | --- |
 | 4.0 — Finished | Preparation only: agreed layout rules, test examples, and visual references. |
 | 4.1 — Finished | Set separate heading and body fonts, weights, and sizes; save them with a brand. |
-| 4.2 — Planned | Move, duplicate, add, and delete slides while keeping the deck organized. |
+| 4.2 — Finished | Move, duplicate, add, and delete slides while keeping the deck organized. |
 | 4.3 — Planned | Choose from the nine new layout types in the editor. |
 | 4.4 — Planned | Add images to supported positions and adjust their crops. |
 | 4.5 — Planned | Get layouts selected for the content and use an uploaded sample to guide a reusable style. |
@@ -156,13 +156,13 @@ Phase 4.0 is finished as of 2026-11-20 in commit `c6e8a63` on `feature/carousel-
 | --- | --- |
 | 4.0 — Development preparation and golden fixtures | Finished — 2026-11-20, `c6e8a63` |
 | 4.1 — Brand typography and built-in font library | Finished — 2026-11-20, `8b39a58` |
-| 4.2 — Deck operations and narrative arrangement | In progress — next |
-| 4.3 — Pattern registry and production renderers | Not started |
+| 4.2 — Deck operations and narrative arrangement | Finished — 2026-11-20, `ccb759e` |
+| 4.3 — Pattern registry and production renderers | In progress |
 | 4.4 — Image assets and declared slot controls | Not started |
 | 4.5 — LLM pattern routing and reference-style ingestion | Not started |
 | 4.6 — Content fit, export parity, and release hardening | Not started |
 
-Validation: 36 focused tests pass; TypeScript and changed-file ESLint pass. The full suite has 53 passes and the existing Windows read-only-directory store test failure (`chmod(0555)` does not prevent the write). Phase 4.1 typography is finished; Phase 4.2 deck operations is in progress.
+Validation: 36 focused tests pass; TypeScript and changed-file ESLint pass. The full suite has 53 passes and the existing Windows read-only-directory store test failure (`chmod(0555)` does not prevent the write). Phase 4.1 typography is finished; Phase 4.2 deck operations is finished; Phase 4.3 renderers is in progress.
 
 ### Phase 4.0 — Development preparation and golden fixtures
 
@@ -199,16 +199,22 @@ Exit gate: **Met for shared typography settings** — heading/body isolation and
 
 ### Phase 4.2 — Deck operations and narrative arrangement
 
+Status: **Finished** — 2026-11-20. Implementation commit: `ccb759e`.
+
+Users can add, delete, duplicate, and move slides with keyboard-accessible buttons. Focus follows stable slide IDs; counts stay within 3–12; content stays with its slide; a warning explains per-slide overrides. Instagram Default retains its cover layout and light appearance after semantic roles are normalized.
+
+Verification: three command tests (including 100 mixed command sequences), ten related theme/pack regressions, TypeScript, and one keyboard browser test pass.
+
 Purpose: make slide-count changes safe before LLM regeneration and media placement depend on stable slide identity.
 
-- Create `src/lib/carousel-deck-operations.ts` with add, delete, move, duplicate, and normalize commands.
-- Replace editor-local add/delete logic with the module interface.
-- Add Move left/right controls first; add drag-and-drop only after keyboard-accessible commands work.
-- Preserve stable slide ids and media assignments during reorder; recompute only `slideNumber`.
-- Define invariants: 3–12 editable slides, exactly one cover at the beginning, at most one CTA at the end, and safe conversion when either is moved or deleted.
-- Reconcile custom layout packs after slide-count changes by warning that the deck now has per-slide overrides rather than silently rewriting the saved pack.
+- [x] Create `src/lib/carousel-deck-operations.ts` with add, delete, move, duplicate, and normalize commands.
+- [x] Replace editor-local add/delete logic with the module interface.
+- [x] Add Move left/right controls first; add drag-and-drop only after keyboard-accessible commands work.
+- [x] Preserve stable slide ids and media assignments during reorder; recompute only `slideNumber`.
+- [x] Define invariants: 3–12 editable slides, exactly one cover at the beginning, at most one CTA at the end, and safe conversion when either is moved or deleted.
+- [x] Reconcile custom layout packs after slide-count changes by warning that the deck now has per-slide overrides rather than silently rewriting the saved pack.
 
-Exit gate: unit tests cover every command and invariant; keyboard users can reorder; undo can be added later without changing the command shape.
+Exit gate: **Met** — unit tests cover every command and invariant; keyboard users can reorder; undo can be added later without changing the command shape.
 
 ### Phase 4.3 — Pattern registry and production renderers
 

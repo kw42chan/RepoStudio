@@ -20,10 +20,13 @@ import {
   previewCarouselTemplateId,
 } from "@/lib/carousel-templates";
 import { EdwardAiStructuredSlide } from "@/components/studio/edwardai-slide-layouts";
-import { AspectRatio, CarouselSlide, VisualTemplate } from "@/lib/types";
+import { getPattern } from "@/lib/carousel-pattern-registry";
+import { PatternSlide } from "./carousel-patterns";
+import { AspectRatio, CarouselSlide, VisualTemplate, SlideImageAsset } from "@/lib/types";
 import { getExportDimensions } from "@/lib/export-carousel";
 
 interface SlideCanvasProps {
+  assets?: SlideImageAsset[];
   design?: BrandDesignSettingsV1;
   slide: CarouselSlide;
   totalSlides: number;
@@ -423,6 +426,7 @@ function GridSlideCanvas({
 }
 
 export function SlideCanvas({
+  assets,
   design,
   slide,
   totalSlides,
@@ -466,6 +470,10 @@ export function SlideCanvas({
   const carouselTemplateLayout =
     getCarouselTemplate(carouselTemplateId)?.layout ?? "default";
   const edwardVariant = getCarouselTemplateRenderVariant(carouselTemplateId);
+
+  if (getPattern(carouselTemplateId)) {
+    return <PatternSlide {...{ slide, totalSlides, theme, template, primaryColor, secondaryColor, brandHandle, aspectRatio, platform, fullResolution, assets }} />;
+  }
 
   if (edwardVariant) {
     return (
@@ -683,6 +691,7 @@ export function SlideCanvas({
 }
 
 interface CarouselPreviewProps {
+  assets?: SlideImageAsset[];
   design?: BrandDesignSettingsV1;
   slides: CarouselSlide[];
   activeIndex: number;
@@ -697,6 +706,7 @@ interface CarouselPreviewProps {
 }
 
 export function CarouselPreview({
+  assets,
   design,
   slides,
   activeIndex,
@@ -726,6 +736,7 @@ export function CarouselPreview({
       </div>
 
       <SlideCanvas
+        assets={assets}
         design={design}
         slide={currentSlide}
         totalSlides={slides.length}
@@ -799,6 +810,7 @@ export function CarouselPreview({
             }}
           >
             <SlideCanvas
+        assets={assets}
         design={design}
               slide={slide}
               totalSlides={slides.length}

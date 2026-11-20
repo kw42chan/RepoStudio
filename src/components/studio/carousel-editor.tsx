@@ -2,7 +2,7 @@
 
 import Link from "next/link";
 import { applyDeckCommand, activeSlideIndex, MIN_SLIDES, MAX_SLIDES, type DeckCommand } from "@/lib/carousel-deck-operations";
-import { useRef, useState } from "react";
+import { useRef, useState, useEffect } from "react";
 import {
   Download,
   FileText,
@@ -30,6 +30,7 @@ import {
   AspectRatio,
   CarouselContent,
   CarouselSlide,
+  SlideImageAsset,
   UserLayoutPack,
   VisualTemplate,
   WritingStyleConfig,
@@ -40,8 +41,13 @@ import { GraphicsStylePicker } from "./graphics-style-picker";
 import { SlideSurfaceControls } from "./slide-surface-controls";
 import { SaveLayoutPack } from "./save-layout-pack";
 import { WritingStyleControls } from "./writing-style-controls";
+import { SlideMediaControls } from "./slide-media-controls";
+import { mediaWarnings } from "@/lib/carousel-slide-media";
+import { patternContentWarnings } from "@/lib/carousel-pattern-registry";
+import { PatternContentControls } from "./pattern-content-controls";
 
 interface CarouselEditorProps {
+  initialImageAssets?: SlideImageAsset[];
   carousel: CarouselContent;
   templates: VisualTemplate[];
   primaryColor: string;
@@ -59,6 +65,7 @@ interface CarouselEditorProps {
 }
 
 export function CarouselEditor({
+  initialImageAssets = [],
   carousel,
   templates,
   primaryColor,
@@ -73,6 +80,9 @@ export function CarouselEditor({
   onLayoutPackSaved,
   layoutPackId,
 }: CarouselEditorProps) {
+  const [assets, setAssets] = useState<SlideImageAsset[]>(initialImageAssets);
+  const [exportError, setExportError] = useState("");
+  useEffect(() => { let cancelled = false; fetch("/api/image-assets").then(r => r.ok ? r.json() : null).then(data => { if (data && !cancelled) setAssets(current => [...new Map([...current, ...data.assets].map(a => [a.id,a])).values()]); }).catch(() => undefined); return () => { cancelled = true; }; }, []);
   const [activeSlideIdx, setActiveSlideIdx] = useState(0);
   const [exporting, setExporting] = useState<"png" | "pdf" | null>(null);
   const [savingTemplate, setSavingTemplate] = useState(false);
@@ -116,6 +126,9 @@ export function CarouselEditor({
   function removeSlide(id: string) { runDeckCommand({ type: "delete", id }); }
 
   async function handleExport(type: "png" | "pdf") {
+    const problems = carousel.slides.flatMap(s => [...patternContentWarnings(s), ...mediaWarnings(s, assets)]);
+    if (problems.length) { setExportError(problems[0]); return; }
+    setExportError("");
     const els = exportRefs.current
       .slice(0, carousel.slides.length)
       .filter((el): el is HTMLDivElement => Boolean(el));
@@ -129,7 +142,7 @@ export function CarouselEditor({
       } else {
         await exportSlidesAsPdf(els, slug, carousel.aspectRatio);
       }
-    } finally {
+    } catch (e) { setExportError(e instanceof Error ? e.message : "Could not export slides."); } finally {
       setExporting(null);
     }
   }
@@ -304,6 +317,7 @@ export function CarouselEditor({
         </CardContent>
       </Card>
 
+      {exportError && <p role="alert" className="text-sm text-destructive">{exportError}</p>}
       {/* Main Split: Slide Editor + Live 1080x1350 Preview */}
       <div className="grid gap-6 lg:grid-cols-[1fr_400px]">
         <div className="space-y-4">
@@ -505,6 +519,8 @@ export function CarouselEditor({
                 )}
 
                 <div className="space-y-1">
+                  <SlideMediaControls slide={activeSlide} assets={assets} onChange={next => updateSlide(activeSlide.id,next)} onAsset={asset => setAssets(current => [...current,asset])}/>
+                  <PatternContentControls slide={activeSlide} onChange={next => updateSlide(activeSlide.id, next)} />
                   <Label htmlFor={`${carousel.platform}-headline`} className="text-xs">Headline</Label>
                   <Input
                     id={`${carousel.platform}-headline`}
@@ -568,6 +584,7 @@ export function CarouselEditor({
         <div className="flex flex-col items-center">
           {activeTemplate && (
             <CarouselPreview
+              assets={assets}
                 design={carousel.design}
               slides={carousel.slides}
               activeIndex={activeSlideIdx}

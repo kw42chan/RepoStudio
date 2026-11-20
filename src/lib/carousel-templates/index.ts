@@ -1,5 +1,6 @@
-import manifest from "./manifest.v1.json";
-import { parseCarouselTemplateManifest, type CarouselPatternContract } from "./schema";
+import { validatedCatalog } from "./catalog";
+import type { CarouselPatternContract } from "./schema";
+import { applyPattern } from "../carousel-pattern-registry";
 import { hydrateSlideStructuredSlots } from "../carousel-slide-slots";
 import type {
   CarouselContent,
@@ -162,7 +163,7 @@ export interface CarouselTemplateManifest {
 }
 
 export const carouselTemplateManifest: CarouselTemplateManifest =
-  parseCarouselTemplateManifest(manifest);
+  validatedCatalog;
 
 const layoutPacksById = new Map(
   (carouselTemplateManifest.layoutPacks ?? []).map((pack) => [pack.id, pack])
@@ -577,6 +578,9 @@ export function applyGraphicsStyleToSlide(
   slide: CarouselSlide,
   templateId: string
 ): CarouselSlide {
+  if (getCarouselTemplate(templateId)?.pattern && getCarouselTemplate(templateId)?.implementationStatus === "rendered") {
+    return applyPattern(slide, templateId);
+  }
   const productionId = resolveProductionTemplateId(templateId);
   const layoutTemplate = getCarouselTemplate(productionId);
   if (!layoutTemplate && !getCarouselTemplate(templateId)) {

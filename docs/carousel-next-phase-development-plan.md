@@ -130,21 +130,33 @@ The deterministic pattern-selection module validates the candidates against actu
 
 ### Implementation status — 2026-11-20
 
-Phase 4.0 is implemented on `feature/carousel-phase-4-0`: load-time manifest validation, contracts for all 15 documented patterns, nine first-release selections, seven fixture decks, and nine 1080 × 1350 PNG/SVG design references. See [[Projects/RepoStudio/docs/carousel-phase-4-0|Phase 4.0 field matrix and verification]]. New patterns remain reference-only; their production renderers are scheduled for Phase 4.3. References establish design targets rather than preview/export parity.
+Phase 4.0 is finished as of 2026-11-20 in commit `c6e8a63` on `feature/carousel-phase-4-0`: load-time manifest validation, contracts for all 15 documented patterns, nine first-release selections, seven fixture decks, and nine 1080 × 1350 PNG/SVG design references. See [[Projects/RepoStudio/docs/carousel-phase-4-0|Phase 4.0 field matrix and verification]]. New patterns remain reference-only; their production renderers are scheduled for Phase 4.3. References establish design targets rather than preview/export parity.
+
+| Phase | Status |
+| --- | --- |
+| 4.0 — Development preparation and golden fixtures | Finished — 2026-11-20, `c6e8a63` |
+| 4.1 — Brand typography and built-in font library | Not started — next |
+| 4.2 — Deck operations and narrative arrangement | Not started |
+| 4.3 — Pattern registry and production renderers | Not started |
+| 4.4 — Image assets and declared slot controls | Not started |
+| 4.5 — LLM pattern routing and reference-style ingestion | Not started |
+| 4.6 — Content fit, export parity, and release hardening | Not started |
 
 Validation: 36 focused tests pass; TypeScript and changed-file ESLint pass. The full suite has 53 passes and the existing Windows read-only-directory store test failure (`chmod(0555)` does not prevent the write). Phase 4.1 typography is the next implementation slice.
 
 ### Phase 4.0 — Development preparation and golden fixtures
 
+Status: **Finished** — 2026-11-20. Implementation commit: `c6e8a63`.
+
 Purpose: lock the contracts before UI expansion.
 
-- Convert the two pattern documents into a manifest field matrix: identifier, family, intent tags, slots, limits, image slots, light/dark support, renderer status.
-- Add typed manifest validation with Zod at load time so malformed pattern definitions fail in tests rather than during editing.
-- Create representative fixture decks for Traditional Chinese, English, mixed-language, long headings, missing images, and maximum slide count.
-- Capture one 1080 × 1350 golden image per first-release pattern and record the expected typography and image-slot behavior.
-- Decide the first-release pattern subset. Recommended: statement, numbered list, vertical timeline, horizontal timeline, A/B comparison, metric evidence, collage cover, prompt-to-outcome, and CTA.
+- [x] Convert the two pattern documents into a manifest field matrix: identifier, family, intent tags, slots, limits, image slots, light/dark support, renderer status.
+- [x] Add typed manifest validation with Zod at load time so malformed pattern definitions fail in tests rather than during editing.
+- [x] Create representative fixture decks for Traditional Chinese, English, mixed-language, long headings, missing images, and maximum slide count.
+- [x] Generate one 1080 × 1350 design reference per first-release pattern and record the expected typography and image-slot behavior. Production-renderer captures follow in Phase 4.3.
+- [x] Decide the first-release pattern subset: statement, numbered list, vertical timeline, horizontal timeline, A/B comparison, metric evidence, collage cover, prompt-to-outcome, and CTA.
 
-Exit gate: manifest validation passes; every selected pattern has a fixture, a reference image, and explicit content limits.
+Exit gate: **Met** — manifest validation passes; every selected pattern has a fixture, a reference image, and explicit content limits. Verification results and the existing unrelated Windows test failure are recorded above.
 
 ### Phase 4.1 — Brand typography and built-in font library
 

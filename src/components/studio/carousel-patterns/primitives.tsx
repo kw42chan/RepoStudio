@@ -5,6 +5,10 @@ import type { ResolvedBrandTheme } from "@/lib/carousel-brand-theme";
 export interface PatternRenderProps {
   slide: CarouselSlide; theme: ResolvedBrandTheme; ink: string; muted: string; accent: string; panel: string;
 }
+/** Editorial emphasis stays plain text; no HTML from generated content is executed. */
+export function HighlightedText({ text, accent }: { text: string; accent: string }) {
+  return <>{text.split(/(\*\*[^*]+\*\*)/g).map((part,index)=>part.startsWith("**")&&part.endsWith("**") ? <mark key={index} style={{background:"transparent",color:accent}}>{part.slice(2,-2)}</mark> : part)}</>;
+}
 export function headingStyle(theme: ResolvedBrandTheme, size = 60): CSSProperties {
   return { margin: 0, fontFamily: theme.heading.fontFamily, fontWeight: theme.heading.weight, fontSize: `max(32px, calc(${size}px * var(--carousel-heading-scale, ${theme.heading.sizeScale})))`, lineHeight: 1.15, overflowWrap: "anywhere", whiteSpace: "pre-wrap", lineBreak: "strict" };
 }

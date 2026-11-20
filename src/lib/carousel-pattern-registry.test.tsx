@@ -6,8 +6,13 @@ import { fixtureCarousel, fixtureAssets } from "./carousel-fixture-decks";
 import { BUILT_IN_VISUAL_TEMPLATES } from "./presets";
 import { SlideCanvas } from "@/components/studio/carousel-preview";
 import { mediaWarnings, resolveSlideMedia } from "./carousel-slide-media";
+import { HighlightedText } from "@/components/studio/carousel-patterns/primitives";
 
 describe("production patterns and media", () => {
+  it("highlights editorial phrases while escaping source markup",()=>{
+    const html=renderToStaticMarkup(<HighlightedText text="One **clear idea** and <script>" accent="#bd4a28"/>);
+    expect(html).toContain("<mark");expect(html).toContain("clear idea");expect(html).toContain("&lt;script&gt;");expect(html).not.toContain("<script>");
+  });
   it("renders all nine manifest patterns and never lists deferred variants", () => {
     expect(listPatterns()).toHaveLength(9);
     for (const slide of fixtureCarousel("en").slides) {

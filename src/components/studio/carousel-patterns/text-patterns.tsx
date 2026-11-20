@@ -1,5 +1,5 @@
 import type { ReactNode } from "react";
-import { bodyStyle, headingStyle, NumberedNode, EvidenceFrame, type PatternRenderProps } from "./primitives";
+import { bodyStyle, headingStyle, NumberedNode, EvidenceFrame, HighlightedText, type PatternRenderProps } from "./primitives";
 
 export function TextPattern(props: PatternRenderProps & { image: (id: string) => ReactNode }) {
   const { slide, theme, ink, muted, accent, panel, image } = props;
@@ -7,7 +7,7 @@ export function TextPattern(props: PatternRenderProps & { image: (id: string) =>
   const body = bodyStyle(theme);
   if (slide.templateId === "signal-statement" || slide.templateId === "signal-cta") {
     return <div data-content-zone style={{ display: "flex", flexDirection: "column", justifyContent: "center", gap: 40, flex: 1 }}>
-      <h2 data-content-text style={headingStyle(theme, 80)}>{slide.headline}</h2>
+      <h2 data-content-text style={headingStyle(theme, 80)}><HighlightedText text={slide.headline} accent={accent}/></h2>
       {slide.templateId === "signal-cta" ? <div data-content-text style={{ ...bodyStyle(theme, 40), color: accent, fontWeight: theme.heading.weight }}>{slide.patternContent?.action}</div> : slide.body && <p data-content-text style={{ ...body, color: muted }}>{slide.body}</p>}
     </div>;
   }

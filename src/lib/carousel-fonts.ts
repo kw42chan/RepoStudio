@@ -22,7 +22,11 @@ export type BrandDesignSettingsV1 = z.infer<typeof brandDesignSchema>;
 
 export function normalizeBrandDesign(input: unknown, style = "sans"): BrandDesignSettingsV1 {
   const parsed = brandDesignSchema.safeParse(input);
-  if (parsed.success) return parsed.data;
+  if (parsed.success) {
+    const design=parsed.data;
+    design.heading.weight=Math.min(design.heading.weight,Math.max(...resolveFont(design.heading.fontId).weights)) as typeof design.heading.weight;
+    return design;
+  }
   return { version: 1, heading: { fontId: style === "serif" ? "lora" : style === "mono" ? "jetbrains-mono" : "epilogue", weight: 700, sizeScale: 1 }, body: { fontId: "epilogue", weight: 500, sizeScale: 1 } };
 }
 

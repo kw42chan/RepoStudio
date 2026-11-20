@@ -33,6 +33,18 @@ Old presets and drafts receive versioned typography defaults; serif drafts retai
 
 The former Windows permissions test now uses a blocked directory path rather than platform-dependent `chmod`, while still verifying the actual storage fallback. Transcript content is normalized before generation so timestamp markers do not enter beats or carousel copy.
 
+## Desktop-skill follow-up — 2026-11-20
+
+The requested desktop walkthrough is **blocked by the desktop runtime**, not passed. Neither `.agents/skills/agent-desktop/SKILL.md` nor `.agents/skills/agent-desktop-linux/SKILL.md` is installed, and `agent-desktop` is absent from PATH. The available Windows computer-use skill initialized, but `sky.list_apps()` could not reach its native helper. The alternate desktop-surface inventory failed with the same error:
+
+```text
+Computer Use native pipe is unavailable: failed to connect native pipe: The system cannot find the file specified. (os error 2)
+```
+
+No app-window clicks, typing, or visible desktop walkthrough were performed. Once native desktop control is available, repeat the visible typography save/reload, slide arrangement, image-slot/crop, reference review, overflow, and export walkthrough.
+
+The existing automated strategy was rerun separately: **70 unit/contract tests passed across 16 files, and all 16 Playwright browser tests passed in 33.4 seconds**. The browser rerun included both export scenarios and retained preview/PNG mean channel differences of 0.166 and 0.817. These are automated-browser results and do not count as desktop-skill validation.
+
 ## Remaining release checks
 
 - Live text/vision provider quality and credential-dependent behavior were not independently certified by this run. Demo/local palette paths remain labeled in the interface.

@@ -283,6 +283,8 @@ Exit gate: **Met for local portrait rendering** — no first-release golden fixt
 
 Test through each module’s public interface.
 
+Desktop follow-up requested on 2026-11-20: blocked because the agent-desktop skills/CLI are absent and the available Windows computer-use helper cannot connect to its native pipe. A fresh automated rerun passed 70 unit/contract tests and 16 browser tests. A visible desktop walkthrough remains open; see [[Projects/RepoStudio/docs/carousel-release-verification|the verification report]] for the exact error and required retry.
+
 - Contract tests: manifest entries parse and every rendered pattern maps to a renderer.
 - Property-style deck tests: any command sequence preserves ids, numbering, and cover/CTA invariants.
 - Theme tests: every font id resolves to an installed family plus a CJK-safe fallback.

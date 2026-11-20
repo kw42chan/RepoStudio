@@ -24,7 +24,7 @@ export function PatternSlide({ slide, totalSlides, theme, template, primaryColor
   const image = (id: string) => { const slot = media.find(m => m.slot.id === id); return slot ? <ImageFrame key={id} media={slot}/> : null; };
 
   return <div style={{ width: dims.width*scale, height: dims.height*scale, overflow: "hidden", borderRadius: fullResolution ? 0 : 12 }}>
-    <article data-platform={platform} data-carousel-template={slide.templateId} data-layout="pattern" style={{ width: dims.width, height: dims.height, transform: `scale(${scale})`, transformOrigin: "top left", background: colors.background, color: colors.ink, padding, boxSizing: "border-box", display: "flex", flexDirection: "column", gap, ...bodyStyle(theme) }}>
+    <article data-platform={platform} data-carousel-template={slide.templateId} data-layout="pattern" data-base-gap={gap} data-heading-scale={theme.heading.sizeScale} data-body-scale={theme.body.sizeScale} style={{ width: dims.width, height: dims.height, transform: `scale(${scale})`, transformOrigin: "top left", background: colors.background, color: colors.ink, padding, boxSizing: "border-box", display: "flex", flexDirection: "column", gap: "calc(var(--carousel-gap, " + gap + ") * 1px)", ...bodyStyle(theme) }}>
       <header style={{ display: "flex", justifyContent: "space-between", fontSize: 28, borderBottom: `2px solid ${colors.accent}`, paddingBottom: 24 }}><span>{brandHandle}</span><span>{slide.slideNumber} / {totalSlides}</span></header>
       {!hero && <h2 data-content-text style={headingStyle(theme)}>{slide.headline}</h2>}
       {!hero && definition.optionalSlots.includes("body") && slide.body && <p data-content-text style={{ ...bodyStyle(theme), color: colors.muted }}>{slide.body}</p>}

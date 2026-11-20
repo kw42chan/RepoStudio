@@ -24,6 +24,7 @@ export const patternContractSchema = z.object({
     headlineMax: positiveInt, bodyMax: positiveInt,
     minItems: z.number().int().nonnegative(), maxItems: z.number().int().nonnegative(),
     itemTitleMax: positiveInt, itemBodyMax: positiveInt,
+    fieldMax: z.record(z.string(), positiveInt).optional(),
   }).strict().refine(v => v.minItems <= v.maxItems, "minItems must not exceed maxItems"),
   density: z.enum(["light", "balanced", "dense"]),
   supportedModes: z.array(z.enum(["light", "dark"])).min(1),

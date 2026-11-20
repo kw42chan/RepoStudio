@@ -4,6 +4,7 @@ import type { BrandDesignSettingsV1 } from "@/lib/carousel-fonts";
 
 
 import React from "react";
+import { fitSlide, type SlideFitReport } from "@/lib/carousel-content-fit";
 import { ChevronLeft, ChevronRight } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { getToolLogo } from "@/lib/carousel-assets";
@@ -164,7 +165,6 @@ function GridSlideCanvas({
   theme,
   slide,
   totalSlides,
-  template,
   palette,
   brandHandle,
   platform,
@@ -691,6 +691,7 @@ export function SlideCanvas({
 }
 
 interface CarouselPreviewProps {
+  onMeasured?: (reports: SlideFitReport[]) => void;
   assets?: SlideImageAsset[];
   design?: BrandDesignSettingsV1;
   slides: CarouselSlide[];
@@ -706,6 +707,7 @@ interface CarouselPreviewProps {
 }
 
 export function CarouselPreview({
+  onMeasured,
   assets,
   design,
   slides,
@@ -721,11 +723,28 @@ export function CarouselPreview({
 }: CarouselPreviewProps) {
   const currentSlide = slides[activeIndex] || slides[0];
   const dims = getExportDimensions(aspectRatio);
+  const containerRef = React.useRef<HTMLDivElement>(null);
+  React.useEffect(() => {
+    let cancelled = false;
+    async function measure() {
+      await document.fonts.ready;
+      await Promise.all([...containerRef.current?.querySelectorAll("img") ?? []].map(img => img.decode().catch(() => undefined)));
+      if(cancelled)return;
+      const visible=containerRef.current?.querySelector<HTMLElement>("[data-carousel-template]");
+      if(visible)fitSlide(visible);
+      const reports=exportRefs.current.slice(0,slides.length).flatMap((wrapper,i)=>{
+        const root=wrapper?.querySelector<HTMLElement>("[data-carousel-template]");
+        return root ? [{id:slides[i].id,...fitSlide(root)}] : [];
+      });
+      onMeasured?.(reports);
+    }
+    void measure();return()=>{cancelled=true;};
+  },[slides,activeIndex,template,design,primaryColor,secondaryColor,aspectRatio,assets,exportRefs,onMeasured]);
 
   if (!currentSlide) return null;
 
   return (
-    <div className="flex flex-col items-center gap-3">
+    <div ref={containerRef} className="flex flex-col items-center gap-3">
       <div className="flex w-full items-center justify-between text-xs text-muted-foreground">
         <span>
           Live Preview ({dims.width} × {dims.height})

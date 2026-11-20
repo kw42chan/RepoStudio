@@ -6,10 +6,10 @@ export interface PatternRenderProps {
   slide: CarouselSlide; theme: ResolvedBrandTheme; ink: string; muted: string; accent: string; panel: string;
 }
 export function headingStyle(theme: ResolvedBrandTheme, size = 60): CSSProperties {
-  return { margin: 0, fontFamily: theme.heading.fontFamily, fontWeight: theme.heading.weight, fontSize: size * theme.heading.sizeScale, lineHeight: 1.15, overflowWrap: "anywhere", whiteSpace: "pre-wrap" };
+  return { margin: 0, fontFamily: theme.heading.fontFamily, fontWeight: theme.heading.weight, fontSize: `max(32px, calc(${size}px * var(--carousel-heading-scale, ${theme.heading.sizeScale})))`, lineHeight: 1.15, overflowWrap: "anywhere", whiteSpace: "pre-wrap", lineBreak: "strict" };
 }
 export function bodyStyle(theme: ResolvedBrandTheme, size = 36): CSSProperties {
-  return { margin: 0, fontFamily: theme.body.fontFamily, fontWeight: theme.body.weight, fontSize: Math.max(32, size * theme.body.sizeScale), lineHeight: 1.4, overflowWrap: "anywhere", whiteSpace: "pre-wrap" };
+  return { margin: 0, fontFamily: theme.body.fontFamily, fontWeight: theme.body.weight, fontSize: `max(32px, calc(${size}px * var(--carousel-body-scale, ${theme.body.sizeScale})))`, lineHeight: 1.4, overflowWrap: "anywhere", whiteSpace: "pre-wrap", lineBreak: "strict" };
 }
 export function EvidenceFrame({ children, panel, style }: { children: ReactNode; panel: string; style?: CSSProperties }) {
   return <div style={{ background: panel, borderRadius: 22, padding: 24, minWidth: 0, ...style }}>{children}</div>;

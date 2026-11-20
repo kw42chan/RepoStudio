@@ -13,4 +13,4 @@ Next.js downloads and self-hosts the files at build time. The application loads 
 
 Lora resolves weight 800 to its actual 700 master. Headings support 500–800 and scales 85–120%; body supports 400–600 and scales 90–115%. Invalid legacy design settings receive version-1 defaults. The preset endpoint rejects malformed new settings. Legacy serif/mono drafts retain their corresponding font role when migrated; unrelated draft content stays intact.
 
-The same resolved theme reaches normal slides, grids, and Edward AI renderers in both preview and export. PNG and PDF capture wait for `document.fonts.ready`. Exact pixel parity and content-fit stress checks continue in Phase 4.6.
+The same resolved theme reaches normal slides, grids, Edward AI renderers, and the new pattern families in both preview and export. PNG and PDF capture wait for fonts and images and embed the required font subsets. [[Projects/RepoStudio/docs/carousel-release-verification|Phase 4.6 verification]] records the measured preview/export comparison and content-fit stress checks.

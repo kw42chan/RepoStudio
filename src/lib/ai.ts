@@ -641,6 +641,7 @@ export async function generateContentForFormats(params: {
   liCarousel?: CarouselContent;
   usedMock: boolean;
 }> {
+  if (params.sourcePost.sourcePlatform === "Transcript") params = { ...params, sourcePost: { ...params.sourcePost, rawText: spokenTextFromTranscript(params.sourcePost.rawText) } };
   const {
     sourcePost,
     idea,

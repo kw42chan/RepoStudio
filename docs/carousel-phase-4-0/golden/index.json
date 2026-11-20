@@ -27,7 +27,7 @@
     "imageBehavior": [
       "No image controls or frames"
     ],
-    "productionRenderer": "pending Phase 4.3"
+    "productionRenderer": "available; actual captures in e2e/goldens"
   },
   {
     "templateId": "signal-numbered-list",
@@ -57,7 +57,7 @@
     "imageBehavior": [
       "No image controls or frames"
     ],
-    "productionRenderer": "pending Phase 4.3"
+    "productionRenderer": "available; actual captures in e2e/goldens"
   },
   {
     "templateId": "signal-vertical-timeline",
@@ -87,7 +87,7 @@
     "imageBehavior": [
       "No image controls or frames"
     ],
-    "productionRenderer": "pending Phase 4.3"
+    "productionRenderer": "available; actual captures in e2e/goldens"
   },
   {
     "templateId": "signal-horizontal-timeline",
@@ -121,7 +121,7 @@
       "timeline-4: cover; optional (absent leaves no frame); focal point 0.5/0.5",
       "timeline-5: cover; optional (absent leaves no frame); focal point 0.5/0.5"
     ],
-    "productionRenderer": "pending Phase 4.3"
+    "productionRenderer": "available; actual captures in e2e/goldens"
   },
   {
     "templateId": "spec-ab-comparison",
@@ -152,7 +152,7 @@
       "example-a: contain; optional (absent leaves no frame); focal point 0.5/0.5",
       "example-b: contain; optional (absent leaves no frame); focal point 0.5/0.5"
     ],
-    "productionRenderer": "pending Phase 4.3"
+    "productionRenderer": "available; actual captures in e2e/goldens"
   },
   {
     "templateId": "signal-metric-evidence",
@@ -182,7 +182,7 @@
     "imageBehavior": [
       "evidence-left: contain; required (missing blocks production); focal point 0.5/0.5"
     ],
-    "productionRenderer": "pending Phase 4.3"
+    "productionRenderer": "available; actual captures in e2e/goldens"
   },
   {
     "templateId": "signal-collage-cover",
@@ -214,7 +214,7 @@
       "support-bottom-center: contain; optional (absent leaves no frame); focal point 0.5/0.5",
       "support-bottom-right: contain; optional (absent leaves no frame); focal point 0.5/0.5"
     ],
-    "productionRenderer": "pending Phase 4.3"
+    "productionRenderer": "available; actual captures in e2e/goldens"
   },
   {
     "templateId": "story-prompt-outcome",
@@ -244,7 +244,7 @@
     "imageBehavior": [
       "result-preview: contain; required (missing blocks production); focal point 0.5/0.5"
     ],
-    "productionRenderer": "pending Phase 4.3"
+    "productionRenderer": "available; actual captures in e2e/goldens"
   },
   {
     "templateId": "signal-cta",
@@ -274,6 +274,6 @@
     "imageBehavior": [
       "No image controls or frames"
     ],
-    "productionRenderer": "pending Phase 4.3"
+    "productionRenderer": "available; actual captures in e2e/goldens"
   }
 ]

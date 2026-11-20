@@ -44,6 +44,8 @@ import { WritingStyleControls } from "./writing-style-controls";
 import { SlideMediaControls } from "./slide-media-controls";
 import { mediaWarnings } from "@/lib/carousel-slide-media";
 import { patternContentWarnings } from "@/lib/carousel-pattern-registry";
+import { applyPattern } from "@/lib/carousel-pattern-registry";
+import { compatibleFitAlternatives, cjkCopyWarnings, type SlideFitReport } from "@/lib/carousel-content-fit";
 import { PatternContentControls } from "./pattern-content-controls";
 
 interface CarouselEditorProps {
@@ -81,6 +83,7 @@ export function CarouselEditor({
   layoutPackId,
 }: CarouselEditorProps) {
   const [assets, setAssets] = useState<SlideImageAsset[]>(initialImageAssets);
+  const [fitReports,setFitReports] = useState<SlideFitReport[]>([]);
   const [exportError, setExportError] = useState("");
   useEffect(() => { let cancelled = false; fetch("/api/image-assets").then(r => r.ok ? r.json() : null).then(data => { if (data && !cancelled) setAssets(current => [...new Map([...current, ...data.assets].map(a => [a.id,a])).values()]); }).catch(() => undefined); return () => { cancelled = true; }; }, []);
   const [activeSlideIdx, setActiveSlideIdx] = useState(0);
@@ -99,6 +102,7 @@ export function CarouselEditor({
     carousel.slides[activeSlideIdx] || carousel.slides[0];
 
   function updateSlide(id: string, patch: Partial<CarouselSlide>) {
+    setExportError("");
     onChange({
       ...carousel,
       slides: carousel.slides.map((s) =>
@@ -522,6 +526,9 @@ export function CarouselEditor({
                   <SlideMediaControls slide={activeSlide} assets={assets} onChange={next => updateSlide(activeSlide.id,next)} onAsset={asset => setAssets(current => [...current,asset])}/>
                   {activeSlide.selectionReason && <p className="text-xs text-muted-foreground">{activeSlide.selectionReason}</p>}
                   <PatternContentControls slide={activeSlide} onChange={next => updateSlide(activeSlide.id, next)} />
+                  {fitReports.filter(r=>r.id===activeSlide.id).flatMap(r=>[...r.errors,...r.notes]).map(message=><p key={message} role="status" className="text-xs text-amber-800">{message}</p>)}
+                  {cjkCopyWarnings(`${activeSlide.headline}\n${activeSlide.body}`).map(message=><p key={message} className="text-xs text-amber-800">{message}</p>)}
+                  {fitReports.some(r=>r.id===activeSlide.id&&r.errors.length>0) && compatibleFitAlternatives(activeSlide,assets).map(pattern=><Button key={pattern.id} type="button" size="sm" variant="outline" onClick={()=>updateSlide(activeSlide.id,applyPattern(activeSlide,pattern.id))}>Try {pattern.styleLabel ?? pattern.id}</Button>)}
                   <Label htmlFor={`${carousel.platform}-headline`} className="text-xs">Headline</Label>
                   <Input
                     id={`${carousel.platform}-headline`}
@@ -585,6 +592,7 @@ export function CarouselEditor({
         <div className="flex flex-col items-center">
           {activeTemplate && (
             <CarouselPreview
+              onMeasured={setFitReports}
               assets={assets}
                 design={carousel.design}
               slides={carousel.slides}

@@ -35,9 +35,12 @@ export function patternContentWarnings(slide: CarouselSlide): string[] {
     if (!value || Array.isArray(value) && value.length === 0) errors.push(`Add ${field === "items" ? "points" : field} to complete this layout.`);
   }
   const limit = definition.contentLimits;
+  for(const [key,maximum] of Object.entries(limit.fieldMax ?? {}))if(typeof fields[key]==="string"&&len(fields[key] as string)>maximum)errors.push(`Shorten ${key} to ${maximum} characters.`);
   if (len(slide.headline) > limit.headlineMax) errors.push(`Shorten the heading to ${limit.headlineMax} characters.`);
   if (definition.optionalSlots.includes("body") && len(slide.body) > limit.bodyMax) errors.push(`Shorten the supporting copy to ${limit.bodyMax} characters.`);
   const items = slide.patternContent?.items ?? [];
+  if(items.some(item=>!item.title.trim()))errors.push("Give each point a title.");
+  if(definition.requiredSlots.includes("metric")&&!/[0-9０-９零一二三四五六七八九十百千萬億]/u.test(slide.patternContent?.metric ?? ""))errors.push("Use a numeric metric supported by your source.");
   if (items.length < limit.minItems || items.length > limit.maxItems) errors.push(`Use ${limit.minItems === limit.maxItems ? limit.minItems : `${limit.minItems}–${limit.maxItems}`} points for this layout.`);
   if (items.some(i => len(i.title) > limit.itemTitleMax || len(i.body) > limit.itemBodyMax)) errors.push(`Keep point titles within ${limit.itemTitleMax} characters and descriptions within ${limit.itemBodyMax}.`);
   return [...new Set(errors)];

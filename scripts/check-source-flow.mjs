@@ -13,10 +13,12 @@ const cases=[
   ["YouTube","https://www.youtube.com/watch?v=jNQXAC9IVRw",null],
 ];
 try {for(const [source,url,expected] of cases){
+  if(process.argv[2] && process.argv[2]!==source) continue;
   const row={source,load:"Fail",ideas:"Not run",angles:"Not run",detail:""};
   try{
     await page.goto("http://localhost:3100/");
     const copied=page.getByPlaceholder("Paste the post you want to repurpose here...");
+    if(source==="Video transcript"){await page.getByRole("combobox").filter({hasText:"LinkedIn"}).first().click();await page.getByRole("option",{name:"Video Transcript",exact:true}).click();}
     if(url){
       await page.getByPlaceholder("https://www.linkedin.com/posts/...").fill(url);
       const pending=page.waitForResponse(r=>r.url().endsWith("/api/source-fetch"));
@@ -49,4 +51,4 @@ try {for(const [source,url,expected] of cases){
     row.detail+=` Openings: ${openings.join(" | ")}`;
   }catch(e){row.detail+=` ${String(e).slice(0,350)}`;}
   rows.push(row);console.log(JSON.stringify(row));
-}}finally{await browser.close();await mkdir("test-results",{recursive:true});await writeFile("test-results/source-flow.json",JSON.stringify(rows,null,2));}
+}}finally{await browser.close();await mkdir("test-results",{recursive:true});await writeFile(`test-results/source-flow${process.argv[2]?"-"+process.argv[2].replaceAll(" ","-"):""}.json`,JSON.stringify(rows,null,2));}

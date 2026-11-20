@@ -27,6 +27,7 @@ export function validatePatternFixture(slide: PatternFixtureSlide, pattern: Caro
     if (value === undefined || value === "" || (Array.isArray(value) && !value.length)) errors.push(`required:${key}`);
   }
   const limits = pattern.contentLimits;
+  for(const [key,maximum] of Object.entries(limits.fieldMax ?? {}))if(typeof fields[key]==="string"&&length(fields[key] as string)>maximum)errors.push(`limit:${key}`);
   if (length(slide.headline) > limits.headlineMax) errors.push("limit:headline");
   if (length(slide.body ?? "") > limits.bodyMax) errors.push("limit:body");
   const items = slide.items ?? [];

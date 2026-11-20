@@ -23,18 +23,14 @@ For each source:
 
 ## Last run
 
-16 November 2026, 4:14 PM Hong Kong time. Instagram carousel check on Load SaaS Growth Post. Slide 1 is a light cover with the handle, a tag, a progress bar reading 1/7, and a right chevron. Slide 7 is the brand close with a pill and no chevron. Slide 6 is dark. The source rows below were not repeated.
-
-16 November 2026, 3:50 PM Hong Kong time. This run checked the generate button on Load SaaS Growth Post. Selecting “The 5-step execution breakdown” did not write a reel. Content Studio appeared only after Generate selected angle. Opening hook: `Steal this exact playbook we used to turn insight into results`. The source rows below were not repeated.
-
-16 November 2026, about 12:00 AM Hong Kong time.
+20 November 2026. Automated browser execution followed the studio steps, including both angle selections and generation. Transcript was rerun with the Video Transcript source selected after fixing timestamp leakage. These checks describe local behavior; they do not certify live model-provider quality.
 
 | Source | Load | Ideas | Two angles |
 | --- | --- | --- | --- |
-| X | Pass. `We reject: kings, presidents, and voting.` English. | Pass. Key insight: `We believe in: rough consensus and running code.` First hook quotes `We reject: kings, presidents, and voting.` | Pass. Second opening: `Steal this exact playbook we used to turn insight into results.` |
-| LinkedIn | Pass. Full post, starting `Community Resource Friday: the campaign brief checklist...` | Pass. Key insight: `A strong brief does more than describe the deliverable. It gives the team a shared definition of the problem, the audience, and the win.` | Pass. Second opening is the playbook hook. |
-| Instagram | Fail. `No post text was found on that page. Paste the caption into the box.` The previous text stayed in the box. | Not run. | Not run. |
-| Threads | Fail. The box got `1.1M Followers • 448 Threads • Father of three boys...`, not a thread. | Not run. | Not run. |
-| Video transcript | Paste is in the box with the timestamps. The YouTube link did not return a transcript. | Pass. Key insight: `Rewriting the first line made the same budget convert.` First hook quotes the spoken sentence and has no `[00:00:01]`. | Openings differ. Fail on the next beat: both angles say `Here is why most people get this wrong: [00:00:01] The offer was weak, so more ads could not save it.` |
+| X | Pass. Full quoted post appears in English. | Pass. Insight is the rough-consensus sentence and the first hook quotes the source. | Pass. Openings differ. |
+| LinkedIn | Pass. The campaign brief checklist and following paragraph remain in the box. | Pass. Insight comes from the paragraph about a shared definition of the problem, audience, and win. | Pass. Openings differ. |
+| Instagram | Fail. No post text was found; the interface asks for a pasted caption. | Not run. | Not run. |
+| Threads | Fail. The profile URL returns follower counts and a bio, not a thread. | Not run. | Not run. |
+| Video transcript | Pass for the pasted transcript with Video Transcript selected. YouTube Load link failed to return a response within the 45-second browser wait. | Pass. The spoken hook and key insight exclude timestamps. | Pass after the generation-input fix. Openings differ and no reel beat retains either timestamp. |
 
-Replace this last-run table after every execution. Keep the pass conditions above unchanged unless the product requirement changes.
+Instagram, Threads, and YouTube loading remain open gaps. Pasting source content and transcript text remains the supported fallback for these cases. The reusable check is `node scripts/check-source-flow.mjs`; an optional source name runs one row.

@@ -3,6 +3,8 @@
 import { toPng } from "html-to-image";
 import { jsPDF } from "jspdf";
 import { AspectRatio } from "./types";
+import { prepareSlideCapture } from "./carousel-content-fit";
+import { slideFontEmbedCss } from "./carousel-export-fonts";
 
 export function getExportDimensions(aspectRatio: AspectRatio): {
   width: number;
@@ -20,11 +22,12 @@ export async function exportSlidesAsPng(
 ): Promise<void> {
   const { width, height } = getExportDimensions(aspectRatio);
 
-  await document.fonts.ready;
+  await prepareSlideCapture(slideElements);
 
   for (let i = 0; i < slideElements.length; i++) {
     const el = slideElements[i];
     const dataUrl = await toPng(el, {
+      fontEmbedCSS: await slideFontEmbedCss(el),
       width,
       height,
       pixelRatio: 1,
@@ -47,7 +50,7 @@ export async function exportSlidesAsPdf(
 ): Promise<void> {
   const { width, height } = getExportDimensions(aspectRatio);
 
-  await document.fonts.ready;
+  await prepareSlideCapture(slideElements);
 
   const pdf = new jsPDF({
     orientation: "portrait",
@@ -59,6 +62,7 @@ export async function exportSlidesAsPdf(
   for (let i = 0; i < slideElements.length; i++) {
     const el = slideElements[i];
     const dataUrl = await toPng(el, {
+      fontEmbedCSS: await slideFontEmbedCss(el),
       width,
       height,
       pixelRatio: 1,

@@ -1,0 +1,41 @@
+---
+type: project-report
+date: 2026-11-20
+status: complete
+tags: [repostudio, carousel-release, verification]
+---
+
+## Phase 4 local verification
+
+The workflow in [[Projects/RepoStudio/docs/carousel-next-phase-development-plan|the development plan]] is implemented locally: saved brand typography, slide arrangement, nine graphics styles, image slots and crops, automatic pattern selection, reviewed reference traits, and content-fit checks before export.
+
+| Check | Result |
+| --- | --- |
+| Vitest | 69 tests pass across 16 files. Includes manifest contracts, selection, deck commands, media, typography, migration defaults, storage fallback, and transcript generation. |
+| Browser suite | 16 tests pass: brand save/reload, keyboard arrangement, image upload/crop/retention, pattern captures, maximum CJK/English and mixed content, missing images, reference confirmation, brief creation, overflow blocking, and export. |
+| Golden captures | 27 actual 1080 × 1350 browser captures: nine default, nine light, and nine dark. Contact sheets were visually reviewed. The earlier Phase 4.0 SVG/PNG references remain design targets. |
+| Large typography | Maximum-content slides fit after bounded adaptation; measured body text stays at least 32 px. |
+| Export files | Five legacy PNGs and a five-page PDF, plus nine Chinese pattern PNGs and a nine-page PDF. PNG dimensions are 1080 × 1350. PDF page boxes are 810 × 1012.5 points, corresponding to that geometry at 96 dpi. |
+| Preview to PNG | Mean absolute channel difference: 0.166 for the legacy cover and 0.817 for the Chinese cover, on a 0–255 scale. Both are below the test tolerance of 1.5; this allows rasterization differences and is not a claim of identical pixels. |
+| PNG to PDF | All 14 displayed PDF page images were extracted and compared with their PNG exports: total channel difference zero. Chinese PDF pages were rasterized for visual review. |
+| TypeScript | Pass. |
+| ESLint | Changed files have no errors. Image-element warnings remain where direct image elements are needed for capture. |
+| Production build | Pass; migration script reports nothing to do. Runtime data files are excluded from build-time tracing. |
+| Production smoke | Home and presets return 200; the development fixture page returns 404; no hydration or page errors were observed on the home page. |
+
+## Content fitting and compatibility
+
+The editor and export measure rendered text boxes for clipping and overlap. New patterns use strict Chinese line breaking and bounded spacing/type adjustments. Changes to fit are reported in the editor; fitting does not rewrite the saved brand. If content still overflows, export stops with an explanation and the editor offers a compatible lower-density layout when one preserves the required fields. Chinese punctuation and orphan lines are checked in both copy and rendered lines.
+
+Fonts and images finish loading before capture. Export embeds actual computed font families and only Unicode subsets needed by the slide, including Traditional Chinese. Both file formats use the same full-resolution DOM and crop resolver.
+
+Old presets and drafts receive versioned typography defaults; serif drafts retain a serif heading choice. Source content, slide IDs/media, and old layout-pack sequences remain intact. The former Windows permissions test now uses a blocked directory path rather than platform-dependent `chmod`, while still verifying the actual storage fallback. Transcript content is normalized before generation so timestamp markers do not enter beats or carousel copy.
+
+## Remaining release checks
+
+- Live text/vision provider quality and credential-dependent behavior were not independently certified by this run. Demo/local palette paths remain labeled in the interface.
+- Hosted deployment was not performed. Image files need persistent storage, as documented in [[Projects/RepoStudio/docs/carousel-image-assets|image storage and retention]].
+- [[Projects/RepoStudio/docs/standard-manual-test|The source-flow checklist]] records passes for X, LinkedIn, and pasted transcripts, and existing failures for Instagram caption loading, Threads profile loading, and the YouTube transcript link. These source-fetch gaps remain open; pasted source text is available.
+- The new pattern library is verified primarily at 1080 × 1350. Square output remains available, with measured fit checks that may ask for shorter copy or another layout.
+
+Reproduce with `npx vitest run`, `npx playwright test` against the local server on port 3100, and `npm run build`. Golden updates require explicit `--update-snapshots`; review changed captures before accepting them. The source checklist can be rerun with `node scripts/check-source-flow.mjs`.

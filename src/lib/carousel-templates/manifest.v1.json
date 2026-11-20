@@ -954,7 +954,8 @@
           "minItems": 0,
           "maxItems": 0,
           "itemTitleMax": 9,
-          "itemBodyMax": 15
+          "itemBodyMax": 15,
+          "fieldMax": {}
         },
         "density": "light",
         "supportedModes": [
@@ -1011,7 +1012,8 @@
           "minItems": 3,
           "maxItems": 3,
           "itemTitleMax": 9,
-          "itemBodyMax": 15
+          "itemBodyMax": 15,
+          "fieldMax": {}
         },
         "density": "dense",
         "supportedModes": [
@@ -1068,7 +1070,8 @@
           "minItems": 2,
           "maxItems": 6,
           "itemTitleMax": 21,
-          "itemBodyMax": 21
+          "itemBodyMax": 21,
+          "fieldMax": {}
         },
         "density": "balanced",
         "supportedModes": [
@@ -1183,7 +1186,10 @@
           "minItems": 3,
           "maxItems": 5,
           "itemTitleMax": 7,
-          "itemBodyMax": 13
+          "itemBodyMax": 13,
+          "fieldMax": {
+            "outcome": 10
+          }
         },
         "density": "balanced",
         "supportedModes": [
@@ -1265,7 +1271,10 @@
           "minItems": 2,
           "maxItems": 2,
           "itemTitleMax": 18,
-          "itemBodyMax": 40
+          "itemBodyMax": 40,
+          "fieldMax": {
+            "recommendation": 20
+          }
         },
         "density": "balanced",
         "supportedModes": [
@@ -1338,7 +1347,11 @@
           "minItems": 2,
           "maxItems": 4,
           "itemTitleMax": 10,
-          "itemBodyMax": 12
+          "itemBodyMax": 12,
+          "fieldMax": {
+            "metric": 8,
+            "unit": 12
+          }
         },
         "density": "dense",
         "supportedModes": [
@@ -1431,7 +1444,10 @@
           "minItems": 2,
           "maxItems": 4,
           "itemTitleMax": 10,
-          "itemBodyMax": 12
+          "itemBodyMax": 12,
+          "fieldMax": {
+            "badge": 10
+          }
         },
         "density": "dense",
         "supportedModes": [
@@ -1504,7 +1520,11 @@
           "minItems": 4,
           "maxItems": 4,
           "itemTitleMax": 12,
-          "itemBodyMax": 26
+          "itemBodyMax": 26,
+          "fieldMax": {
+            "prompt": 24,
+            "takeaway": 20
+          }
         },
         "density": "dense",
         "supportedModes": [
@@ -1557,7 +1577,10 @@
           "minItems": 0,
           "maxItems": 0,
           "itemTitleMax": 12,
-          "itemBodyMax": 20
+          "itemBodyMax": 20,
+          "fieldMax": {
+            "action": 28
+          }
         },
         "density": "light",
         "supportedModes": [
@@ -1614,7 +1637,8 @@
           "minItems": 3,
           "maxItems": 3,
           "itemTitleMax": 12,
-          "itemBodyMax": 26
+          "itemBodyMax": 26,
+          "fieldMax": {}
         },
         "density": "balanced",
         "supportedModes": [
@@ -1672,7 +1696,8 @@
           "minItems": 3,
           "maxItems": 6,
           "itemTitleMax": 22,
-          "itemBodyMax": 30
+          "itemBodyMax": 30,
+          "fieldMax": {}
         },
         "density": "dense",
         "supportedModes": [
@@ -1730,7 +1755,8 @@
           "minItems": 3,
           "maxItems": 5,
           "itemTitleMax": 30,
-          "itemBodyMax": 45
+          "itemBodyMax": 45,
+          "fieldMax": {}
         },
         "density": "dense",
         "supportedModes": [
@@ -1790,7 +1816,8 @@
           "minItems": 2,
           "maxItems": 5,
           "itemTitleMax": 18,
-          "itemBodyMax": 45
+          "itemBodyMax": 45,
+          "fieldMax": {}
         },
         "density": "dense",
         "supportedModes": [
@@ -1882,7 +1909,8 @@
           "minItems": 3,
           "maxItems": 3,
           "itemTitleMax": 18,
-          "itemBodyMax": 40
+          "itemBodyMax": 40,
+          "fieldMax": {}
         },
         "density": "balanced",
         "supportedModes": [
@@ -1963,7 +1991,8 @@
           "minItems": 2,
           "maxItems": 2,
           "itemTitleMax": 18,
-          "itemBodyMax": 60
+          "itemBodyMax": 60,
+          "fieldMax": {}
         },
         "density": "balanced",
         "supportedModes": [

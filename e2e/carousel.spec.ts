@@ -1,6 +1,8 @@
 import { test, expect } from "@playwright/test";
 import { fixtureCarousel } from "../src/lib/carousel-fixture-decks";
 import { readFileSync } from "node:fs";
+import sharp from "sharp";
+import type { Download } from "@playwright/test";
 
 test("brand heading and body typography persist independently", async ({ page, request }) => {
   const id = `typography-check-${Date.now()}`;
@@ -96,9 +98,9 @@ test("keyboard deck commands keep focus and count limits", async ({ page }) => {
 });
 
 
-test("maximum permitted CJK content fits all nine portrait patterns", async ({ page }) => {
+for(const contentCase of ["maximum-content","maximum-english","mixed","missing-images"]) test(`portrait pattern fit for ${contentCase}`, async ({ page }) => {
   await page.goto("/dev/carousel-fixtures");
-  await page.getByRole("button",{name:"Load maximum-content",exact:true}).click();
+  await page.getByRole("button",{name:`Load ${contentCase}`,exact:true}).click();
   await page.evaluate(() => document.fonts.ready);
   for (const article of await page.locator("[data-specimen] article").all()) {
     const bounds = await article.evaluate(el => ({id:el.getAttribute("data-carousel-template"),height:el.scrollHeight,width:el.scrollWidth}));
@@ -127,4 +129,67 @@ test("Agent Chat creates both carousel formats from a brief", async ({ page }) =
   await expect(page.getByRole("tab",{name:"Instagram Carousel",exact:true})).toBeVisible({timeout:60000});
   await expect(page.getByRole("tab",{name:"LinkedIn Carousel",exact:true})).toBeVisible();
   await expect(page.getByRole("status").filter({hasText:/Created/})).toBeVisible();
+});
+
+for (const scenario of [{name:"legacy",count:5,load:""},{name:"cjk",count:9,load:"zh-Hant"}]) {
+ test(`downloads full-resolution PNGs and PDF for ${scenario.name}`, async ({ page }) => {
+  test.setTimeout(180000);
+  await page.goto("/dev/carousel-fixtures");
+  if(scenario.load)await page.getByRole("button",{name:`Load ${scenario.load}`,exact:true}).click();
+  const downloads:Download[]=[];page.on("download",d=>downloads.push(d));
+  await page.getByRole("button",{name:"Export PNGs",exact:true}).click();
+  await expect.poll(()=>downloads.length,{timeout:120000}).toBe(scenario.count);
+  for(let i=0;i<scenario.count;i++){
+    const path=`test-results/export-${scenario.name}-slide-${i+1}.png`;await downloads[i].saveAs(path);
+    const meta=await sharp(path).metadata();expect(meta.width).toBe(1080);expect(meta.height).toBe(1350);
+  }
+  await page.locator('div[aria-hidden="true"] [data-carousel-template]').first().evaluate(el=>{
+    const copy=el.cloneNode(true) as HTMLElement;copy.id="export-preview-capture";
+    Object.assign(copy.style,{position:"fixed",left:"0",top:"0",zIndex:"2147483647",transform:"none"});document.body.appendChild(copy);
+  });
+  await page.locator("#export-preview-capture").screenshot({path:`test-results/preview-${scenario.name}.png`});
+  await page.locator("#export-preview-capture").evaluate(el=>el.remove());
+  const png=await sharp(`test-results/export-${scenario.name}-slide-1.png`).removeAlpha().raw().toBuffer();
+  const preview=await sharp(`test-results/preview-${scenario.name}.png`).removeAlpha().raw().toBuffer();
+  expect(png.length).toBe(preview.length);
+  let difference=0;for(let i=0;i<png.length;i++)difference+=Math.abs(png[i]-preview[i]);
+  expect(difference/png.length).toBeLessThan(1.5);
+  console.log(`${scenario.name} preview/PNG mean channel difference: ${difference/png.length}`);
+  await expect(page.getByRole("button",{name:"Export PDF",exact:true})).toBeEnabled();
+  const pending=page.waitForEvent("download");await page.getByRole("button",{name:"Export PDF",exact:true}).click();
+  const pdf=await pending;const pdfPath=`test-results/export-${scenario.name}-carousel.pdf`;await pdf.saveAs(pdfPath);
+  const bytes=readFileSync(pdfPath);
+  expect(bytes.subarray(0,4).toString()).toBe("%PDF");
+  expect(bytes.toString("latin1").match(/\/Type \/Page\b/g)).toHaveLength(scenario.count);
+ });
+}
+
+test("long copy is reported and cannot silently export clipped slides", async ({ page }) => {
+  await page.goto("/dev/carousel-fixtures");
+  await page.getByLabel("Headline",{exact:true}).fill("Long heading ".repeat(200));
+  await expect(page.getByRole("status").filter({hasText:/clipped|beyond|overlap/}).first()).toBeVisible();
+  await page.getByRole("button",{name:"Export PDF",exact:true}).click();
+  await expect(page.getByRole("alert").filter({hasText:/overflowing|overlapping/})).toBeVisible();
+});
+
+for(const mode of ["light","dark"]) test(`golden patterns in ${mode} mode`,async({page})=>{
+  await page.goto("/dev/carousel-fixtures");
+  await page.getByRole("button",{name:"Load en",exact:true}).click();
+  await page.getByRole("button",{name:`Use ${mode} mode`,exact:true}).click();
+  await page.evaluate(()=>document.fonts.ready);
+  for(const specimen of await page.locator("[data-specimen]").all()){
+    const id=await specimen.getAttribute("data-specimen");
+    await specimen.locator("article").evaluate(el=>{const copy=el.cloneNode(true) as HTMLElement;copy.id="mode-capture";Object.assign(copy.style,{position:"fixed",left:"0",top:"0",zIndex:"2147483647",transform:"none"});document.body.appendChild(copy);});
+    await expect(page.locator("#mode-capture")).toHaveScreenshot(`${id}-${mode}.png`,{animations:"disabled",maxDiffPixelRatio:.01});
+    await page.locator("#mode-capture").evaluate(el=>el.remove());
+  }
+});
+
+test("large brand type adapts within permitted bounds without lowering body text below 32px",async({page})=>{
+  await page.goto("/dev/carousel-fixtures");await page.getByRole("button",{name:"Load maximum-content",exact:true}).click();
+  await page.getByRole("button",{name:"Use large brand type",exact:true}).click();
+  const roots=page.locator('div[aria-hidden="true"] [data-layout="pattern"]');
+  await expect.poll(async()=>roots.evaluateAll(nodes=>nodes.every(el=>el.scrollHeight<=el.clientHeight+1)),{timeout:10000}).toBe(true);
+  const sizes=await roots.evaluateAll(nodes=>nodes.flatMap(el=>[...el.querySelectorAll('[data-content-text]')].map(text=>Number.parseFloat(getComputedStyle(text).fontSize))));
+  expect(Math.min(...sizes)).toBeGreaterThanOrEqual(32);
 });

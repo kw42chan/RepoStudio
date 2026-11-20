@@ -89,7 +89,8 @@ async function readFileStore(): Promise<AppStoreData | null> {
   const { primary, fallback } = storePaths();
   for (const filePath of [primary, fallback]) {
     try {
-      const raw = await fs.readFile(filePath, "utf-8");
+      // User data is runtime storage, not a build-time asset to bundle.
+      const raw = await fs.readFile(/*turbopackIgnore: true*/ filePath, "utf-8");
       return normalizeStore(JSON.parse(raw) as Partial<AppStoreData>);
     } catch {
       continue;

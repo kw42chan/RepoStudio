@@ -8,12 +8,11 @@ process.env.REPOSTUDIO_DATA_DIR = dir;
 
 beforeAll(async () => {
   await fs.rm(dir, { recursive: true, force: true });
-  await fs.mkdir(dir, { recursive: true });
-  await fs.chmod(dir, 0o555);
+  // A file occupying the configured directory blocks writes on Windows and Unix.
+  await fs.writeFile(dir, "This path cannot be used as a data directory.");
 });
 
 afterAll(async () => {
-  await fs.chmod(dir, 0o755).catch(() => undefined);
   await fs.rm(dir, { recursive: true, force: true });
 });
 

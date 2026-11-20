@@ -143,7 +143,7 @@ The intended workflow after the remaining phases is: **choose a brand style → 
 | 4.2 — Finished | Move, duplicate, add, and delete slides while keeping the deck organized. |
 | 4.3 — Finished | Choose from the nine new layout types in the editor. |
 | 4.4 — Finished | Add images to supported positions and adjust their crops. |
-| 4.5 — Planned | Get layouts selected for the content and use an uploaded sample to guide a reusable style. |
+| 4.5 — Finished | Get layouts selected for the content and use an uploaded sample to guide a reusable style. |
 | 4.6 — Planned | Get clearer content-fit warnings and more consistent preview, PNG, and PDF output. |
 
 For each future phase, record its user-visible result and verification when marking it finished. A useful release note states what the user can now do and any remaining limits.
@@ -159,10 +159,10 @@ Phase 4.0 is finished as of 2026-11-20 in commit `c6e8a63` on `feature/carousel-
 | 4.2 — Deck operations and narrative arrangement | Finished — 2026-11-20, `ccb759e` |
 | 4.3 — Pattern registry and production renderers | Finished — 2026-11-20, `f4f0f75` |
 | 4.4 — Image assets and declared slot controls | Finished — 2026-11-20, `f4f0f75` |
-| 4.5 — LLM pattern routing and reference-style ingestion | In progress |
-| 4.6 — Content fit, export parity, and release hardening | Not started |
+| 4.5 — LLM pattern routing and reference-style ingestion | Finished — 2026-11-20, `a78d51b` |
+| 4.6 — Content fit, export parity, and release hardening | In progress |
 
-Validation: 36 focused tests pass; TypeScript and changed-file ESLint pass. The full suite has 53 passes and the existing Windows read-only-directory store test failure (`chmod(0555)` does not prevent the write). Phase 4.1 typography is finished; Phase 4.2 deck operations is finished; Phases 4.3 and 4.4 are finished; Phase 4.5 routing and reference analysis is in progress.
+Validation: 36 focused tests pass; TypeScript and changed-file ESLint pass. The full suite has 53 passes and the existing Windows read-only-directory store test failure (`chmod(0555)` does not prevent the write). Phase 4.1 typography is finished; Phase 4.2 deck operations is finished; Phases 4.3 and 4.4 are finished; Phase 4.5 routing and reference analysis is finished; Phase 4.6 release hardening is in progress.
 
 ### Phase 4.0 — Development preparation and golden fixtures
 
@@ -253,17 +253,23 @@ Exit gate: **Met** — supported patterns preserve crops across reload and expor
 
 ### Phase 4.5 — LLM pattern routing and reference-style ingestion
 
+Status: **Finished** — 2026-11-20. Implementation commit: `a78d51b`.
+
+Users can create both carousel formats from an Agent Chat brief, choose Automatic patterns, inspect layout-selection reasons, and confirm an analyzed sample before saving reusable visual traits. Reference palettes and spacing guide supported layouts while brand typography stays independent. See [[Projects/RepoStudio/docs/carousel-pattern-routing|Routing and reference workflow]].
+
+Verification: routing/reference contract tests and real-browser brief/reference confirmation checks pass. Demo text generation and local palette analysis were exercised; live external text/vision provider calls remain unverified.
+
 Purpose: let Agent Chat generalize a supplied sample and choose patterns without giving the model unchecked layout authority.
 
-- Expose a compact pattern-registry summary to generation prompts: intent tags, required fields, limits, image requirements, and selection guidance.
-- Add semantic slide intents such as `cover`, `claim`, `metric`, `parallel-list`, `comparison`, `flow`, `sequence`, `sequence-summary`, `evidence`, and `cta`.
-- Implement deterministic candidate validation and deck-level rhythm scoring after LLM output.
-- Extend reference ingestion to produce a `StyleAnalysisDraft`: palette, type roles, spacing character, chrome, pattern candidates, and image treatment.
-- Require user confirmation before saving an analyzed sample as a reusable style family or brand preset.
-- Strip creator handles, copied wording, logos, and unverified claims from imported references.
-- Record why a pattern was chosen and surface a concise explanation in the editor for debugging.
+- [x] Expose a compact pattern-registry summary to generation prompts: intent tags, required fields, limits, image requirements, and selection guidance.
+- [x] Add semantic slide intents such as `cover`, `claim`, `metric`, `parallel-list`, `comparison`, `flow`, `sequence`, `sequence-summary`, `evidence`, and `cta`.
+- [x] Implement deterministic candidate validation and deck-level rhythm scoring after LLM output.
+- [x] Extend reference ingestion to produce a `StyleAnalysisDraft`: palette, type roles, spacing character, chrome, pattern candidates, and image treatment.
+- [x] Require user confirmation before saving an analyzed sample as a reusable style family or brand preset.
+- [x] Strip creator handles, copied wording, logos, and unverified claims from imported references.
+- [x] Record why a pattern was chosen and surface a concise explanation in the editor for debugging.
 
-Exit gate: the same generated semantic deck routes consistently across repeated runs; invalid pattern choices fall back with visible warnings; uploaded references never become unreviewed executable layout definitions.
+Exit gate: **Met for the implemented contracts and local workflow** — the same generated semantic deck routes consistently across repeated runs; invalid pattern choices fall back with visible warnings; uploaded references never become unreviewed executable layout definitions.
 
 ### Phase 4.6 — Content fit, export parity, and release hardening
 

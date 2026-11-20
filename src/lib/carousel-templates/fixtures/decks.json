@@ -907,7 +907,7 @@
           }
         ],
         "body": "字字字字字字字字字字字字字字字字字字字字字字字字字字字字字字字字字字",
-        "badge": "字字字",
+        "badge": "字字字字字字字字字字",
         "images": [
           {
             "slotId": "hero-right",
@@ -1019,7 +1019,7 @@
           }
         ],
         "body": "字字字字字字字字字字字字字字字字字字字字字字字字字字字字字字字字字字",
-        "outcome": "字字字",
+        "outcome": "字字字字字字字字字字",
         "images": [
           {
             "slotId": "timeline-1",
@@ -1077,7 +1077,7 @@
           }
         ],
         "body": "字字字字字字字字字字字字字字字字字字字字字字字字字字字字字字字字字字字字字字",
-        "recommendation": "字字字",
+        "recommendation": "字字字字字字字字字字字字字字字字字字字字",
         "images": [
           {
             "slotId": "example-a",
@@ -1100,7 +1100,7 @@
       {
         "templateId": "signal-metric-evidence",
         "headline": "清清清清清清清清清清清清清清清清清清清清清清清清清清清清",
-        "metric": "42%",
+        "metric": "88888888",
         "items": [
           {
             "title": "清清清清清清清清清清",
@@ -1120,7 +1120,7 @@
           }
         ],
         "body": "字字字字字字字字字字字字字字字字字字字字字字字字",
-        "unit": "字字字",
+        "unit": "字字字字字字字字字字字字",
         "images": [
           {
             "slotId": "evidence-left",
@@ -1135,7 +1135,7 @@
       {
         "templateId": "story-prompt-outcome",
         "headline": "清清清清清清清清清清清清清清清清清清清清清清清清清清清清清清清清清清清清清清清清清清",
-        "prompt": "字字字",
+        "prompt": "字字字字字字字字字字字字字字字字字字字字字字字字",
         "items": [
           {
             "title": "清清清清清清清清清清清清",
@@ -1155,7 +1155,7 @@
           }
         ],
         "body": "字字字字字字字字字字字字字字字字字字字字字字字字字字字字字字字字字字字字字字",
-        "takeaway": "字字字",
+        "takeaway": "字字字字字字字字字字字字字字字字字字字字",
         "images": [
           {
             "slotId": "result-preview",
@@ -1170,7 +1170,7 @@
       {
         "templateId": "signal-cta",
         "headline": "清清清清清清清清清清清清清清清清清清清清清清清清清清清清清清清清",
-        "action": "字字字",
+        "action": "字字字字字字字字字字字字字字字字字字字字字字字字字字字字",
         "images": []
       }
     ]
@@ -1780,6 +1780,300 @@
         "templateId": "signal-cta",
         "headline": "Make every step count",
         "action": "Next",
+        "images": []
+      }
+    ]
+  },
+  {
+    "id": "maximum-english",
+    "expected": "valid",
+    "slides": [
+      {
+        "templateId": "signal-collage-cover",
+        "headline": "WWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWW",
+        "items": [
+          {
+            "title": "WWWWWWWWWW",
+            "body": "MMMMMMMMMMMM"
+          },
+          {
+            "title": "WWWWWWWWWW",
+            "body": "MMMMMMMMMMMM"
+          },
+          {
+            "title": "WWWWWWWWWW",
+            "body": "MMMMMMMMMMMM"
+          },
+          {
+            "title": "WWWWWWWWWW",
+            "body": "MMMMMMMMMMMM"
+          }
+        ],
+        "body": "MMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMM",
+        "badge": "MMMMMMMMMM",
+        "images": [
+          {
+            "slotId": "hero-right",
+            "assetId": "fixture-proof",
+            "focalPoint": {
+              "x": 0.5,
+              "y": 0.5
+            }
+          },
+          {
+            "slotId": "support-bottom-center",
+            "assetId": "fixture-proof",
+            "focalPoint": {
+              "x": 0.5,
+              "y": 0.5
+            }
+          },
+          {
+            "slotId": "support-bottom-right",
+            "assetId": "fixture-proof",
+            "focalPoint": {
+              "x": 0.5,
+              "y": 0.5
+            }
+          }
+        ]
+      },
+      {
+        "templateId": "signal-statement",
+        "headline": "WWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWW",
+        "body": "MMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMM",
+        "images": []
+      },
+      {
+        "templateId": "signal-numbered-list",
+        "headline": "WWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWW",
+        "items": [
+          {
+            "title": "WWWWWWWWW",
+            "body": "MMMMMMMMMMMMMMM"
+          },
+          {
+            "title": "WWWWWWWWW",
+            "body": "MMMMMMMMMMMMMMM"
+          },
+          {
+            "title": "WWWWWWWWW",
+            "body": "MMMMMMMMMMMMMMM"
+          }
+        ],
+        "body": "MMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMM",
+        "images": []
+      },
+      {
+        "templateId": "signal-vertical-timeline",
+        "headline": "WWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWW",
+        "items": [
+          {
+            "title": "WWWWWWWWWWWWWWWWWWWWW",
+            "body": "MMMMMMMMMMMMMMMMMMMMM"
+          },
+          {
+            "title": "WWWWWWWWWWWWWWWWWWWWW",
+            "body": "MMMMMMMMMMMMMMMMMMMMM"
+          },
+          {
+            "title": "WWWWWWWWWWWWWWWWWWWWW",
+            "body": "MMMMMMMMMMMMMMMMMMMMM"
+          },
+          {
+            "title": "WWWWWWWWWWWWWWWWWWWWW",
+            "body": "MMMMMMMMMMMMMMMMMMMMM"
+          },
+          {
+            "title": "WWWWWWWWWWWWWWWWWWWWW",
+            "body": "MMMMMMMMMMMMMMMMMMMMM"
+          },
+          {
+            "title": "WWWWWWWWWWWWWWWWWWWWW",
+            "body": "MMMMMMMMMMMMMMMMMMMMM"
+          }
+        ],
+        "body": "MMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMM",
+        "images": []
+      },
+      {
+        "templateId": "signal-horizontal-timeline",
+        "headline": "WWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWW",
+        "items": [
+          {
+            "title": "WWWWWWW",
+            "body": "MMMMMMMMMMMMM"
+          },
+          {
+            "title": "WWWWWWW",
+            "body": "MMMMMMMMMMMMM"
+          },
+          {
+            "title": "WWWWWWW",
+            "body": "MMMMMMMMMMMMM"
+          },
+          {
+            "title": "WWWWWWW",
+            "body": "MMMMMMMMMMMMM"
+          },
+          {
+            "title": "WWWWWWW",
+            "body": "MMMMMMMMMMMMM"
+          }
+        ],
+        "body": "MMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMM",
+        "outcome": "MMMMMMMMMM",
+        "images": [
+          {
+            "slotId": "timeline-1",
+            "assetId": "fixture-proof",
+            "focalPoint": {
+              "x": 0.5,
+              "y": 0.5
+            }
+          },
+          {
+            "slotId": "timeline-2",
+            "assetId": "fixture-proof",
+            "focalPoint": {
+              "x": 0.5,
+              "y": 0.5
+            }
+          },
+          {
+            "slotId": "timeline-3",
+            "assetId": "fixture-proof",
+            "focalPoint": {
+              "x": 0.5,
+              "y": 0.5
+            }
+          },
+          {
+            "slotId": "timeline-4",
+            "assetId": "fixture-proof",
+            "focalPoint": {
+              "x": 0.5,
+              "y": 0.5
+            }
+          },
+          {
+            "slotId": "timeline-5",
+            "assetId": "fixture-proof",
+            "focalPoint": {
+              "x": 0.5,
+              "y": 0.5
+            }
+          }
+        ]
+      },
+      {
+        "templateId": "spec-ab-comparison",
+        "headline": "WWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWW",
+        "items": [
+          {
+            "title": "WWWWWWWWWWWWWWWWWW",
+            "body": "MMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMM"
+          },
+          {
+            "title": "WWWWWWWWWWWWWWWWWW",
+            "body": "MMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMM"
+          }
+        ],
+        "body": "MMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMM",
+        "recommendation": "MMMMMMMMMMMMMMMMMMMM",
+        "images": [
+          {
+            "slotId": "example-a",
+            "assetId": "fixture-proof",
+            "focalPoint": {
+              "x": 0.5,
+              "y": 0.5
+            }
+          },
+          {
+            "slotId": "example-b",
+            "assetId": "fixture-proof",
+            "focalPoint": {
+              "x": 0.5,
+              "y": 0.5
+            }
+          }
+        ]
+      },
+      {
+        "templateId": "signal-metric-evidence",
+        "headline": "WWWWWWWWWWWWWWWWWWWWWWWWWWWW",
+        "metric": "88888888",
+        "items": [
+          {
+            "title": "WWWWWWWWWW",
+            "body": "MMMMMMMMMMMM"
+          },
+          {
+            "title": "WWWWWWWWWW",
+            "body": "MMMMMMMMMMMM"
+          },
+          {
+            "title": "WWWWWWWWWW",
+            "body": "MMMMMMMMMMMM"
+          },
+          {
+            "title": "WWWWWWWWWW",
+            "body": "MMMMMMMMMMMM"
+          }
+        ],
+        "body": "MMMMMMMMMMMMMMMMMMMMMMMM",
+        "unit": "MMMMMMMMMMMM",
+        "images": [
+          {
+            "slotId": "evidence-left",
+            "assetId": "fixture-proof",
+            "focalPoint": {
+              "x": 0.5,
+              "y": 0.5
+            }
+          }
+        ]
+      },
+      {
+        "templateId": "story-prompt-outcome",
+        "headline": "WWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWW",
+        "prompt": "MMMMMMMMMMMMMMMMMMMMMMMM",
+        "items": [
+          {
+            "title": "WWWWWWWWWWWW",
+            "body": "MMMMMMMMMMMMMMMMMMMMMMMMMM"
+          },
+          {
+            "title": "WWWWWWWWWWWW",
+            "body": "MMMMMMMMMMMMMMMMMMMMMMMMMM"
+          },
+          {
+            "title": "WWWWWWWWWWWW",
+            "body": "MMMMMMMMMMMMMMMMMMMMMMMMMM"
+          },
+          {
+            "title": "WWWWWWWWWWWW",
+            "body": "MMMMMMMMMMMMMMMMMMMMMMMMMM"
+          }
+        ],
+        "body": "MMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMM",
+        "takeaway": "MMMMMMMMMMMMMMMMMMMM",
+        "images": [
+          {
+            "slotId": "result-preview",
+            "assetId": "fixture-proof",
+            "focalPoint": {
+              "x": 0.5,
+              "y": 0.5
+            }
+          }
+        ]
+      },
+      {
+        "templateId": "signal-cta",
+        "headline": "WWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWW",
+        "action": "MMMMMMMMMMMMMMMMMMMMMMMMMMMM",
         "images": []
       }
     ]

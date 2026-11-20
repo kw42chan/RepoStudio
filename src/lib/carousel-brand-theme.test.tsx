@@ -7,6 +7,7 @@ import { normalizeStore } from "./store";
 import { BUILT_IN_VISUAL_TEMPLATES } from "./presets";
 import { SlideCanvas } from "@/components/studio/carousel-preview";
 import type { CarouselSlide } from "./types";
+import { fixtureCarousel } from "./carousel-fixture-decks";
 
 describe("brand typography", () => {
   it("keeps body settings independent of heading settings and rejects invalid settings", () => {
@@ -25,9 +26,18 @@ describe("brand typography", () => {
 
   it("migrates old presets and drafts without changing unrelated data", () => {
     const preset = { id: "old", name: "Old", voice: "Direct", audience: "Builders", cta: "Save", handle: "@old", primaryColor: "#123456", secondaryColor: "#654321", defaultWritingStyle: "educational" as const };
-    const migrated = normalizeStore({ brandPresets: [preset] });
+    const legacyCarousel={...fixtureCarousel("en"),visualTemplateId:"newsletter-serif",design:undefined};
+    const sourcePost={id:"source",rawText:"Original content",brandVoice:"Direct",targetAudience:"Builders",ctaPreference:"Save",createdAt:"2026-01-01"};
+    const idea={id:"idea",angleType:"Educational",title:"Original",hook:"Original hook",summary:"Keep",rationale:"Keep",formatFit:{reel:80,igCarousel:90,liCarousel:90}};
+    const draft={id:"old-draft",title:"Original draft",sourcePost,idea,igCarousel:legacyCarousel,createdAt:"2026-01-01",updatedAt:"2026-01-01"};
+    const pack={id:"old-pack",name:"Old pack",platform:"instagram" as const,slideTemplateIds:["hook-scroll-cover"],catalogVersion:"1.3.0",createdAt:"2026-01-01"};
+    const migrated = normalizeStore({ brandPresets: [preset],drafts:[draft],layoutPacks:[pack] });
     expect(migrated.brandPresets[0].design).toEqual(normalizeBrandDesign(undefined));
     expect(migrated.brandPresets[0]).toMatchObject(preset);
+    expect(migrated.drafts[0].igCarousel?.design?.heading.fontId).toBe("lora");
+    expect(migrated.drafts[0].sourcePost).toEqual(sourcePost);
+    expect(migrated.drafts[0].igCarousel?.slides).toEqual(legacyCarousel.slides);
+    expect(migrated.layoutPacks).toEqual([pack]);
     expect(normalizeStore(migrated)).toEqual(migrated);
   });
 

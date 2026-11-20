@@ -11,6 +11,7 @@ describe("deterministic pattern selection", () => {
     expect(result.templateId).toBe("signal-numbered-list");expect(result.warnings).toHaveLength(1);
     const metric=source.slides.find(s=>s.templateId==="signal-metric-evidence")!;
     expect(selectPattern({...metric,intent:"metric"},{platform:"instagram",assets:fixtureAssets}).templateId).toBe("signal-metric-evidence");
+    expect(selectPattern({...metric,intent:"metric",patternContent:{...metric.patternContent,metric:"fast"}},{platform:"instagram",assets:fixtureAssets}).templateId).not.toBe("signal-metric-evidence");
     expect(selectPattern({...metric,intent:"metric",preferredPatternIds:[metric.templateId!]},{platform:"instagram",assets:[]}).templateId).not.toBe("signal-metric-evidence");
     expect(selectDeckPatterns(source,fixtureAssets)).toEqual(selectDeckPatterns(source,fixtureAssets));
     expect(source.slides[0].templateId).toBe("signal-collage-cover");

@@ -4,6 +4,12 @@ RepoStudio turns copied social media posts into fresh repurposing angles and pro
 
 ## Features
 
+- **Brand typography:** Eight font families with separate heading/body weights and sizes, including Traditional Chinese choices.
+- **Carousel arrangement:** Add, delete, duplicate, and move slides with stable content and keyboard controls.
+- **Nine graphics styles and image slots:** Edit structured points, upload and reuse images, and preserve focal points and zoom in exports.
+- **Agent Chat and reviewed reference styles:** Create both carousel formats from a brief; let validated pattern selection choose layouts and review sample traits before saving them.
+- **Content-fit checks:** See overflow warnings and bounded fitting adjustments; exports wait for fonts/images and block clipped output. See [[Projects/RepoStudio/docs/carousel-release-verification|Phase 4 verification and remaining release checks]].
+
 - **Source Post Ideation**: Paste any copied post from LinkedIn, Instagram, X, or Threads to extract its hook pattern, core insight, and 5 scored repurposing angles.
 - **Custom Writing Style & Tone**: Choose from preset writing styles (*Educational*, *Contrarian*, *Storytelling*, *Tactical Checklist*, *Myth-Buster*, *Minimalist*) or provide custom writing style and tone overrides per format.
 - **1080 × 1350 Carousel Studio & Template Importer**:

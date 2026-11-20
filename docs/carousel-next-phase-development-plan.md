@@ -128,6 +128,26 @@ The deterministic pattern-selection module validates the candidates against actu
 
 ## Delivery phases
 
+### What this means for users
+
+Phase 4.0 prepares the foundation for better carousels. The creation process is still the same today. The nine new layout types are design references until their production renderers arrive in Phase 4.3.
+
+The preparation defines how much text each layout accepts, how many items it supports, and where images belong. Chinese, English, mixed-language, long-heading, and missing-image examples give development concrete cases to check. Each first-release layout also has a visual reference, so its appearance has a clear target.
+
+The intended workflow after the remaining phases is: **choose a brand style → generate content → receive suitable layouts → arrange slides → add images → export consistently**.
+
+| Phase | Change the user will experience when delivered |
+| --- | --- |
+| 4.0 — Finished | Preparation only: agreed layout rules, test examples, and visual references. |
+| 4.1 — Planned | Set separate heading and body fonts, weights, and sizes; save them with a brand. |
+| 4.2 — Planned | Move, duplicate, add, and delete slides while keeping the deck organized. |
+| 4.3 — Planned | Choose from the nine new layout types in the editor. |
+| 4.4 — Planned | Add images to supported positions and adjust their crops. |
+| 4.5 — Planned | Get layouts selected for the content and use an uploaded sample to guide a reusable style. |
+| 4.6 — Planned | Get clearer content-fit warnings and more consistent preview, PNG, and PDF output. |
+
+For each future phase, record its user-visible result and verification when marking it finished. A useful release note states what the user can now do and any remaining limits.
+
 ### Implementation status — 2026-11-20
 
 Phase 4.0 is finished as of 2026-11-20 in commit `c6e8a63` on `feature/carousel-phase-4-0`: load-time manifest validation, contracts for all 15 documented patterns, nine first-release selections, seven fixture decks, and nine 1080 × 1350 PNG/SVG design references. See [[Projects/RepoStudio/docs/carousel-phase-4-0|Phase 4.0 field matrix and verification]]. New patterns remain reference-only; their production renderers are scheduled for Phase 4.3. References establish design targets rather than preview/export parity.

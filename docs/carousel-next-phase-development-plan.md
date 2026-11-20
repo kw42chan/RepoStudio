@@ -130,7 +130,7 @@ The deterministic pattern-selection module validates the candidates against actu
 
 ### What this means for users
 
-Phase 4.0 prepares the foundation for better carousels. The creation process is still the same today. The nine new layout types are design references until their production renderers arrive in Phase 4.3.
+Phase 4.0 prepared the foundation. Phase 4.1 now lets users save separate heading and body typography with a brand, apply it to carousels, and carry the same settings into exports. The nine new layout types remain design references until their production renderers arrive in Phase 4.3.
 
 The preparation defines how much text each layout accepts, how many items it supports, and where images belong. Chinese, English, mixed-language, long-heading, and missing-image examples give development concrete cases to check. Each first-release layout also has a visual reference, so its appearance has a clear target.
 
@@ -139,7 +139,7 @@ The intended workflow after the remaining phases is: **choose a brand style → 
 | Phase | Change the user will experience when delivered |
 | --- | --- |
 | 4.0 — Finished | Preparation only: agreed layout rules, test examples, and visual references. |
-| 4.1 — Planned | Set separate heading and body fonts, weights, and sizes; save them with a brand. |
+| 4.1 — Finished | Set separate heading and body fonts, weights, and sizes; save them with a brand. |
 | 4.2 — Planned | Move, duplicate, add, and delete slides while keeping the deck organized. |
 | 4.3 — Planned | Choose from the nine new layout types in the editor. |
 | 4.4 — Planned | Add images to supported positions and adjust their crops. |
@@ -155,14 +155,14 @@ Phase 4.0 is finished as of 2026-11-20 in commit `c6e8a63` on `feature/carousel-
 | Phase | Status |
 | --- | --- |
 | 4.0 — Development preparation and golden fixtures | Finished — 2026-11-20, `c6e8a63` |
-| 4.1 — Brand typography and built-in font library | Not started — next |
-| 4.2 — Deck operations and narrative arrangement | Not started |
+| 4.1 — Brand typography and built-in font library | Finished — 2026-11-20, `8b39a58` |
+| 4.2 — Deck operations and narrative arrangement | In progress — next |
 | 4.3 — Pattern registry and production renderers | Not started |
 | 4.4 — Image assets and declared slot controls | Not started |
 | 4.5 — LLM pattern routing and reference-style ingestion | Not started |
 | 4.6 — Content fit, export parity, and release hardening | Not started |
 
-Validation: 36 focused tests pass; TypeScript and changed-file ESLint pass. The full suite has 53 passes and the existing Windows read-only-directory store test failure (`chmod(0555)` does not prevent the write). Phase 4.1 typography is the next implementation slice.
+Validation: 36 focused tests pass; TypeScript and changed-file ESLint pass. The full suite has 53 passes and the existing Windows read-only-directory store test failure (`chmod(0555)` does not prevent the write). Phase 4.1 typography is finished; Phase 4.2 deck operations is in progress.
 
 ### Phase 4.0 — Development preparation and golden fixtures
 
@@ -180,16 +180,22 @@ Exit gate: **Met** — manifest validation passes; every selected pattern has a 
 
 ### Phase 4.1 — Brand typography and built-in font library
 
+Status: **Finished** — 2026-11-20. Implementation commit: `8b39a58`.
+
+Users can select eight fonts, set heading and body weights and size scales independently, save and reload a brand, and apply it to both carousel platforms. The same resolver is used by normal, grid, and Edward AI slides in preview and export. Details: [[Projects/RepoStudio/docs/carousel-font-library|Font library and migration defaults]].
+
+Verification: four typography contract/render tests, 17 related style/theme regression tests, and one real-browser persistence check pass. TypeScript passes; changed-file ESLint reports no errors and three image/unused-parameter warnings. The brand-editor screenshot was visually reviewed. Pixel-level export regression checks continue in Phase 4.6.
+
 Purpose: make brand settings real in preview and export before adding many layouts.
 
-- Add `BrandDesignSettingsV1` and backward-compatible defaults in `src/lib/types.ts`, `src/lib/presets.ts`, and `src/lib/store.ts`.
-- Create `src/lib/carousel-fonts.ts` as the font registry and resolver.
-- Load curated fonts through `next/font` where supported; document any locally hosted font licenses and files.
-- Add separate heading/body font, weight, and size controls to brand preset editing.
-- Pass one `ResolvedBrandTheme` into both `carousel-preview.tsx` and `edwardai-slide-layouts.tsx`; remove local hard-coded font selection from render branches.
-- Ensure draft and saved-preset migration fills defaults without rewriting unrelated fields.
+- [x] Add `BrandDesignSettingsV1` and backward-compatible defaults in `src/lib/types.ts`, `src/lib/presets.ts`, and `src/lib/store.ts`.
+- [x] Create `src/lib/carousel-fonts.ts` as the font registry and resolver.
+- [x] Load curated fonts through `next/font` where supported; document any locally hosted font licenses and files.
+- [x] Add separate heading/body font, weight, and size controls to brand preset editing.
+- [x] Pass one `ResolvedBrandTheme` into both `carousel-preview.tsx` and `edwardai-slide-layouts.tsx`; remove local hard-coded font selection from render branches.
+- [x] Ensure draft and saved-preset migration fills defaults without rewriting unrelated fields.
 
-Exit gate: changing the heading font does not change body text; reload preserves settings; preview, PNG, and PDF use identical fonts and sizes.
+Exit gate: **Met for shared typography settings** — heading/body isolation and reload persistence pass; preview and both export formats consume identical resolved font settings. Final pixel and content-fit stress checks remain in Phase 4.6.
 
 ### Phase 4.2 — Deck operations and narrative arrangement
 

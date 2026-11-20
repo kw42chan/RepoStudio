@@ -1,6 +1,7 @@
 "use client";
 
 import Link from "next/link";
+import { applyDeckCommand, activeSlideIndex, MIN_SLIDES, MAX_SLIDES, type DeckCommand } from "@/lib/carousel-deck-operations";
 import { useRef, useState } from "react";
 import {
   Download,
@@ -96,33 +97,23 @@ export function CarouselEditor({
     });
   }
 
-  function addSlide() {
-    const nextNum = carousel.slides.length + 1;
-    const newSlide: CarouselSlide = {
-      id: `slide-${Date.now()}`,
-      slideNumber: nextNum,
-      role: "body",
-      eyebrow: `0${Math.max(1, nextNum - 1)} / POINT`,
-      headline: "New takeaway",
-      body: "Add concise supporting copy here.",
-      visualDirection: "Clean single-column layout",
-    };
-    const nextSlides = [...carousel.slides, newSlide].map((s, idx) => ({
-      ...s,
-      slideNumber: idx + 1,
-    }));
-    onChange({ ...carousel, slides: nextSlides });
-    setActiveSlideIdx(nextSlides.length - 1);
+  function runDeckCommand(command: DeckCommand, focusId?: string) {
+    const next = applyDeckCommand(carousel, command);
+    onChange(next);
+    setActiveSlideIdx(activeSlideIndex(carousel, next, focusId ?? activeSlide.id));
   }
 
-  function removeSlide(id: string) {
-    if (carousel.slides.length <= 2) return;
-    const filtered = carousel.slides
-      .filter((s) => s.id !== id)
-      .map((s, idx) => ({ ...s, slideNumber: idx + 1 }));
-    onChange({ ...carousel, slides: filtered });
-    setActiveSlideIdx(Math.min(activeSlideIdx, filtered.length - 1));
+  function addSlide() {
+    const id = crypto.randomUUID();
+    const afterId = activeSlideIdx === carousel.slides.length - 1 && activeSlide.role === "cta" ? carousel.slides[Math.max(0, activeSlideIdx - 1)].id : activeSlide.id;
+    runDeckCommand({ type: "add", afterId, slide: {
+      id, slideNumber: 1, role: "body", headline: "New takeaway",
+      body: "Add concise supporting copy here.", visualDirection: "Clean single-column layout",
+      templateId: carousel.platform === "instagram" && (!carousel.layoutPackId || carousel.layoutPackId === "default") ? "hook-scroll-cover" : "body-narrative-default",
+    } }, id);
   }
+
+  function removeSlide(id: string) { runDeckCommand({ type: "delete", id }); }
 
   async function handleExport(type: "png" | "pdf") {
     const els = exportRefs.current
@@ -333,12 +324,16 @@ export function CarouselEditor({
                 type="button"
                 variant="outline"
                 size="sm"
+                disabled={carousel.slides.length >= MAX_SLIDES}
                 onClick={addSlide}
                 className="gap-1"
               >
                 <Plus className="h-3.5 w-3.5" />
                 Add Slide
               </Button>
+              <Button type="button" variant="outline" size="sm" disabled={activeSlideIdx === 0} onClick={() => runDeckCommand({ type: "move", id: activeSlide.id, toIndex: activeSlideIdx - 1 })}>Move left</Button>
+              <Button type="button" variant="outline" size="sm" disabled={activeSlideIdx >= carousel.slides.length - 1} onClick={() => runDeckCommand({ type: "move", id: activeSlide.id, toIndex: activeSlideIdx + 1 })}>Move right</Button>
+              <Button type="button" variant="outline" size="sm" disabled={carousel.slides.length >= MAX_SLIDES} onClick={() => { const newId = crypto.randomUUID(); runDeckCommand({ type: "duplicate", id: activeSlide.id, newId }, newId); }}>Duplicate slide</Button>
               <Button
                 type="button"
                 variant="outline"
@@ -419,7 +414,8 @@ export function CarouselEditor({
                   size="icon"
                   className="h-7 w-7 text-muted-foreground hover:text-destructive"
                   onClick={() => removeSlide(activeSlide.id)}
-                  disabled={carousel.slides.length <= 2}
+                  aria-label="Delete slide"
+                  disabled={carousel.slides.length <= MIN_SLIDES}
                 >
                   <Trash2 className="h-3.5 w-3.5" />
                 </Button>
@@ -509,8 +505,9 @@ export function CarouselEditor({
                 )}
 
                 <div className="space-y-1">
-                  <Label className="text-xs">Headline</Label>
+                  <Label htmlFor={`${carousel.platform}-headline`} className="text-xs">Headline</Label>
                   <Input
+                    id={`${carousel.platform}-headline`}
                     value={activeSlide.headline}
                     onChange={(e) =>
                       updateSlide(activeSlide.id, {
@@ -521,8 +518,9 @@ export function CarouselEditor({
                 </div>
 
                 <div className="space-y-1">
-                  <Label className="text-xs">Body Copy</Label>
+                  <Label htmlFor={`${carousel.platform}-body`} className="text-xs">Body Copy</Label>
                   <Textarea
+                    id={`${carousel.platform}-body`}
                     rows={3}
                     value={activeSlide.body}
                     onChange={(e) =>

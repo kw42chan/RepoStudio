@@ -451,7 +451,7 @@ export function SlideCanvas({
   const ground = colors.ground;
   const isLight = colors.isLight;
   const isLast = slide.slideNumber === totalSlides || slide.role === "cta";
-  const showLockup = slide.role === "cover" || slide.role === "cta";
+  const showLockup = slide.role === "cover" || slide.role === "cta" || slide.templateId === "hook-scroll-cover";
   const mark = brandMark(brandHandle);
   const theme = resolveBrandTheme({ design }, template);
   const headingFont = theme.heading.fontFamily;
@@ -460,7 +460,7 @@ export function SlideCanvas({
   const muted = colors.muted;
   const tagColor = colors.accent;
   const background = colors.background;
-  const headingSize = Math.round(px(slide.headline.length > 72 ? 26 : slide.role === "cover" ? 34 : 30) * theme.heading.sizeScale);
+  const headingSize = Math.round(px(slide.headline.length > 72 ? 26 : slide.role === "cover" || slide.templateId === "hook-scroll-cover" ? 34 : 30) * theme.heading.sizeScale);
   const scale = fullResolution ? 1 : 0.34;
   const carouselTemplateId = previewCarouselTemplateId(slide);
   const carouselTemplateLayout =

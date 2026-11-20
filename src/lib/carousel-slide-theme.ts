@@ -122,7 +122,7 @@ export function resolveSlideColors(
   }
 
   if (kind === "inherit") {
-    const ground = slideGround(slide.slideNumber - 1, totalSlides, slide.role);
+    const ground = slideGround(slide.slideNumber - 1, totalSlides, slide.templateId === "hook-scroll-cover" ? "cover" : slide.role);
     const isLight = ground === "light";
     const background =
       ground === "gradient"

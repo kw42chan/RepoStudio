@@ -1,0 +1,31 @@
+
+Running 16 tests using 1 worker
+
+npx.cmd : (node:3244) Warning: The 'NO_COLOR' env is ignored due to the 'FORCE_COLOR' env being set.
+At line:3 char:1
++ npx.cmd playwright test *> docs/testing/agent-desktop-2026-11-20/play ...
++ ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+    + CategoryInfo          : NotSpecified: ((node:3244) War... env being set.:String) [], RemoteException
+    + FullyQualifiedErrorId : NativeCommandError
+ 
+(Use `node --trace-warnings ...` to show where the warning was created)
+  ok  1 e2e\carousel.spec.ts:7:1 › brand heading and body typography persist independently (3.0s)
+  ok  2 e2e\carousel.spec.ts:29:1 › image upload, crop controls and shared asset retention (1.5s)
+  ok  3 e2e\carousel.spec.ts:62:1 › captures real production pattern fixtures at full resolution (3.2s)
+  ok  4 e2e\carousel.spec.ts:82:1 › keyboard deck commands keep focus and count limits (1.2s)
+  ok  5 e2e\carousel.spec.ts:101:90 › portrait pattern fit for maximum-content (979ms)
+  ok  6 e2e\carousel.spec.ts:101:90 › portrait pattern fit for maximum-english (935ms)
+  ok  7 e2e\carousel.spec.ts:101:90 › portrait pattern fit for mixed (928ms)
+  ok  8 e2e\carousel.spec.ts:101:90 › portrait pattern fit for missing-images (944ms)
+  ok  9 e2e\carousel.spec.ts:112:1 › reference traits require review before saving and exclude the source image (167ms)
+  ok 10 e2e\carousel.spec.ts:124:1 › Agent Chat creates both carousel formats from a brief (978ms)
+legacy preview/PNG mean channel difference: 0.1663198445358939
+  ok 11 e2e\carousel.spec.ts:135:2 › downloads full-resolution PNGs and PDF for legacy (4.1s)
+cjk preview/PNG mean channel difference: 0.8168125285779607
+  ok 12 e2e\carousel.spec.ts:135:2 › downloads full-resolution PNGs and PDF for cjk (6.5s)
+  ok 13 e2e\carousel.spec.ts:167:1 › long copy is reported and cannot silently export clipped slides (804ms)
+  ok 14 e2e\carousel.spec.ts:175:37 › golden patterns in light mode (3.1s)
+  ok 15 e2e\carousel.spec.ts:175:37 › golden patterns in dark mode (2.9s)
+  ok 16 e2e\carousel.spec.ts:188:1 › large brand type adapts within permitted bounds without lowering body text below 32px (1.0s)
+
+  16 passed (34.4s)

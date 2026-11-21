@@ -8,6 +8,8 @@
     "start": "next start",
     "lint": "eslint",
     "test": "vitest run",
+    "test:smoke": "node scripts/run-regression-smoke.mjs",
+    "test:smoke:check": "node scripts/run-regression-smoke.mjs --check",
     "carousel:references": "node scripts/carousel-references.mjs"
   },
   "dependencies": {

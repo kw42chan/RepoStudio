@@ -1,13 +1,11 @@
 import { createOpenAI, openai } from "@ai-sdk/openai";
 import { z } from "zod";
 
-import { TEXT_MODEL } from "./models";
+import { resolveAiSettings } from "./ai-settings";
 
-const DEFAULT_TEXT_MODEL = TEXT_MODEL;
-const DEFAULT_VISION_MODEL = "google/gemini-2.5-flash";
-
-export function getLlmModels() {
-  const openrouterKey = process.env.OPENROUTER_API_KEY;
+export async function getLlmModels() {
+  const settings = await resolveAiSettings();
+  const openrouterKey = settings.apiKey;
   if (openrouterKey) {
     const openrouter = createOpenAI({
       baseURL: "https://openrouter.ai/api/v1",
@@ -17,11 +15,8 @@ export function getLlmModels() {
         "X-Title": "RepoStudio",
       },
     });
-    const textModelId = process.env.OPENROUTER_MODEL || DEFAULT_TEXT_MODEL;
-    const visionModelId =
-      process.env.OPENROUTER_VISION_MODEL ||
-      process.env.OPENROUTER_MODEL ||
-      DEFAULT_VISION_MODEL;
+    const textModelId = settings.textModel;
+    const visionModelId = settings.visionModel;
 
     // OpenRouter serves /chat/completions. The default provider call uses
     // OpenAI's /responses endpoint, which OpenRouter does not implement.
@@ -91,6 +86,7 @@ function coerceModelJson(value: unknown): unknown {
       const roleRaw = String(item.role || (index === 0 ? "cover" : "body")).toLowerCase();
       const role = roleRaw === "cover" || roleRaw === "cta" ? roleRaw : "body";
       return {
+        ...item,
         id: String(item.id || `slide-${index + 1}`),
         slideNumber: Number(item.slideNumber || index + 1),
         role,
@@ -153,12 +149,11 @@ export async function completeOpenRouterJson<T>(
   schema: z.ZodType<T>,
   prompt: string
 ): Promise<T> {
-  const apiKey = process.env.OPENROUTER_API_KEY;
+  const { apiKey, textModel: model } = await resolveAiSettings();
   if (!apiKey) {
     throw new Error("OPENROUTER_API_KEY is not set.");
   }
 
-  const model = process.env.OPENROUTER_MODEL || DEFAULT_TEXT_MODEL;
   let lastError = "OpenRouter returned JSON that did not match the expected shape.";
 
   for (let attempt = 0; attempt < 2; attempt++) {
@@ -189,10 +184,6 @@ export async function completeOpenRouterJson<T>(
         model,
         temperature: 0.7,
         response_format: { type: "json_object" },
-        provider: {
-          order: ["DeepSeek"],
-          allow_fallbacks: false,
-        },
         messages,
       }),
       signal: AbortSignal.timeout(25_000),
@@ -204,8 +195,8 @@ export async function completeOpenRouterJson<T>(
     } | null;
 
     if (!res.ok) {
-      const message =
-        payload?.error?.message || `OpenRouter request failed (${res.status}).`;
+      // Provider bodies may contain request details. Keep errors and logs credential-free.
+      const message = `OpenRouter request failed (${res.status}). Check your key, model and credits in Settings.`;
       if (res.status >= 500 || res.status === 429) {
         lastError = message;
         continue;

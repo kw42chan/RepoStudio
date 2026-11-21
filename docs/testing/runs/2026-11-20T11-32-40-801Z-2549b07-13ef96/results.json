@@ -1,0 +1,137 @@
+{
+  "version": 1,
+  "startedAt": "2026-11-20T11:32:40.801Z",
+  "commit": "2549b077b86db2d877b6bc5455f80cbfae97adbd",
+  "branch": "feature/carousel-phase-4-0",
+  "inputFingerprint": "9c5bc0db5580eb536e8ddd42f22ec5223f3ee10e6b3978e9fe81ba915222a0b6",
+  "status": "awaiting_desktop",
+  "preflight": {
+    "status": "passed"
+  },
+  "automated": {
+    "vitest": {
+      "status": "passed",
+      "exitCode": 0
+    },
+    "playwright": {
+      "status": "passed",
+      "exitCode": 0
+    }
+  },
+  "desktopCases": [
+    {
+      "id": "D01",
+      "title": "Open editor",
+      "status": "not_run",
+      "observed": "",
+      "evidence": []
+    },
+    {
+      "id": "D02",
+      "title": "Duplicate slide",
+      "status": "not_run",
+      "observed": "",
+      "evidence": []
+    },
+    {
+      "id": "D03",
+      "title": "Move slide",
+      "status": "not_run",
+      "observed": "",
+      "evidence": []
+    },
+    {
+      "id": "D04",
+      "title": "Delete slide",
+      "status": "not_run",
+      "observed": "",
+      "evidence": []
+    },
+    {
+      "id": "D05",
+      "title": "Insert slide",
+      "status": "not_run",
+      "observed": "",
+      "evidence": []
+    },
+    {
+      "id": "D06",
+      "title": "Slide limit",
+      "status": "not_run",
+      "observed": "",
+      "evidence": []
+    },
+    {
+      "id": "D07",
+      "title": "Required image guard",
+      "status": "not_run",
+      "observed": "",
+      "evidence": []
+    },
+    {
+      "id": "D08",
+      "title": "Long-copy guard",
+      "status": "not_run",
+      "observed": "",
+      "evidence": []
+    },
+    {
+      "id": "D09",
+      "title": "Image crop controls",
+      "status": "not_run",
+      "observed": "",
+      "evidence": []
+    },
+    {
+      "id": "D10",
+      "title": "Chinese PDF export",
+      "status": "not_run",
+      "observed": "",
+      "evidence": []
+    },
+    {
+      "id": "D11",
+      "title": "Native image upload",
+      "status": "not_run",
+      "observed": "",
+      "evidence": []
+    },
+    {
+      "id": "D12",
+      "title": "Font persistence",
+      "status": "not_run",
+      "observed": "",
+      "evidence": []
+    },
+    {
+      "id": "D13",
+      "title": "Reference approval",
+      "status": "not_run",
+      "observed": "",
+      "evidence": []
+    },
+    {
+      "id": "D14",
+      "title": "Brief creation",
+      "status": "not_run",
+      "observed": "",
+      "evidence": []
+    },
+    {
+      "id": "D15",
+      "title": "Complete PNG export",
+      "status": "not_run",
+      "observed": "",
+      "evidence": []
+    },
+    {
+      "id": "D16",
+      "title": "OpenRouter settings",
+      "status": "not_run",
+      "observed": "",
+      "evidence": []
+    }
+  ],
+  "notes": [],
+  "automatedFinishedAt": "2026-11-20T11:33:23.385Z"
+}

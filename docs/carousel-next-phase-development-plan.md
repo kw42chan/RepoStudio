@@ -283,7 +283,9 @@ Exit gate: **Met for local portrait rendering** — no first-release golden fixt
 
 Test through each module’s public interface.
 
-Desktop follow-up requested on 2026-11-20: blocked because the agent-desktop skills/CLI are absent and the available Windows computer-use helper cannot connect to its native pipe. A fresh automated rerun passed 70 unit/contract tests and 16 browser tests. A visible desktop walkthrough remains open; see [[Projects/RepoStudio/docs/carousel-release-verification|the verification report]] for the exact error and required retry.
+Ongoing app changes must pass [[Projects/RepoStudio/docs/testing/regression-smoke|the reusable regression smoke suite]]. Run `npm run test:smoke`, record all 15 desktop cases in the newly created run, and validate with `npm run test:smoke:check -- <run-directory>`. Historical walkthrough results below remain evidence for their original run.
+
+Desktop follow-up completed on 2026-11-20: installed agent-desktop and Windows CLI 1.3.1; all 15 defined local desktop cases passed after the user confirmed the test tab could remain untouched. Verified native upload, slide commands and limits, export guards, crop controls, font persistence after reload, reference review/approval, demo brief creation, five native PNGs and a nine-page Chinese PDF. Retained 12 desktop screenshots, 209 command records and two HTML traces with 1,336 events. Chrome saved files in its existing download folder; custom Save As path entry through accessibility did not commit, so the actual downloads were located and copied into evidence. The supplementary automated rerun passed 70 unit/contract tests and 16 browser tests. Development phases and the scoped desktop walkthrough are finished; live provider and hosted release checks remain open. See [[Projects/RepoStudio/docs/testing/agent-desktop-2026-11-20/README|the case-by-case desktop test log]] and [[Projects/RepoStudio/docs/carousel-release-verification|the verification report]].
 
 - Contract tests: manifest entries parse and every rendered pattern maps to a renderer.
 - Property-style deck tests: any command sequence preserves ids, numbering, and cover/CTA invariants.
@@ -325,3 +327,26 @@ The work was delivered in these implementation slices; their commits are recorde
 All planned local development phases are finished. The first release contains nine selectable patterns, eight curated fonts, a 3–12 editable-slide range, 10 MB PNG/JPEG/WebP uploads, reference confirmation, deterministic routing, and measured portrait export checks. The authoritative behavior and limits are recorded in the implementation and [[Projects/RepoStudio/docs/carousel-release-verification|verification report]].
 
 The next work is review and deployment verification: configure and exercise live model providers, provide persistent storage for image files, and resolve the source-fetch gaps. Square-format decks remain available with fit warnings; the new library's primary verified geometry is 1080 × 1350. Do not interpret finished development as a completed hosted rollout.
+
+
+## Finished follow-up: OpenRouter settings ? 20 November 2026
+
+Status: **finished locally**. Implemented on `feature/carousel-phase-4-0` against base commit `2549b07`; these follow-up changes are uncommitted and unpublished. No PR merge or hosted rollout is implied.
+
+- [x] Add Settings controls to save, replace, test and remove an OpenRouter key, with independent writing and reference-image model IDs.
+- [x] Store credentials privately on the server, encrypted separately from the app store; return safe connection status only and keep the saved password field empty.
+- [x] Apply saved settings immediately to ideation, Agent Chat/content generation and reference analysis; preserve environment fallback on removal.
+- [x] Display the active model/configuration link instead of a static model constant; label configured-provider failures as demo fallbacks with guidance to Settings.
+- [x] Remove the hard DeepSeek routing restriction and retain validated structured slide fields in OpenRouter output.
+- [x] Add permanent D16 settings regression coverage and complete the full regression gate: **90 unit/contract tests, 17 browser tests and all 16 native desktop cases passed**. TypeScript, focused ESLint and the production build passed. Evidence: [[Projects/RepoStudio/docs/testing/runs/2026-11-20T11-35-30-845Z-2549b07-28ae21/README|OpenRouter regression run]].
+
+### What this means for users
+
+Open Settings, paste your OpenRouter key, choose the models, test the connection, then save. Your next carousel can use your account immediately without editing environment files or restarting the app. Writing and image-reference analysis can use different models. Leave the key blank to change models while keeping the saved key; remove the connection to restore the environment configuration or demo mode. A saved key is configured, not automatically validated; Test connection checks key acceptance and model availability without generating content.
+
+Real-key acceptance, credit permissions and live text/vision quality remain release checks because no real key was supplied. For hosted settings, persist the private data directory on a durable server volume or use environment credentials. Existing source-loading gaps remain recorded in [[Projects/RepoStudio/docs/standard-manual-test|the source-flow checklist]].
+
+
+### 21 November 2026 regression attempt
+
+The current working tree's automated smoke stage was attempted before commit. Fixture preflight passed; Vitest had 88 passes and 2 timeout failures (store-save and 	ranscript-ideation), while Playwright had 15 passes and 1 Agent Chat generation failure. The desktop cases were not run and the validation gate remains incomplete. Evidence: [[Projects/RepoStudio/docs/testing/runs/2026-11-21T08-36-13-601Z-2549b07-18520d/README|21 November smoke run]]. Retry after resolving the failures; do not treat the prior OpenRouter run's results as verification of this working tree.

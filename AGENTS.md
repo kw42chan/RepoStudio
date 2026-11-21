@@ -10,6 +10,10 @@ This block is written and re-added by `next dev` — verify at `node_modules/nex
 
 ## Agent skills
 
+### Project policy
+
+Read `CLAUDE.md` for the project policy. Before reporting an app change verified or handing it off for review, follow its mandatory regression smoke gate in `docs/testing/regression-smoke.md`.
+
 ### Issue tracker
 
 Issues and specs live as markdown files under `.scratch/<feature>/`. See `docs/agents/issue-tracker.md`.
@@ -24,7 +28,7 @@ Single-context: one `GLOSSARY.md` and `docs/adr/` at the repo root. See `docs/ag
 
 ### Desktop checks
 
-See and operate the desktop with the agent-desktop skills. Do not use the computer-use subagent for GUI checks. Read `.agents/skills/agent-desktop/SKILL.md` and `.agents/skills/agent-desktop-linux/SKILL.md`, then follow them. The CLI is `agent-desktop` on PATH, or `$HOME/.local/bin/agent-desktop` when it is not. Join the existing XFCE session: take `DISPLAY` and `DBUS_SESSION_BUS_ADDRESS` from the `at-spi2-registr` process. Do not start a second accessibility bus. Chrome is invisible to the accessibility tree until it is launched with `--force-renderer-accessibility`.
+See and operate the desktop with the agent-desktop skills. Do not use the computer-use subagent for GUI checks. Read `.agents/skills/agent-desktop/SKILL.md` and the matching platform guide: `agent-desktop-windows` on Windows, `agent-desktop-linux` on Linux. Follow their current instructions for Chromium accessibility and the existing desktop session. The CLI is `agent-desktop` on PATH, or `$HOME/.local/bin/agent-desktop` where installed there. Use the fresh run and evidence workflow in `docs/testing/regression-smoke.md`.
 
 ### Standard manual test
 

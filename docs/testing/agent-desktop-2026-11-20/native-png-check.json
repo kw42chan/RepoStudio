@@ -1,0 +1,37 @@
+[
+  {
+    "slide": 1,
+    "file": "private/desktop-slide-01.png",
+    "bytes": 206934,
+    "width": 1080,
+    "height": 1350
+  },
+  {
+    "slide": 2,
+    "file": "private/desktop-slide-02.png",
+    "bytes": 208883,
+    "width": 1080,
+    "height": 1350
+  },
+  {
+    "slide": 3,
+    "file": "private/desktop-slide-03.png",
+    "bytes": 209379,
+    "width": 1080,
+    "height": 1350
+  },
+  {
+    "slide": 4,
+    "file": "private/desktop-slide-04.png",
+    "bytes": 207820,
+    "width": 1080,
+    "height": 1350
+  },
+  {
+    "slide": 5,
+    "file": "private/desktop-slide-05.png",
+    "bytes": 73941,
+    "width": 1080,
+    "height": 1350
+  }
+]

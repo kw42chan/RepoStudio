@@ -1,0 +1,40 @@
+{
+  "date": "2026-11-20",
+  "port": 3100,
+  "server_pid": 15656,
+  "server_checkout": "Projects/RepoStudio",
+  "branch": "feature/carousel-phase-4-0",
+  "head": "2549b07",
+  "home_http_status": 200,
+  "fixture_http_status": 200,
+  "home_agent_chat_present": true,
+  "brief_panel_expanded": false,
+  "new_pattern_options_verified": [
+    "Collage cover",
+    "Statement",
+    "Numbered list",
+    "Vertical timeline",
+    "Horizontal timeline",
+    "A/B comparison",
+    "Metric evidence",
+    "Prompt to outcome",
+    "Simple CTA"
+  ],
+  "all_style_options": [
+    "Scroll cover",
+    "Collage cover",
+    "Narrative",
+    "Tool grid (2\u00d73)",
+    "Statement",
+    "Numbered list",
+    "Vertical timeline",
+    "Horizontal timeline",
+    "A/B comparison",
+    "Metric evidence",
+    "Prompt to outcome",
+    "Action close",
+    "Simple CTA"
+  ],
+  "mutations": "Agent expanded only the existing graphics-style selector. Browser state changed afterward; the later screenshot shows Metric evidence. Agent did not select it or issue changes to slide content, drafts, brands or application code.",
+  "initial_slide_style": "Scroll cover"
+}

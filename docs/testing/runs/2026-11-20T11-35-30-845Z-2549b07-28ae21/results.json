@@ -1,0 +1,206 @@
+{
+  "version": 1,
+  "startedAt": "2026-11-20T11:35:30.845Z",
+  "commit": "2549b077b86db2d877b6bc5455f80cbfae97adbd",
+  "branch": "feature/carousel-phase-4-0",
+  "inputFingerprint": "a14a370c77744373200550110068e106bd1cecee8ef46f167a2ac89c2cc6fc97",
+  "status": "passed",
+  "preflight": {
+    "status": "passed"
+  },
+  "automated": {
+    "vitest": {
+      "status": "passed",
+      "exitCode": 0
+    },
+    "playwright": {
+      "status": "passed",
+      "exitCode": 0
+    }
+  },
+  "desktopCases": [
+    {
+      "id": "D01",
+      "title": "Open editor",
+      "status": "passed",
+      "observed": "Fixture editor loaded five slides with Clear idea 1 on the cover and live preview.",
+      "evidence": [
+        "private/d01-fixture-state.json"
+      ]
+    },
+    {
+      "id": "D02",
+      "title": "Duplicate slide",
+      "status": "passed",
+      "observed": "Duplicate produced six slides, selected body slide 2, preserving Clear idea 1 and its supporting sentence; cover and CTA remained at the ends.",
+      "evidence": [
+        "private/d02-after.json"
+      ]
+    },
+    {
+      "id": "D03",
+      "title": "Move slide",
+      "status": "passed",
+      "observed": "Move right retained six slides and moved the duplicate and its copy to selected position 3.",
+      "evidence": [
+        "private/d03-after.json"
+      ]
+    },
+    {
+      "id": "D04",
+      "title": "Delete slide",
+      "status": "passed",
+      "observed": "Delete returned to five slides and selected the following slide with Clear idea 3.",
+      "evidence": [
+        "private/d04-after.json"
+      ]
+    },
+    {
+      "id": "D05",
+      "title": "Insert slide",
+      "status": "passed",
+      "observed": "Add selected a new body slide at position 4 with New takeaway; six slides, cover first and CTA last.",
+      "evidence": [
+        "private/d05-after.json"
+      ]
+    },
+    {
+      "id": "D06",
+      "title": "Slide limit",
+      "status": "passed",
+      "observed": "Maximum-slide-count fixture displayed twelve slides; Add Slide and Duplicate slide were disabled.",
+      "evidence": [
+        "private/d06-after.json"
+      ]
+    },
+    {
+      "id": "D07",
+      "title": "Required image guard",
+      "status": "passed",
+      "observed": "Missing-images fixture blocked PDF export with Add an image to hero right before exporting.",
+      "evidence": [
+        "private/d07-guard.json"
+      ]
+    },
+    {
+      "id": "D08",
+      "title": "Long-copy guard",
+      "status": "passed",
+      "observed": "Long-headings fixture blocked PDF export with Shorten the heading to 42 characters.",
+      "evidence": [
+        "private/d08-guard.json"
+      ]
+    },
+    {
+      "id": "D09",
+      "title": "Image crop controls",
+      "status": "passed",
+      "observed": "Set horizontal focus to 1 and zoom to 1.5 on the Chinese hero; selected another slide then returned. Fresh native readback retained both values; screenshot shows Chinese copy and cropped synthetic preview.",
+      "evidence": [
+        "private/d09-readback.json",
+        "private/d09-crop.png"
+      ]
+    },
+    {
+      "id": "D10",
+      "title": "Chinese PDF export",
+      "status": "passed",
+      "observed": "Saved the native Chinese PDF as instagram-carousel-1080x1350 (2).pdf in Chrome's existing Downloads/.cursor directory. Copied actual file; verified nine 810 x 1012.5-point pages and visually reviewed all rendered pages: readable Chinese, images present, no observed clipping or overlap.",
+      "evidence": [
+        "private/d10-save-dialog.json",
+        "private/d10-save.json",
+        "private/native-exports/pdf-inspection.json",
+        "private/native-exports/cjk-native.pdf",
+        "private/native-exports/cjk-contact-sheet.png"
+      ]
+    },
+    {
+      "id": "D11",
+      "title": "Native image upload",
+      "status": "passed",
+      "observed": "Submitted carousel-proof.png through the native Open picker. An initial forward-slash path was rejected as invalid; dismissed that alert and successfully submitted the Windows backslash path. App selector changed to carousel-proof.png, with preview and crop controls present.",
+      "evidence": [
+        "private/d11-picker-correct.json",
+        "private/d11-file-correct.json",
+        "private/d11-submit-correct.json",
+        "private/d11-upload-result.json",
+        "private/d11-upload.png"
+      ]
+    },
+    {
+      "id": "D12",
+      "title": "Font persistence",
+      "status": "passed",
+      "observed": "Created only OpenRouter QA 20261120, selected Lora headings and Inter body, saved and reloaded. Both font choices persisted and the preview visibly distinguished them. Deleted this QA brand with the inline confirmation; original brands remained.",
+      "evidence": [
+        "private/d12-after-reload.json",
+        "private/d12-fonts.png",
+        "private/d12-delete-confirm-state.json",
+        "private/d16-initial.json"
+      ]
+    },
+    {
+      "id": "D13",
+      "title": "Reference approval",
+      "status": "passed",
+      "observed": "Uploaded the synthetic reference through native Open. Review identified locally extracted palette and default typography/layout provenance; creation was disabled before approval. Confirmation saved the reviewed style and enabled creation.",
+      "evidence": [
+        "private/d13-review.json",
+        "private/d13-reference-review.png",
+        "private/d13-confirmed.json"
+      ]
+    },
+    {
+      "id": "D14",
+      "title": "Brief creation",
+      "status": "passed",
+      "observed": "Created from the factual three-step brief. Both Instagram and LinkedIn tabs appeared; switched to LinkedIn and observed its post-copy editor. Status explicitly said Created demo carousels and linked configuration to Settings. This verifies demo output only.",
+      "evidence": [
+        "private/d14-created.json",
+        "private/d14-linkedin-state.json",
+        "private/d14-brief-created.png"
+      ]
+    },
+    {
+      "id": "D15",
+      "title": "Complete PNG export",
+      "status": "passed",
+      "observed": "Completed five native Save As dialogs for slides 01-05 with distinct (1) filenames, preserving earlier files. No multiple-download permission prompt appeared in this run. Copied five actual PNGs from Downloads/.cursor; each is 1080 x 1350. Visually reviewed all five: Clear idea 1-5, readable content, correct progress sequence and no observed clipping.",
+      "evidence": [
+        "private/d15-save01-state.json",
+        "private/d15-save02-state.json",
+        "private/d15-save03-state.json",
+        "private/d15-save04-state.json",
+        "private/d15-save05-state.json",
+        "private/d15-completed.json",
+        "private/native-exports/png-inspection.json",
+        "private/native-exports/png-contact-sheet.png"
+      ]
+    },
+    {
+      "id": "D16",
+      "title": "OpenRouter settings",
+      "status": "passed",
+      "observed": "On the initially unconfigured demo app, saved a synthetic OpenRouter-format key. Reload showed saved configuration and an empty password field (placeholder visible). Changed both text and reference models to openai/gpt-4o-mini with key blank; saved and reloaded, retaining both IDs and saved-key status. Removed saved connection; native UI and API status returned to demo/no key. No synthetic key was sent to OpenRouter; Test connection network branches are covered by mocked contract/browser tests.",
+      "evidence": [
+        "private/d16-initial.json",
+        "private/d16-after-reload.json",
+        "private/d16-models-persisted.json",
+        "private/d16-settings.png",
+        "private/d16-removed.json",
+        "private/final-state.json"
+      ]
+    }
+  ],
+  "notes": [
+    "All 16 native cases completed after the user confirmed an uncontended Chrome window. Prior interrupted, failed and stale attempts remain separate historical run folders; no observations were copied from them.",
+    "Fresh official agent-desktop Windows session captured semantic actions and foreground-gated key submissions. No headed-mode fallback or browser DOM was used for native cases. Native screenshot invocation first rejected an unsupported --out flag; positional output path succeeded. A picker-open screenshot attempt was refused because two Chrome instances existed; captured only after the picker closed.",
+    "Production build (npx next build), TypeScript and focused ESLint passed. Unit/contract checks cover encrypted persistence, redaction, origin/auth/input guards, environment fallback, saved-key model routing into ideation and both carousel formats, structured slide retention and honest generation-failure notices.",
+    "No real OpenRouter key was supplied. No paid generation or live credential acceptance is certified. OpenRouter public model catalog was consulted to confirm existing defaults. Connection checks use the documented GET /api/v1/key and model catalog; no completions request is made by Test connection.",
+    "Cleanup: synthetic OpenRouter settings and temporary QA brand removed; original demo configuration restored. One synthetic uploaded image and one explicitly confirmed reference style remain in the local library. No content published, no commit/push/merge/deployment performed; test tab left on Settings.",
+    "Native exports were saved to Chrome's existing Downloads/.cursor folder and copied into this run. This run did not attempt custom Save As paths or change browser permissions.",
+    "Existing source-flow failures remain separate from local carousel smoke results: Instagram caption retrieval, Threads profile URL and YouTube transcript link. Source-flow observations are retained under private/source-flow.json."
+  ],
+  "automatedFinishedAt": "2026-11-20T11:36:16.572Z",
+  "validatedAt": "2026-11-20T14:03:38.922Z"
+}

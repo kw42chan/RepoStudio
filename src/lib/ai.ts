@@ -251,7 +251,7 @@ export async function ideateFromSourcePost(
     };
   }
 
-  const llm = getLlmModels();
+  const llm = await getLlmModels();
   if (!llm) {
     return buildMockIdeation(source);
   }
@@ -274,7 +274,7 @@ Return:
 2. ideas: exactly 5 objects. Each needs id, angleType, title, hook, summary, rationale, and formatFit with reel, igCarousel, and liCarousel as numbers from 1 to 100.
 The angles must be specific to this post's actual claim, not generic marketing advice.`;
 
-    const object = process.env.OPENROUTER_API_KEY
+    const object = llm.provider === "openrouter"
       ? await completeOpenRouterJson(ideationSchema, prompt)
       : (
           await generateText({
@@ -610,10 +610,10 @@ async function generateTextObject<T>(
   schema: z.ZodType<T>,
   prompt: string
 ): Promise<T> {
-  if (process.env.OPENROUTER_API_KEY) {
+  const llm = await getLlmModels();
+  if (llm?.provider === "openrouter") {
     return completeOpenRouterJson(schema, prompt);
   }
-  const llm = getLlmModels();
   if (!llm) {
     throw new Error("No language model configured.");
   }
@@ -640,6 +640,7 @@ export async function generateContentForFormats(params: {
   igCarousel?: CarouselContent;
   liCarousel?: CarouselContent;
   usedMock: boolean;
+  generationNotice?: string;
 }> {
   if (params.sourcePost.sourcePlatform === "Transcript") params = { ...params, sourcePost: { ...params.sourcePost, rawText: spokenTextFromTranscript(params.sourcePost.rawText) } };
   const {
@@ -656,7 +657,7 @@ export async function generateContentForFormats(params: {
 
   const styleDescription = describeWritingStyle(writingStyle);
   const patternInstructions = `Return semantic intent and optional patternContent (items with title/body, metric/unit, prompt, action) and preferredPatternIds for each slide. Never invent measurements, screenshots, commands, or evidence. Return content only, without JSX or geometry. Pattern catalog: ${JSON.stringify(patternPromptSummary())}`;
-  const llm = getLlmModels();
+  const llm = await getLlmModels();
 
   if (!llm) {
     const igRaw = formats.includes("ig_carousel")
@@ -806,8 +807,8 @@ Prefer the grid-2x3 slide for LinkedIn listicles and tool roundups when the angl
             brandHandle,
           };
         }
-      } catch (err) {
-        console.error(`Content generation failed for ${format}:`, err);
+      } catch {
+        console.error(`Content generation failed for ${format}; check language model settings.`);
         usedMock = true;
         if (format === "reel") {
           results.reel = buildMockReel(sourcePost, idea, writingStyle);
@@ -873,7 +874,7 @@ Prefer the grid-2x3 slide for LinkedIn listicles and tool roundups when the angl
       );
     }
 
-    return { ...results, usedMock };
+    return { ...results, usedMock, ...(usedMock ? { generationNotice: "The configured model could not finish this request. Demo content was used for some or all results. Check your key, models and credits in Settings." } : {}) };
   } catch (err) {
     console.error("Content generation model failed:", err);
     throw err instanceof Error

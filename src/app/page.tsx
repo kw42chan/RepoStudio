@@ -68,7 +68,7 @@ import {
   languageNameFromCode,
   originalLanguageName,
 } from "@/lib/language";
-import { TEXT_MODEL } from "@/lib/models";
+import { ModelConnectionStatus } from "@/components/settings/model-connection-status";
 import {
   applyLayoutPackToCarousel,
   listLayoutPacksForPlatform,
@@ -733,9 +733,7 @@ export default function RepurposeWorkspacePage() {
           )}
 
           <div className="flex flex-wrap items-center justify-end gap-3">
-            <p className="text-xs text-muted-foreground">
-              Model {TEXT_MODEL}
-            </p>
+            <ModelConnectionStatus />
             <Button
               onClick={handleIdeate}
               disabled={
@@ -769,7 +767,7 @@ export default function RepurposeWorkspacePage() {
               </CardTitle>
               {ideation.usedMock ? (
                 <Badge variant="outline" className="text-xs">
-                  Smart Local Mode (Add OPENROUTER_API_KEY or OPENAI_API_KEY for LLM)
+                  Demo content · Check language model in Settings
                 </Badge>
               ) : (
                 <Badge variant="secondary" className="text-xs">

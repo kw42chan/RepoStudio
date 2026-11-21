@@ -2,6 +2,8 @@
 
 Run this in the studio before finishing any change to loading a post, generating ideas, or writing the reel and carousels. Record each row as pass or fail against the pass condition. Do not treat a known gap as a pass.
 
+This source-flow checklist supplements [[Projects/RepoStudio/docs/testing/regression-smoke|the regression smoke suite required after app changes]]. Keep its source-specific failures separate from the local carousel suite's results.
+
 ## Steps
 
 For each source:
@@ -23,7 +25,7 @@ For each source:
 
 ## Last run
 
-20 November 2026. Automated browser execution followed the studio steps, including both angle selections and generation. Transcript was rerun with the Video Transcript source selected after fixing timestamp leakage. These checks describe local behavior; they do not certify live model-provider quality.
+20 November 2026. Reconfirmed after the OpenRouter settings enhancement; source-flow evidence is retained in [[Projects/RepoStudio/docs/testing/runs/2026-11-20T11-35-30-845Z-2549b07-28ae21/README|the completed regression run]]. X, LinkedIn and pasted transcripts passed loading/ideas/two-angle generation; Instagram, Threads and the YouTube link retained the failures below. No live provider was configured for this source-flow run. Automated browser execution followed the studio steps, including both angle selections and generation. Transcript was rerun with the Video Transcript source selected after fixing timestamp leakage. These checks describe local behavior; they do not certify live model-provider quality.
 
 | Source | Load | Ideas | Two angles |
 | --- | --- | --- | --- |

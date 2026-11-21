@@ -17,6 +17,7 @@ import { Label } from "@/components/ui/label";
 import { Badge } from "@/components/ui/badge";
 import { withBrandColors } from "@/lib/presets";
 import { BrandVoicePreset } from "@/lib/types";
+import { OpenRouterSettings } from "@/components/settings/openrouter-settings";
 
 export default function SettingsPage() {
   const router = useRouter();
@@ -145,6 +146,7 @@ export default function SettingsPage() {
       </div>
 
 
+      <OpenRouterSettings />
       <Card>
         <CardHeader>
           <CardTitle className="text-base">Brand guidelines</CardTitle>

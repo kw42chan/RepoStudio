@@ -1,0 +1,164 @@
+{
+  "date": "2026-11-20",
+  "timezone": "Asia/Hong_Kong",
+  "application_commit": "2549b07",
+  "skill_commit": "e8934a5e95e1d212c74ead95cd3e4701c04eca31",
+  "cli_version": "1.3.1",
+  "session_id": "run-1795158256325-20864-0",
+  "desktop_passed": 15,
+  "desktop_partial": 0,
+  "desktop_inconclusive": 0,
+  "automated_only_cases": 0,
+  "automated": {
+    "vitest": {
+      "passed": 70,
+      "files": 16,
+      "exit_code": 0,
+      "duration_seconds": 4.53
+    },
+    "playwright": {
+      "passed": 16,
+      "exit_code": 0,
+      "duration_seconds": 34.4
+    }
+  },
+  "cases": [
+    {
+      "id": "D01",
+      "title": "Open fixture editor",
+      "status": "passed",
+      "evidence": "private/015-fixture-state.json",
+      "observed": "Local fixture URL, five-slide editor"
+    },
+    {
+      "id": "D02",
+      "title": "Duplicate slide",
+      "status": "passed",
+      "evidence": "private/017-duplicated-state.json",
+      "observed": "Six slides; duplicate retains headline"
+    },
+    {
+      "id": "D03",
+      "title": "Move duplicate right",
+      "status": "passed",
+      "evidence": "private/020-moved-state.json",
+      "observed": "Six slides; selection now slide 3; headline preserved"
+    },
+    {
+      "id": "D04",
+      "title": "Delete duplicate",
+      "status": "passed",
+      "evidence": "private/022-deleted-state.json",
+      "observed": "Five slides; following content selected"
+    },
+    {
+      "id": "D05",
+      "title": "Add slide",
+      "status": "passed",
+      "evidence": "private/024-added-state.json",
+      "observed": "Six slides; inserted New takeaway"
+    },
+    {
+      "id": "D06",
+      "title": "Maximum slide limit",
+      "status": "passed",
+      "evidence": "private/052-slide-limit-state.json",
+      "observed": "12 slides; add and duplicate disabled"
+    },
+    {
+      "id": "D07",
+      "title": "Missing image export guard",
+      "status": "passed",
+      "evidence": "private/030-missing-export-state.json",
+      "observed": "Required-image export error displayed"
+    },
+    {
+      "id": "D08",
+      "title": "Long heading export guard",
+      "status": "passed",
+      "evidence": "private/049-overflow-state.json",
+      "observed": "Heading limit error displayed after Export PDF"
+    },
+    {
+      "id": "D09",
+      "title": "Crop control readback",
+      "status": "passed",
+      "evidence": "private/060-crop-zoom-result.json",
+      "observed": "Horizontal focus 1; zoom 1.5; controls verified, pixel effect supplementary"
+    },
+    {
+      "id": "D10",
+      "title": "Native PDF delivery",
+      "status": "passed",
+      "evidence": "private/118-downloaded-file-location.json",
+      "observed": "Chinese PDF saved in Downloads/.cursor, copied to evidence, all nine 810x1012.5-point pages rendered and visually reviewed; custom Save As path did not commit",
+      "chrome_done": true,
+      "requested_path_exists": false,
+      "initial_status": "partial",
+      "initial_evidence": "private/071-pdf-saved-state.json",
+      "custom_save_path_committed": false,
+      "verified_copy": "private/desktop-chinese-verified.pdf",
+      "metadata": "native-pdf-check.json"
+    },
+    {
+      "id": "D11",
+      "title": "Native image file picker",
+      "status": "passed",
+      "evidence": "private/092-upload-complete.json",
+      "observed": "Native file picker submitted with foreground-gated Enter; saved-image selector shows carousel-proof.png",
+      "initial_status": "inconclusive",
+      "initial_evidence": "private/042-confirm-file.json"
+    },
+    {
+      "id": "D12",
+      "title": "Typography save/reload",
+      "status": "passed",
+      "evidence": "private/168-fonts-after-reload.json",
+      "initial_status": "automated_only",
+      "initial_evidence": "playwright.log",
+      "observed": "Lora headings and Inter body persisted after native browser reload; temporary QA brand then removed"
+    },
+    {
+      "id": "D13",
+      "title": "Reference confirmation API enforcement",
+      "status": "passed",
+      "evidence": "private/149-reference-confirmed.json",
+      "initial_status": "automated_only",
+      "initial_evidence": "playwright.log",
+      "observed": "Generation disabled pending reference review; explicit confirmation saved local traits and enabled generation"
+    },
+    {
+      "id": "D14",
+      "title": "Agent Chat creation",
+      "status": "passed",
+      "evidence": "private/131-brief-result.json",
+      "initial_status": "automated_only",
+      "initial_evidence": "playwright.log",
+      "observed": "Demo brief created both carousel tabs and displayed Created demo carousels; no live provider certification"
+    },
+    {
+      "id": "D15",
+      "title": "PNG exports and parity",
+      "status": "passed",
+      "evidence": "private/208-native-png-export-complete.json",
+      "initial_status": "automated_only",
+      "initial_evidence": "playwright.log",
+      "observed": "All five legacy PNGs saved through native dialogs, copied from Downloads/.cursor, verified 1080x1350 and visually reviewed",
+      "metadata": "native-png-check.json"
+    }
+  ],
+  "status": "complete",
+  "session_ids": [
+    "run-1795158256325-20864-0",
+    "run-1795159610805-19480-0"
+  ],
+  "scope": "15 defined native desktop cases; automated property/API/render checks supplement them; custom save-path automation remains a tooling limitation",
+  "captures": {
+    "desktop_screenshots": 12,
+    "native_trace_events": 1336,
+    "native_trace_files": [
+      "private/desktop-trace.html",
+      "private/desktop-followup-trace.html"
+    ]
+  }
+}

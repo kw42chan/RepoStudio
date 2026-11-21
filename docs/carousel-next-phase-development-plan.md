@@ -331,7 +331,7 @@ The next work is review and deployment verification: configure and exercise live
 
 ## Finished follow-up: OpenRouter settings ? 20 November 2026
 
-Status: **finished locally**. Implemented on `feature/carousel-phase-4-0` against base commit `2549b07`; these follow-up changes are uncommitted and unpublished. No PR merge or hosted rollout is implied.
+Status: **finished locally**. Implemented on `feature/carousel-phase-4-0` against base commit `2549b07`; these follow-up changes were committed and pushed to GitHub as f466e8e. No PR merge or hosted rollout is implied.
 
 - [x] Add Settings controls to save, replace, test and remove an OpenRouter key, with independent writing and reference-image model IDs.
 - [x] Store credentials privately on the server, encrypted separately from the app store; return safe connection status only and keep the saved password field empty.
